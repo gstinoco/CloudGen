@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CloudGen: A Simple Cloud of Points Generator</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../static/main.css" />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+        
+        <script>
+            var canvas, context, imageObj;
+            var points = [];
+            var scale = 1;
+
+            window.onload = function() {
+                canvas = document.getElementById('imageCanvas');
+                context = canvas.getContext('2d');
+                imageObj = new Image();
+
+                imageObj.onload = function() {
+                    drawImage();  // Ajusta el tamaño inicial del canvas
+                };
+                imageObj.src = "{{ url_for('static', filename='uploads/' ~ filename) }}";
+            };
+
+            function drawImage() {
+                canvas.width = imageObj.width * scale;
+                canvas.height = imageObj.height * scale;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+
+                if (points.length > 0) {
+                    // Dibuja los puntos y conecta con líneas
+                    context.beginPath();
+                    context.moveTo(points[0].x * scale, points[0].y * scale);  // Mueve a la posición del primer punto
+                    for (var i = 1; i < points.length; i++) {
+                        context.lineTo(points[i].x * scale, points[i].y * scale);  // Dibuja línea al siguiente punto
+                        context.moveTo(points[i].x * scale, points[i].y * scale);  // Mueve a la posición del siguiente punto
+                    }
+                    context.strokeStyle = '#000000';
+                    context.lineWidth = 2;
+                    context.stroke();
+
+                    // Dibuja círculos en cada punto
+                    points.forEach(p => {
+                        context.fillStyle = "#FF0000";
+                        context.beginPath();
+                        context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);
+                        context.fill();
+                    });
+                }
+            }
+
+            function zoomIn() {
+                scale *= 1.5;
+                drawImage();
+            }
+
+            function zoomOut() {
+                if (scale > 1) {
+                    scale /= 1.5;
+                    drawImage();
+                }
+            }
+
+            function resetZoom() {
+                scale = 1;
+                drawImage();
+            }
+
+            function getClickPosition(e) {
+                var rect = canvas.getBoundingClientRect();
+                var xPosition = (e.clientX - rect.left) / scale;
+                var yPosition = (e.clientY - rect.top) / scale;
+
+                points.push({x: xPosition, y: yPosition});
+                drawImage();
+            }
+
+            function undoLastPoint() {
+                if (points.length > 0) {
+                    points.pop();
+                    drawImage();
+                }
+            }
+
+            function resetCanvas() {
+                points = [];
+                drawImage();
+            }
+
+            function downloadCSV() {
+                const normalizedPoints = points.map(p => ({
+                    x: p.x / imageObj.width,
+                    y: p.y / imageObj.height
+                }));
+
+                fetch('{{ url_for("download_csv") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({points: normalizedPoints})
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = "points.csv";
+                    document.body.appendChild(a);
+                    a.click();    
+                    a.remove();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+        <div id="page-wrapper">
+			<!-- Header -->
+			<div id="header-wrapper">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<header id="header">
+								<h1><a href="/" id="logo">ContourCreator</a></h1>
+								<nav id="nav">
+									<a href="/">Home</a>
+									<a href="/upload" class="current-page-item">CloudGenerator</a>
+									<a href="/about">About</a>
+								</nav>
+							</header>
+						</div>
+					</div>
+				</div>
+			</div>
+            <!-- Main -->
+			<div id="main">
+				<div class="container">
+					<div class="row main-row">
+						<div id="workspace">
+                            <div id="canvas-actions-container">
+                                <div id="canvas-container" style="width:55vw; height:60vh; overflow:auto;">
+                                    <canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
+                                </div>
+                                <div id="action-buttons-canvas">
+                                    <button id="original-size" onclick="resetZoom()"><i class='fas fa-expand-arrows-alt'></i></button>
+                                    <button id="zoom-in" onclick="zoomIn()"><i class='fas fa-search-plus'></i></button>
+                                    <button id="zoom-out" onclick="zoomOut()"><i class='fas fa-search-minus'></i></button>
+                                    <button id="undo" onclick="undoLastPoint()"><i class='fas fa-undo'></i></button>
+                                </div>
+                            </div>
+                            <div id="action-buttons">
+                                <button id="reset" onclick="resetCanvas()">Reset</button>
+                                <button id="download" onclick="downloadCSV()">Download</button>
+                                <button id="create-cloud">Create Cloud</button>
+                            </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+
+            <!-- Footer -->
+			<div id="footer-wrapper">
+				<div class="container">
+					<section>
+						<h2>CloudGen</h2>
+						<p>CloudGen was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo
+							in an effort of bringing an easy way to create clouds for irregular domains in order to compare
+							different methods to numerically solve partial differential equations without an structured mesh.
+						</p>
+					</section>
+					<div class="col-12">
+						<div id="copyright">
+							&copy; CloudGen. All rights reserved.
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </body>
+
+</html>
