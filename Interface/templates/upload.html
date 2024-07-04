@@ -6,6 +6,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../static/main.css" />
 	</head>
+    <script src="index.js">
+        const dropArea = document.querySelector(".drop-area");
+        const dragText = dropArea.querySelector('h2');
+        const button = dropArea.querySelector('button');
+        const input = dropArea.querySelector('#input-file');
+
+        button.addEventListener('click',e ={} )
+
+
+    </script>
     <body>
         <div id="page-wrapper">
             <!-- Header -->
@@ -33,7 +43,14 @@
                         <h2>ContourCreator: Create contours based on a picture.</h2>
                         <span>Upload a file to create the contour.</span>
                         <br /><br />
-                        <form method=post enctype=multipart/form-data>  
+                        <form method=post enctype=multipart/form-data> 
+                            <div class="drag-area">
+                                <h2>Arrastra y suelta imágenes</h2>
+                                <span>O</span>
+                                <button>Selecgit ciona tus archivos</button>
+                                <input type="file" name="" id="input-file" hidden multiple>
+                            </div>
+                            <div id="preview"></div>
                             <input type=file name=file><br /><br />
                             <input type=submit value=Upload>
                         </form>
