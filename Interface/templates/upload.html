@@ -5,17 +5,19 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../static/main.css" />
+        <script>
+            function dragoverHandler(ev) {
+                ev.preventDefault();
+                ev.dataTransfer.dropEffect = "move";
+                console.log(ev);
+            }
+            function dropHandler(ev) {
+                ev.preventDefault();
+                console.log(ev);
+            }
+        </script>
 	</head>
-    <script src="index.js">
-        const dropArea = document.querySelector(".drop-area");
-        const dragText = dropArea.querySelector('h2');
-        const button = dropArea.querySelector('button');
-        const input = dropArea.querySelector('#input-file');
-
-        button.addEventListener('click',e ={} )
-
-
-    </script>
+   
     <body>
         <div id="page-wrapper">
             <!-- Header -->
@@ -44,14 +46,21 @@
                         <span>Upload a file to create the contour.</span>
                         <br /><br />
                         <form method=post enctype=multipart/form-data> 
-                            <div class="drag-area">
-                                <h2>Arrastra y suelta imágenes</h2>
-                                <span>O</span>
-                                <button>Selecgit ciona tus archivos</button>
-                                <input type="file" name="" id="input-file" hidden multiple>
+                            <div class="file-area">
+                                <input type=file required name=file>
+                                <div class="file-dummy">
+                                    <div class="default">
+                                        <h2>Arrastra y suelta imágenes</h2>
+                                        <span>O</span>
+                                        <button>Selecciona tus archivos</button>
+                                    </div>
+                                    <div class="success">
+                                        <h2>Archivo listo</h2>
+                                        <button>Elige otroa archivo</button>
+                                    </div>
+                                </div>
                             </div>
                             <div id="preview"></div>
-                            <input type=file name=file><br /><br />
                             <input type=submit value=Upload>
                         </form>
                     </div>
