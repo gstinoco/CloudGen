@@ -51,6 +51,22 @@ def upload_image():
             return render_template('contour.html', filename=filename)
     return render_template('upload.html')
 
+@app.route('/creator', methods=['GET', 'POST'])
+def upload_image2():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            delete_file(filepath, 3600)
+            return render_template('creator.html', filename=filename)
+    return render_template('upload.html')
+
 @app.route('/create_cloud', methods=['POST'])
 def create_cloud():
     data = request.get_json()
