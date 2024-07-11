@@ -4,6 +4,14 @@ import io
 from threading import Timer
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
+import pandas as pd
+import numpy as np
+import dmsh
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from shapely.geometry import Point, Polygon
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
@@ -103,6 +111,62 @@ def download_csv():
 
     output = si.getvalue()
     return Response(output, mimetype="text/csv", headers={"Content-disposition": "attachment; filename=points.csv"})
+
+def CreateCloud_Holes(xb, yb, num, h_coor_sets):
+    dist = np.max(np.sqrt(np.diff(xb.T)**2 + np.diff(yb.T)**2)) / num
+    pb  = np.column_stack((xb, yb))
+    geo = dmsh.Polygon(pb)
+    
+    for hx, hy in h_coor_sets:
+        hole_pb = np.column_stack((hx, hy))
+        hole_geo = dmsh.Polygon(hole_pb)
+        geo -= hole_geo
+
+    X, cells = dmsh.generate(geo, dist)
+    poly = Polygon(pb).buffer(-dist / 4)
+    hole_polys = [Polygon(np.column_stack((hx, hy))).buffer(dist / 4) for hx, hy in h_coor_sets]
+
+    points = [Point(point[0], point[1]) for point in X]
+    A = np.zeros([len(points), 1])
+    
+    for i, point in enumerate(points):
+        if not point.within(poly):
+            A[i] = 1
+        else:
+            for hole_poly in hole_polys:
+                if point.within(hole_poly):
+                    A[i] = 2
+                    break
+
+    X = np.column_stack((X, A))
+    return X, cells
+
+def load_and_create_cloud(exterior_file, interior_files, num):
+    pat_out = pd.read_csv(exterior_file)
+    xb = pat_out['x'].values
+    yb = pat_out['y'].values
+
+    h_coor_sets = []
+    for interior_file in interior_files:
+        pat_in = pd.read_csv(interior_file)
+        hx = pat_in['x'].values
+        hy = pat_in['y'].values
+        h_coor_sets.append((hx, hy))
+
+    X, cells = CreateCloud_Holes(xb, yb, num, h_coor_sets)
+    return X, cells
+
+def GraphCloud(p, folder, nom):
+    nomp = folder + nom + '.png'
+
+    color = ['blue' if x == 0 else 'red' for x in p[:, 2]]
+
+    plt.rcParams["figure.figsize"] = (16, 12)
+    plt.scatter(p[:, 0], p[:, 1], c=color, s=20)
+    plt.title(nom)
+    plt.axis('equal')
+    plt.savefig(nomp)
+    plt.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
