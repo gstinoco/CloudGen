@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CloudGen: A Simple Cloud of Points Generator</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+        <script>
+            function dragoverHandler(ev) {
+                ev.preventDefault();
+                ev.dataTransfer.dropEffect = "move";
+                console.log(ev);
+            }
+        
+            function dropHandler(ev) {
+                ev.preventDefault();
+                const fileInput = ev.target.querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.files = ev.dataTransfer.files;
+                    fileChangeHandler({ target: fileInput });
+                }
+                console.log(ev);
+            }
+        
+            function fileChangeHandler(ev) {
+                const fileInput = ev.target;
+                const fileLabel = fileInput.nextElementSibling.querySelector('.file-name');
+        
+                if (fileInput.files.length > 0) {
+                    const fileName = fileInput.files.length > 1 ? `${fileInput.files.length} files` : fileInput.files[0].name;
+                    fileLabel.textContent = fileName;
+                    fileInput.nextElementSibling.querySelector('.default').style.display = 'none';
+                    fileInput.nextElementSibling.querySelector('.success').style.display = 'block';
+                    fileInput.classList.add('has-files');
+                } else {
+                    fileLabel.textContent = '';
+                    fileInput.nextElementSibling.querySelector('.default').style.display = 'block';
+                    fileInput.nextElementSibling.querySelector('.success').style.display = 'none';
+                    fileInput.classList.remove('has-files');
+                }
+            }
+        
+            function enableChangeFile(ev) {
+                const fileInput = ev.target.closest('.file-dummy').previousElementSibling;
+                fileInput.value = "";  // Reset the input value
+                fileInput.nextElementSibling.querySelector('.default').style.display = 'block';
+                fileInput.nextElementSibling.querySelector('.success').style.display = 'none';
+                fileInput.classList.remove('has-files');
+            }
+        
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.file-area .success button').forEach(button => {
+                    button.addEventListener('click', enableChangeFile);
+                });
+            });
+        </script>
+        
+    </head>
+    <body>
+        <div id="page-wrapper">
+            <!-- Header -->
+            <div id="header-wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <header id="header">
+                                <h1><a href="{{ url_for('index') }}" id="logo">CloudGen</a></h1>
+                                <nav id="nav">
+                                    <a href="{{ url_for('index') }}">Home</a>
+                                    <a href="{{ url_for('upload_image') }}" class="current-page-item">ContourCreator</a>
+                                    <a href="{{ url_for('upload_files') }}">CloudGenerator</a>
+                                    <a href="{{ url_for('about') }}">About</a>
+                                </nav>
+                            </header>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upload -->
+            <div id="banner-wrapper">
+                <div class="container">
+                    <div id="banner">
+                        <h2>ContourCreator: Create contours based on an image.</h2>
+                        <br /><br />
+                        <form method="post" enctype="multipart/form-data"> 
+                            <div class="file-area">
+                                <input type="file" name="file" onchange="fileChangeHandler(event)" required>
+                                <div class="file-dummy">
+                                    <div class="default">
+                                        <h2>Upload an image to create the contour.</h2>
+                                        <button>Select a file</button>
+                                    </div>
+                                    <div class="success">
+                                        <h2>File Loaded: <span class="file-name"></span></h2>
+                                        <button type="button">Change file</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br /><br />
+                            <div id="action-buttons">
+                                <button type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Footer -->
+            <div id="footer-wrapper">
+                <div class="container">
+                    <div class="col-12">
+                        <div id="copyright">
+                            &copy; CloudGen. All rights reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

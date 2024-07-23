@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>CloudGen: A Simple Cloud of Points Generator</title>
+    <head>
+        <title>CloudGen: A Simple Cloud of Points Generator</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
-	</head>
-	<body>
-		<div id="page-wrapper">
+    </head>
+
+    <body>
+        <div id="page-wrapper">
 			<!-- Header -->
 			<div id="header-wrapper">
 				<div class="container">
-					<div class="row">
+					<div class="row main-row">
 						<div class="col-12">
 							<header id="header">
 								<h1><a href="{{ url_for('index') }}" id="logo">CloudGen</a></h1>
 								<nav id="nav">
-									<a href="{{ url_for('index') }}" class="current-page-item">Home</a>
+									<a href="{{ url_for('index') }}">Home</a>
 									<a href="{{ url_for('upload_image') }}">ContourCreator</a>
-									<a href="{{ url_for('upload_files') }}">CloudGenerator</a>
+									<a href="{{ url_for('upload_files') }}" class="current-page-item">CloudGenerator</a>
 									<a href="{{ url_for('about') }}">About</a>
 								</nav>
 							</header>
@@ -27,27 +28,21 @@
 				</div>
 			</div>
 
-			<!-- Banner -->
-			<div id="banner-wrapper">
-				<div class="container">
-					<div id="banner">
-						<h2>CloudGen</h2>
-						<span>A simple, web-based cloud of points generator.</span>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main -->
+            <!-- Main -->
 			<div id="main">
 				<div class="container">
-					<div id="main-row">
-						<h2>Info</h2>
-						<span>Info.</span>
-					</div>
+					<center>
+						<img src="{{ url_for('static_files', filename=image_name) }}" alt="Result Plot" height="800"><br />
+
+						<div id="action-buttons">
+							<button onclick='location.href = "{{ url_for('static_files', filename=p_csv_name) }}" '>Download Points</button>
+							<button onclick='location.href = "{{ url_for('static_files', filename=tt_csv_name) }}" '>Download Triangles</button>
+						</div>
+					</center>
 				</div>
 			</div>
 
-			<!-- Footer -->
+            <!-- Footer -->
 			<div id="footer-wrapper">
 				<div class="container">
 					<div class="col-12">
@@ -57,6 +52,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
-	</body>
+        </div>
+    </body>
+
 </html>

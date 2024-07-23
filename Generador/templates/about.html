@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>CloudGen: A Simple Cloud of Points Generator</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+	</head>
+
+	<body>
+		<div id="page-wrapper">
+			<!-- Header -->
+			<div id="header-wrapper">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<header id="header">
+								<h1><a href="{{ url_for('index') }}" id="logo">CloudGen</a></h1>
+								<nav id="nav">
+									<a href="{{ url_for('index') }}">Home</a>
+									<a href="{{ url_for('upload_image') }}">ContourCreator</a>
+									<a href="{{ url_for('upload_files') }}">CloudGenerator</a>
+									<a href="{{ url_for('about') }}" class="current-page-item">About</a>
+								</nav>
+							</header>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="container">
+					<div class="row main-row">
+						<div class="col-4 col-12-medium">
+							<section>
+								<h2>Researchers</h2>
+								<ul class="small-image-list">
+									<li>
+										<a href="#"><img src="../static/images/GTG.png" alt="" class="left" /></a>
+										<h4>Gerardo Tinoco-Guerrero</h4>
+										<p>Ph.D. in Physical Engineering Sciences<br />
+										<a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a></p>
+									</li>
+									<li>
+										<a href="#"><img src="../static/images/JAGT.jpg" alt="" class="left" /></a>
+										<h4>J. Alberto Guzmán-Torres</h4>
+										<p>Ph.D. in Physical Engineering Sciences<br />
+										<a href="mailto:jose.alberto.guzman@umich.mx">jose.alberto.guzman@umich.mx</a></p>										</li>
+									<li>
+										<a href="#"><img src="../static/images/FJDM.png" alt="" class="left" /></a>
+										<h4>Francisco J. Domínguez-Mota</h4>
+										<p>Ph.D. in Mathematical Sciences<br />
+										<a href="mailto:francisco.mota@umich.mx">francisco.mota@umich.mx</a></p>
+									</li>
+									<li>
+										<a href="#"><img src="../static/images/JGTR.jpg" alt="" class="left" /></a>
+										<h4>J. Gerardo Tinoco-Ruiz</h4>
+										<p>Ph.D. in Applied Mathematics<br />
+										<a href="mailto:jose.gerardo.tinoco@umich.mx">jose.gerardo.tinoco@umich.mx</a></p>
+									</li>
+								</ul>
+							</section>
+							<section>
+								<h2>Students</h2>
+								<ul class="small-image-list">
+									<li>
+										<a href="#"><img src="../static/images/GPJ.jpg" alt="" class="left" /></a>
+										<h4>Gabriela Pedraza Jiménez</h4>
+									</li>
+									<li>
+										<a href="#"><img src="../static/images/RRG.jpeg" alt="" class="left" /></a>
+										<h4>Ricardo Román Gutiérrez</h4>
+									</li>
+									<li>
+										<a href="#"><img src="../static/images/NSSJ.jpg" alt="" class="left" /></a>
+										<h4>Nancy Saray Saucedo León</h4>
+									</li>
+								</ul>
+							</section>
+						</div>
+
+						<div class="col-8 col-12-medium imp-medium">
+							<section>
+								<h2>CloudGen</h2>
+								<p>
+									CloudGen was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo
+									in an effort of bringing an easy way to create clouds for irregular domains in order to compare
+									different methods to numerically solve partial differential equations without an structured mesh.
+								</p>
+							</section>
+						</div>
+					</div> 
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div id="footer-wrapper">
+				<div class="container">
+					<div class="col-12">
+						<div id="copyright">
+							&copy; CloudGen. All rights reserved.
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>
