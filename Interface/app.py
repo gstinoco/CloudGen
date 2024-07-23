@@ -60,7 +60,7 @@ def upload_image():
     return render_template('upload.html')
 
 @app.route('/creator', methods=['GET', 'POST'])
-def upload_image2():
+def upload_cloud():
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
@@ -73,7 +73,7 @@ def upload_image2():
             file.save(filepath)
             delete_file(filepath, 3600)
             return render_template('creator.html', filename=filename)
-    return render_template('upload.html')
+    return render_template('upload_c.html')
 
 @app.route('/create_cloud', methods=['POST'])
 def create_cloud():
