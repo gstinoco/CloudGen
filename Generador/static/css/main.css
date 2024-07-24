@@ -68,7 +68,6 @@ input, select, textarea {
 }
 
 /* Basic */
-
     html {
         box-sizing: border-box;
     }
@@ -618,158 +617,226 @@ input, select, textarea {
         display: none;
     }
 
+
 /* Contour */
 
-#canvas-actions-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 40px;
-    margin-right: 40px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
+    #canvas-actions-container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 40px;
+        margin-right: 40px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
 
-#canvas-container {
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    margin-top: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    #canvas-container {
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-#imageCanvas {
-    width: 1200;
-    height: 600;
-    border: 1px solid #000000;
-}
+    #imageCanvas {
+        width: 1200;
+        height: 600;
+        border: 1px solid #000000;
+    }
 
-#action-buttons-canvas {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin: 20px;
-}
+    #action-buttons-canvas {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin: 20px;
+    }
 
-#action-buttons-canvas button {
-    margin-bottom: 5px;
-}
+        #action-buttons-canvas button {
+            margin-bottom: 5px;
+        }
 
-.icon-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-}
+    .icon-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+    }
 
-.icon-button i {
-    width: 80%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .icon-button i {
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-#action-buttons {
-    justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 40px;
-    margin-right: 40px;
-}
+    #action-buttons {
+        justify-content: space-between;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
 
-#action-buttons button {
-    background-image: -moz-linear-gradient(top, #2874A6, #2874A6);
-    background-image: -webkit-linear-gradient(top, #2874A6, #2874A6);
-    background-image: -ms-linear-gradient(top, #2874A6, #2874A6);
-    background-image: linear-gradient(top, #2874A6, #2874A6);
-    display: inline-block;
-    padding: 15px 25px 15px 25px;
-    background-color: #2874A6;
-    border-radius: 10px;
-    text-decoration: none;
-    color: #fff;
-    font-size: 1.2em;
-    letter-spacing: -1px;
-    border: solid 1px #2874A6;
-    box-shadow: inset 0px 0px 0px 1px #AED6F1;
-}
+        #action-buttons button {
+            background-image: -moz-linear-gradient(top, #2874A6, #2874A6);
+            background-image: -webkit-linear-gradient(top, #2874A6, #2874A6);
+            background-image: -ms-linear-gradient(top, #2874A6, #2874A6);
+            background-image: linear-gradient(top, #2874A6, #2874A6);
+            display: inline-block;
+            padding: 15px 25px 15px 25px;
+            background-color: #2874A6;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 15px;
+            letter-spacing: -1px;
+            border: solid 1px #2874A6;
+            box-shadow: inset 0px 0px 0px 1px #AED6F1;
+        }
 
-#action-buttons button:hover {
-    background-image: -moz-linear-gradient(top, #5499C7, #5499C7);
-    background-image: -webkit-linear-gradient(top, #5499C7, #5499C7);
-    background-image: -ms-linear-gradient(top, #5499C7, #5499C7);
-    background-image: linear-gradient(top, #5499C7, #5499C7);
-    background-color: #5499C7;
-    box-shadow: inset 0px 0px 0px 1px #AED6F1;
-}
+        #action-buttons button:hover {
+            background-image: -moz-linear-gradient(top, #5499C7, #5499C7);
+            background-image: -webkit-linear-gradient(top, #5499C7, #5499C7);
+            background-image: -ms-linear-gradient(top, #5499C7, #5499C7);
+            background-image: linear-gradient(top, #5499C7, #5499C7);
+            background-color: #5499C7;
+            box-shadow: inset 0px 0px 0px 1px #AED6F1;
+        }
+
 
 /* Redimensionar el área de carga de archivos */
-.file-area {
-    width: 90%;
-    position: relative;
-    font-size: 10px;
-    margin: 0 auto; /* Centrar horizontalmente */
-}
 
-/* Ajustar el área de carga de archivos */
-.file-area input[type=file] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    cursor: pointer;
-}
+    .file-area {
+        width: 90%;
+        position: relative;
+        font-size: 9px;
+        margin: 0 auto;
+    }
 
-.file-area .file-dummy {
-    width: 100%;
-    padding: 10px;
-    border: 4px dashed #AED6F1;
-    text-align: center;
-    transition: background 0.3s ease-in-out;
-}
+        .file-area p{
+            font-size: 13px
+        }
 
-.file-area:hover .file-dummy {
-    border: 4px dashed #5499C7;
-}
+        /* Ajustar el área de carga de archivos */
+        .file-area input[type=file] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
 
-.file-area .file-dummy .success {
-	display: none;
-}
+        .file-area .file-dummy {
+            width: 100%;
+            padding: 10px;
+            border: 4px dashed #AED6F1;
+            text-align: center;
+            transition: background 0.3s ease-in-out;
+        }
 
-.file-area input[type=file].has-files + .file-dummy {
-    border-color: #20dd42;
-}
+        .file-area:hover .file-dummy {
+            border: 4px dashed #5499C7;
+        }
 
-.file-area:hover input[type=file].has-files + .file-dummy {
-    border-color: #5499C7;
-}
+        .file-area .file-dummy .success {
+            display: none;
+        }
 
-.file-area input[type=file].has-files + .file-dummy .success {
-    display: inline;
-}
+        .file-area input[type=file].has-files + .file-dummy {
+            border-color: #20dd42;
+        }
 
-.file-area input[type=file].has-files + .file-dummy .default {
-    display: none;
-}
+        .file-area:hover input[type=file].has-files + .file-dummy {
+            border-color: #5499C7;
+        }
 
-.file-area button {
-    padding: 10px 25px;
-    font-size: 17px;
-    border: 0;
-    outline: none;
-    background-color: #2874A6; /* azul intermedio */
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-}
+        .file-area input[type=file].has-files + .file-dummy .success {
+            display: inline;
+        }
+
+        .file-area input[type=file].has-files + .file-dummy .default {
+            display: none;
+        }
+
+        .file-area button {
+            background-image: -moz-linear-gradient(top, #2874A6, #2874A6);
+            background-image: -webkit-linear-gradient(top, #2874A6, #2874A6);
+            background-image: -ms-linear-gradient(top, #2874A6, #2874A6);
+            background-image: linear-gradient(top, #2874A6, #2874A6);
+            display: inline-block;
+            padding: 15px 25px 15px 25px;
+            background-color: #2874A6;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 15px;
+            letter-spacing: -1px;
+            border: solid 1px #2874A6;
+            box-shadow: inset 0px 0px 0px 1px #AED6F1;
+        }
+
+        .file-area button:hover {
+            background-image: -moz-linear-gradient(top, #5499C7, #5499C7);
+            background-image: -webkit-linear-gradient(top, #5499C7, #5499C7);
+            background-image: -ms-linear-gradient(top, #5499C7, #5499C7);
+            background-image: linear-gradient(top, #5499C7, #5499C7);
+            background-color: #5499C7;
+            box-shadow: inset 0px 0px 0px 1px #AED6F1;
+        }
+
+/* Slider */
+    .slidecontainer {
+        width: 50%;
+        position: relative;
+        font-size: 9px;
+        margin: 0 auto; /* Centrar horizontalmente */
+    }
+
+        .slidecontainer p{
+            font-size: 20px;
+        }
+    
+    /* The slider itself */
+    .slider {
+        -webkit-appearance: none;  /* Override default CSS styles */
+        appearance: none;
+        width: 80%; /* Full-width */
+        height: 25px; /* Specified height */
+        background: #d3d3d3; /* Grey background */
+        outline: none; /* Remove outline */
+        opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+        transition: opacity .2s;
+    }
+    
+        /* Mouse-over effects */
+        .slider:hover {
+            opacity: 1; /* Fully shown on mouse-over */
+        }
+        
+        /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #2874A6; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 25px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #2874A6; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+        }

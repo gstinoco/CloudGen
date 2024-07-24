@@ -28,7 +28,7 @@ os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok = True)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok = True)
 
 # Function to create point clouds with holes
-def CreateCloud_Holes(xb, yb, h_coor_sets, num = 4):
+def CreateCloud_Holes(xb, yb, h_coor_sets, num):
     dist = np.max(np.sqrt(np.diff(xb.T)**2 + np.diff(yb.T)**2))/num
     pb   = np.column_stack((xb, yb))
     geo  = dmsh.Polygon(pb)
@@ -54,10 +54,10 @@ def CreateCloud_Holes(xb, yb, h_coor_sets, num = 4):
                     break
 
     X = np.column_stack((X, A))
-    return X, cells
+    return X
 
 # Function to load CSV files and create the point cloud
-def load_and_create_cloud(exterior_file, interior_files, num = 4):
+def load_and_create_cloud(exterior_file, interior_files, num):
     pat_out = pd.read_csv(exterior_file)
     xb      = pat_out['x'].values
     yb      = pat_out['y'].values
@@ -69,8 +69,8 @@ def load_and_create_cloud(exterior_file, interior_files, num = 4):
         hy     = pat_in['y'].values
         h_coor_sets.append((hx, hy))
 
-    X, cells = CreateCloud_Holes(xb, yb, h_coor_sets, num = num)
-    return X, cells
+    X = CreateCloud_Holes(xb, yb, h_coor_sets, num = num)
+    return X
 
 # Function to graph the point cloud for display
 def GraphCloud(p, folder):
@@ -133,6 +133,9 @@ def upload_files():
     if request.method == 'POST':
         if 'exterior' not in request.files:
             return redirect(request.url)
+        
+        num = int(request.form.get('num', 100))
+        print(num)
 
         exterior_file = request.files['exterior']
         if exterior_file.filename == '':
@@ -149,18 +152,16 @@ def upload_files():
                 interior_file.save(path)
                 interior_paths.append(path)
         
-        X, cells = load_and_create_cloud(exterior_path, interior_paths, 2)
+        X = load_and_create_cloud(exterior_path, interior_paths, num)
 
         image_name = 'result_plot.png'
         GraphCloud(X, folder = app.config['OUTPUT_FOLDER'])
 
         # Save results to CSV files
         p_csv_name  = 'p.csv'
-        tt_csv_name = 'tt.csv'
         pd.DataFrame(X, columns = ["x", "y", "boundary_flag"]).to_csv(os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name), index = False)
-        pd.DataFrame(cells).to_csv(os.path.join(app.config['OUTPUT_FOLDER'], tt_csv_name), index = False)
 
-        return render_template('cloud.html', image_name = image_name, p_csv_name = p_csv_name, tt_csv_name = tt_csv_name, tables = [pd.DataFrame(X, columns = ["x", "y", "boundary_flag"]).to_html(classes = 'data')], titles = ['na', 'Cloud Data'])
+        return render_template('cloud.html', image_name = image_name, p_csv_name = p_csv_name, tables = [pd.DataFrame(X, columns = ["x", "y", "boundary_flag"]).to_html(classes = 'data')], titles = ['na', 'Cloud Data'])
     return render_template('uploadC.html')
 
 @app.route('/static/results/<path:filename>')
