@@ -83,25 +83,28 @@ input, select, textarea {
     body {
         font-size: 13.5pt;
         font-family: sans-serif;
-        background-color: #F0F0F0;
+        background-color: #ffffff;
         font-family: 'Ubuntu Condensed', sans-serif;
         color: #333333;
         letter-spacing: -1px;
     }
 
     h1, h2, h3, h4 {
-        color: #1F618D;
+        color: #fff;
         font-weight: normal;
+        font-family: Impact;
     }
 
     h2 {
-        font-size: 1.6em;
+        font-size: 3.0em;
         letter-spacing: -1px;
+        margin-bottom: 1em;
+        margin-top: 0.5em;
         margin-bottom: 1em;
     }
 
     h3, h4 {
-        color: #1F618D;
+        color: #0c1f51;
         margin-bottom: 0.5em;
     }
 
@@ -111,8 +114,99 @@ input, select, textarea {
     }
 
     h4 {
-        font-size: 1em;
+        font-size: 1.7em;
     }
+
+    h5{
+        color: #d8e7f0;
+        font-size: 2em;
+        margin-bottom: 6em;
+        font-family: "Segoe UI";
+
+    }
+
+    h6{
+        color: #f7ff56;
+        font-size: 1.5em;
+        margin-bottom: 1.2em;
+        font-family: sans-serif;
+        font-weight: bold;
+
+    }
+
+    h7{
+        color: #ffffff;
+        font-size: 1em;
+        margin-bottom: 3em;
+        font-family: sans-serif;
+
+    }
+
+    h8{
+        color: #fd7608;
+        font-size: 1.8em;
+        margin-bottom: 1em;
+        font-family: sans-serif;
+        font-weight: bold;
+
+    }
+
+    h9{
+        color: #ffffff;
+        font-size: 1em;
+        margin-bottom: 2em;
+        font-family: sans-serif;
+        letter-spacing: -1px;
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+
+    }
+
+    h10{
+        color: #ffffff;
+        font-size: 3em;
+        margin-bottom: 3em;
+        font-family: sans-serif;
+        letter-spacing: -1px;
+        margin-top: 2em;
+
+    }
+
+    h11{
+        color: #fd7608;
+        font-size: 2.5em;
+        font-family: sans-serif;
+        font-weight: bold;
+
+    }
+
+    h12{
+        color: #208916;
+        font-size: 21px;
+        margin-bottom: 1em;
+        font-family: Impact;
+        letter-spacing: 0.03em;
+        
+
+    }
+
+    h13{
+        color: #000000;
+        font-size: 22px;
+        font-family: 'Times New Roman', Times, serif;
+        line-height: 1.5;
+        letter-spacing: 0.01em;
+    }
+
+    h14 {
+        color: #0c1f51;
+        margin-bottom: 0.5em;
+        font-size: 18px;
+        font-weight: normal;
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
 
     p, ul {
         margin-bottom: 1.25em;
@@ -166,6 +260,20 @@ input, select, textarea {
         margin: 0 auto;
         max-width: 80%;
         width: 1200px;
+        background-color: #000000;
+    }
+
+    .contain {
+        margin: 0 auto;
+        max-width: 80%;
+        width: 1200px;     
+    }
+
+    .container-about {
+        margin: 0 auto;
+        max-width: 80%;
+        width: 1200px;
+        background-color: #fff;
     }
 
 /* Row */
@@ -236,9 +344,9 @@ input, select, textarea {
         .row > .off-3 {
             margin-left: 25%;
         }
-
         .row > .col-4 {
             width: 33.33333%;
+            margin-left: 0%;
         }
 
         .row > .off-4 {
@@ -423,6 +531,16 @@ input, select, textarea {
             width: 78px;
         }
 
+    ul.small-image-horizontal li {
+            display: flex;
+            justify-content:center;
+    }
+    
+        ul.small-image-horizontal li img {
+                width: 85px;
+                margin: 0 20px 80px 0;
+        }    
+
     ul.big-image-list li {
         overflow: hidden;
         margin-bottom: 2em;
@@ -473,18 +591,18 @@ input, select, textarea {
 /* Header */
 
     #header-wrapper {
-        background-image: -moz-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: -webkit-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: -ms-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: linear-gradient(top, #85C1E9, #85C1E9);
-        background-color: #85C1E9;
+        background-image: -moz-linear-gradient(top, #000000,#000000);
+        background-image: -webkit-linear-gradient(top,#000000,#000000);
+        background-image: -ms-linear-gradient(top, #000000,#000000);
+        background-image: linear-gradient(top, #000000,#000000);
+        background-color: #000000;
     }
 
     #header {
-        background-image: -moz-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: -webkit-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: -ms-linear-gradient(top, #85C1E9, #85C1E9);
-        background-image: linear-gradient(top, #85C1E9, #85C1E9);
+        background-image: -moz-linear-gradient(top, #fff, #fff);
+        background-image: -webkit-linear-gradient(top, #fff, #fff);
+        background-image: -ms-linear-gradient(top, #fff, #fff);
+        background-image: linear-gradient(top, #fff, #fff);
         -moz-box-sizing: content-box;
         -webkit-box-sizing: content-box;
         -ms-box-sizing: content-box;
@@ -493,9 +611,9 @@ input, select, textarea {
         margin: 2.5% 0 2.5% 0;
         padding: 0 40px 0 40px;
         border-radius: 10px;
-        border: solid 1px #85C1E9;
-        box-shadow: inset 0px 0px 0px 1px #85C1E9, 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
-        background-color: #85C1E9;
+        border: solid 1px #fff;
+        box-shadow: inset 0px 0px 0px 1px #fff, 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
         height: 86px;
     }
 
@@ -510,7 +628,7 @@ input, select, textarea {
         }
 
             #header h1 a {
-                color: #fff;
+                color: #0c1f51;
                 text-decoration: none;
             }
 
@@ -526,36 +644,39 @@ input, select, textarea {
             #header nav a {
                 display: inline-block;
                 text-decoration: none;
-                color: #fff;
+                color: #4dbeff;
                 padding: 0 25px 0 25px;
                 outline: 0;
             }
 
                 #header nav a.current-page-item {
-                    background-image: -moz-linear-gradient(top, #85C1E9, #85C1E9);
-                    background-image: -webkit-linear-gradient(top, #85C1E9, #85C1E9);
-                    background-image: -ms-linear-gradient(top, #85C1E9, #85C1E9);
-                    background-image: linear-gradient(top, #85C1E9, #85C1E9);
-                    background-color: #85C1E9;
-                    box-shadow: inset 0px 1px 5px 1px rgba(0, 0, 0, 0.1), 0px 0px 5px 1px rgba(255, 255, 255, 0.1);
+                    
+                    color: #003b99;
                 }
 
                 #header nav a:hover {
-                    background-image: -moz-linear-gradient(top, #AED6F1, #AED6F1);
-                    background-image: -webkit-linear-gradient(top, #AED6F1, #AED6F1);
-                    background-image: -ms-linear-gradient(top, #AED6F1, #AED6F1);
-                    background-image: linear-gradient(top, #AED6F1, #AED6F1);
-                    background-color: #AED6F1;
-                    box-shadow: inset 0px 1px 5px 1px rgba(0, 0, 0, 0.05), 0px 0px 5px 1px rgba(255, 255, 255, 0.05);
+                    
+                    color: #1df72b;
                 }
 
 /* Banner */
 
     #banner-wrapper {
-        background: #85C1E9;
-        padding: 2em 0;
+        background: url("../images/cielo3.jpeg");
+        background-attachment:cover;
+        background-repeat:no-repeat;
+        background-size: 100% 100%;
+        
     }
-
+    #banner1{
+        position: relative;
+        width: 100%;
+        padding: 3em 0;
+        border-radius: 10px;
+        background-size: cover;
+        text-align: center;
+        color: #fff;
+    }
     #banner {
         position: relative;
         width: 100%;
@@ -578,8 +699,8 @@ input, select, textarea {
             display: block;
             left: 0;
             margin: 0.5em 0 0 0;
-            font-size: 1.6em;
-            color: #fff;
+            font-size: 1em;
+            color: #fd7608;
             letter-spacing: -1px;
             opacity: 0.8;
         }
@@ -587,7 +708,12 @@ input, select, textarea {
 /* Main */
 
     #main {
-        background: #fff;
+        background: #040404;
+        padding: 4em 0;
+    }
+
+    #main1 {
+        background: #fffefe;
         padding: 4em 0;
     }
 
@@ -602,13 +728,14 @@ input, select, textarea {
     #copyright {
         text-align: center;
         color: #333333;
-        border-top: solid 1px #AED6F1;
-        padding: 3em 0 0 0;
-        margin: 3em 0 0 0;
+        padding: 0.5em 0 0 0;
+        margin-top: 1em;
+        background-color: #fff;
     }
 
         #copyright a {
             color: #333333;
+            border-bottom: #4dbeff 1px solid;
         }
 
 /* Small */

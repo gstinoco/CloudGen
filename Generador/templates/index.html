@@ -5,6 +5,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
 	</head>
 	<body>
 		<div id="page-wrapper">
@@ -20,6 +21,7 @@
 									<a href="{{ url_for('upload_image') }}">ContourCreator</a>
 									<a href="{{ url_for('upload_files') }}">CloudGenerator</a>
 									<a href="{{ url_for('about') }}">About</a>
+									<a href="/"><i class='fas fa-question-circle'></i></a>
 								</nav>
 							</header>
 						</div>
@@ -29,27 +31,27 @@
 
 			<!-- Banner -->
 			<div id="banner-wrapper">
-				<div class="container">
-					<div id="banner">
+				<div class="contain">
+					<div id="banner1">
 						<h2>CloudGen</h2>
-						<span>A simple, web-based cloud of points generator.</span>
+						<h5>A simple, web-based cloud of points generator.</h5>
 					</div>
 				</div>
 			</div>
 
 			<!-- Main -->
 			<div id="main">
-				<div class="container">
+				<div class="contain">
 					<div id="main-row">
-						<h2>Info</h2>
-						<span>Info.</span>
+						<h6>Info</h6>
+						<h7>Info.</h7>
 					</div>
 				</div>
 			</div>
 
 			<!-- Footer -->
 			<div id="footer-wrapper">
-				<div class="container">
+				<div class="contain">
 					<div class="col-12">
 						<div id="copyright">
 							&copy; CloudGen. All rights reserved.

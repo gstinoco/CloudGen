@@ -5,6 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
         <script>
             function dragoverHandler(ev) {
                 ev.preventDefault();
@@ -69,31 +70,36 @@
                                     <a href="{{ url_for('upload_image') }}">ContourCreator</a>
                                     <a href="{{ url_for('upload_files') }}" class="current-page-item">CloudGenerator</a>
                                     <a href="{{ url_for('about') }}">About</a>
+                                    <a href="/"><i class='fas fa-question-circle'></i></a>
                                 </nav>
                             </header>
                         </div>
                     </div>
                 </div>
+                <br /><br />
             </div>
             
             <!-- Upload -->
             <div id="banner-wrapper">
                 <div class="container">
                     <div id="banner">
-                        <h2>CloudGenerator: Create clouds of points from countours.</h2>
+                        <h8>CloudGenerator: <h9>Create clouds of points from countours.</h9></h8>
+                        <br /><br />
                         <br /><br />
                         <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
                             <div class="file-area">
                                 <input type="file" name="exterior" id="exterior" onchange="fileChangeHandler(event)" required>
                                 <div class="file-dummy">
                                     <div class="default">
-                                        <h2>Upload external boundary.</h2>
+                                        <h10>Upload external boundary.</h10>
+                                        <br /><br />
+                                        <br /><br />
+                                        <h11>O</h11>
                                         <br /><br />
                                         <button>Select a file</button>
                                     </div>
                                     <div class="success">
-                                        <h2>File Loaded:</h2><p><span class="file-name"></span></p>
-                                        <br /><br />
+                                        <h10>File Loaded: <span class="file-name"></span></h10>
                                         <button type="button">Change file</button>
                                     </div>
                                 </div>
@@ -103,13 +109,15 @@
                                 <input type="file" name="interiors" id="interiors" onchange="fileChangeHandler(event)" multiple>
                                 <div class="file-dummy">
                                     <div class="default">
-                                        <h2>Upload internal boundaries.</h2>
+                                        <h10>Upload internal boundaries.</h10>
                                         <br /><br />
-                                        <button>Select files</button>
+                                        <br /><br />
+                                        <h11>O</h11>
+                                        <br /><br />
+                                        <button>Select a file</button>
                                     </div>
                                     <div class="success">
-                                        <h2>File Loaded:</h2><p><span class="file-name"></span></p>
-                                        <br /><br />
+                                        <h10>File Loaded: <span class="file-name"></span></h10>
                                         <button type="button">Change file</button>
                                     </div>
                                 </div>
@@ -127,6 +135,8 @@
                         </form>
                     </div>
                 </div>
+                <br /><br />
+                <br /><br />
             </div>
     
             <!-- Footer -->
