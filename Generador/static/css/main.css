@@ -56,18 +56,6 @@ mark {
     color: inherit;
 }
 
-input::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-}
-
-input, select, textarea {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    -ms-appearance: none;
-    appearance: none;
-}
-
 /* Basic */
     html {
         box-sizing: border-box;
@@ -123,7 +111,6 @@ input, select, textarea {
         font-size: 2em;
         margin-bottom: 6em;
         font-family: "Segoe UI";
-
     }
 
     h6{
@@ -132,7 +119,6 @@ input, select, textarea {
         margin-bottom: 1.2em;
         font-family: sans-serif;
         font-weight: bold;
-
     }
 
     h7{
@@ -692,7 +678,7 @@ input, select, textarea {
             font-size: 3.3em;
             color: #fff;
             text-align: center;
-            letter-spacing: -2px;
+            letter-spacing: 0px;
             margin: 0;
         }
 

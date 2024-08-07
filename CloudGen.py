@@ -16,7 +16,6 @@ Last Modification:
     October, 2023.
 """
 
-import os
 import dmsh
 import random
 import numpy as np
