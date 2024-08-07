@@ -143,7 +143,7 @@ mark {
         font-size: 1em;
         margin-bottom: 2em;
         font-family: sans-serif;
-        letter-spacing: -1px;
+        letter-spacing: 0.4px;
         margin-top: 0.5em;
         margin-bottom: 1em;
 
@@ -192,6 +192,20 @@ mark {
         font-weight: normal;
         font-family: sans-serif;
         font-weight: bold;
+    }
+
+    h15{
+        color: #ffffff;
+        font-size: 2.5em;
+        margin-bottom: 1.5em;
+        font-family: sans-serif;
+        letter-spacing: 0.1px;
+        font-weight: bold;
+    }
+    p1{
+        color: #ffffff;
+        font-size: 18px;
+
     }
 
 
