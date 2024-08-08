@@ -163,4 +163,6 @@ cython_debug/
 
 */.DS_Store
 .DS_Store
-Generador_2/
+app_org.py
+pat_*
+ALGO.py
