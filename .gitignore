@@ -164,6 +164,4 @@ cython_debug/
 */.DS_Store
 .DS_Store
 app_org.py
-pat_*
-ALGO.py
-algo.txt
+CloudGen.py
