@@ -1,6 +1,6 @@
 pandas==2.2.2
 numpy==1.26.4
-dmsh==0.2.23
+dmsh==0.3.4
 meshio==5.3.5
 meshplex==0.18.11
 npx==0.1.6
