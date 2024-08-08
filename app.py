@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 
 # Define system variables
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'tmp/uploads/'                                                            # Directory for uploading files.
-app.config['OUTPUT_FOLDER'] = 'tmp/results/'                                                            # Directory for output files.
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads/'                                                            # Directory for uploading files.
+app.config['OUTPUT_FOLDER'] = '/tmp/results/'                                                            # Directory for output files.
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}                                               # Allowed file extensions for images.
 app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                                            # Allowed file extensions for boundaries.
 
