@@ -5,6 +5,7 @@ import logging
 import csv
 import io
 import os
+os.environ['MPLCONFIGDIR'] = "/tmp/" + getpass.getuser()
 
 # Import parts of some libraries needed for the code later
 from flask import Flask, render_template, request, redirect, Response, send_from_directory
