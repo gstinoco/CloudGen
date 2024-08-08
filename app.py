@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 
 # Define system variables
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'                                                         # Directory for uploading files.
-app.config['OUTPUT_FOLDER'] = 'static/results/'                                                         # Directory for output files.
+app.config['UPLOAD_FOLDER'] = 'tmp/uploads/'                                                            # Directory for uploading files.
+app.config['OUTPUT_FOLDER'] = 'tmp/results/'                                                            # Directory for output files.
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}                                               # Allowed file extensions for images.
 app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                                            # Allowed file extensions for boundaries.
 
@@ -327,7 +327,7 @@ def upload_files():
                                to_html(classes = 'data')], titles = ['na', 'Cloud Data'])
     return render_template('uploadC.html')                                                              # Render the UploadC page.
 
-@app.route('/static/results/<path:filename>')
+@app.route('/tmp/results/<path:filename>')
 def static_files(filename):
     """
     Serve static result files.
