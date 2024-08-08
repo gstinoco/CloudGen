@@ -166,3 +166,4 @@ cython_debug/
 app_org.py
 pat_*
 ALGO.py
+algo.txt
