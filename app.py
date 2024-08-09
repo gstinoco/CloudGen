@@ -13,6 +13,7 @@ from flask import Flask, render_template, request, redirect, Response, send_from
 from shapely.geometry import Point, Polygon
 from werkzeug.utils import secure_filename
 from shapely.ops import unary_union
+from datetime import datetime
 from threading import Timer
 
 # Import matplotlib for web plotting
@@ -158,7 +159,7 @@ def load_and_create_cloud(exterior_file, interior_files, num, rand):
     return p, xb, yb, h_coor_sets
 
 # Function to graph the point cloud for display
-def GraphCloud(p, xb, yb, h_coor_sets, folder):
+def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name):
     """
     Graph the generated point cloud and save the plot.
 
@@ -168,8 +169,9 @@ def GraphCloud(p, xb, yb, h_coor_sets, folder):
         yb (array):             y-coordinates of the boundary.
         h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
         folder (str):           Directory to save the plot.
+        image_name (str):       Name to correctly save the file.
     """
-    nomp  = folder + 'result_plot.png'                                                                  # Define the plot filename.
+    nomp  = os.path.join(folder, image_name)                                                            # Define the plot filename.
     color = ['blue' if x == 0 else 'red' for x in p[:, 2]]                                              # Set colors based on flags.
     plt.rcParams["figure.figsize"] = (16, 12)                                                           # Set figure size.
     
@@ -276,8 +278,8 @@ def upload_image():
             filename = secure_filename(file.filename)                                                   # Secure the filename.
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)                              # Save the path for the file.
             file.save(filepath)                                                                         # Save the file.
+            delete_file(filepath, 60)                                                                   # Schedule file deletion.
 
-            delete_file(filepath, 3600)                                                                 # Schedule file deletion.
             return render_template('contour.html', filename = filename)                                 # Render the contour page.
     return render_template('uploadI.html')                                                              # Render the UploadI page.
 
@@ -298,7 +300,7 @@ def upload_files():
             filename = secure_filename(exterior_file.filename)                                          # Secure the filename.
             exterior_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                         # Save the path for the file.
             exterior_file.save(exterior_path)                                                           # Save the file.
-            delete_file(exterior_path, 3600)                                                            # Schedule external boundary file deletion.
+            delete_file(exterior_path, 60)                                                             # Schedule external boundary file deletion.
 
         ## Check for internal boundary files.
         interior_files = request.files.getlist('interiors')                                             # Get all the files for external boundaries.
@@ -319,24 +321,32 @@ def upload_files():
         
         # Delete Files
         for path in interior_paths:                                                                     # For each path in external boundaries.
-            delete_file(path, 3600)                                                                     # Schedule external boundaries files deletion.
+            delete_file(path, 60)                                                                      # Schedule external boundaries files deletion.
 
-        image_name = 'result_plot.png'                                                                  # Name for the saved plot.
-        GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'])                          # Graph the generated cloud of points.
+        #Generate the name of the files:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")                                            # Generate a timestamp with the date and time.
+        image_name = f'plot_{timestamp}.png'                                                            # Name for the saved plot.
+        p_csv_name = f'p_{timestamp}.csv'                                                               # Name of the resulting file.
+
+        # Create the graphic.
+        GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'], image_name=image_name)   # Graph the generated cloud of points.
 
         # Save results to CSV files
-        p_csv_name  = 'p.csv'                                                                           # Name of the resulting file.
         pd.DataFrame(p, columns = ["x", "y", "boundary_flag"]).to_csv(os.path.join\
-                     (app.config['OUTPUT_FOLDER'], p_csv_name), index = False)
+                     (app.config['OUTPUT_FOLDER'], p_csv_name), index = False)                          # Create a DataFrame and save it to a csv file.
+        
+        # Delete Files
+        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 60)                        # Delete the image file.
+        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name), 60)                        # Delete the csv file.
 
         return render_template('cloud.html', image_name = image_name, p_csv_name = p_csv_name, \
                                tables = [pd.DataFrame(p, columns = ["x", "y", "boundary_flag"]).\
-                               to_html(classes = 'data')], titles = ['na', 'Cloud Data'])
+                               to_html(classes = 'data')], titles = ['na', 'Cloud Data'])               # Render cloud with the generated files.
     return render_template('uploadC.html')                                                              # Render the UploadC page.
 
 @app.route('/tmp/results/<path:filename>')
 def static_files(filename):
-    """
+    """ 
     Serve result files.
     """
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
@@ -348,20 +358,30 @@ def uploaded_file(filename):
     """
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-@app.route('/download_csv', methods = ['POST'])
+@app.route('/download_csv', methods=['POST'])
 def download_csv():
     """
     Handle CSV file download requests.
     """
-    data = request.get_json()                                                                           # Get JSON data from the request
-    points = data['points']                                                                             # Extract points data
-    si = io.StringIO()                                                                                  # Create an in-memory string buffer
-    cw = csv.writer(si)                                                                                 # Create a CSV writer object
-    cw.writerow(['x', 'y'])                                                                             # Write header
-    cw.writerows([[p['x'], p['y']] for p in points])                                                    # Write points data
-    output = si.getvalue()                                                                              # Get the CSV content as a string
-    return Response(output, mimetype = "text/csv",\
-                    headers = {"Content-disposition": "attachment; filename = points.csv"})
+    data = request.get_json()                                                                           # Get JSON data from the request.
+    points = data['points']                                                                             # Extract points data.
+    
+    # Generate the name of the file.
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")                                                # Generate a timestamp with the date and time.
+    csv_filename = f'points_{timestamp}.csv'                                                            # Generate the CSV filename
+
+    # Save CSV to a file
+    csv_path = os.path.join(app.config['OUTPUT_FOLDER'], csv_filename)                                  # Complete path for the generated file.
+    with open(csv_path, mode='w', newline='') as file:                                                  # Write the information into the file.
+        cw = csv.writer(file)                                                                           # Create the file.
+        cw.writerow(['x', 'y'])                                                                         # Write the header.
+        cw.writerows([[p['x'], p['y']] for p in points])                                                # Write the points data.
+
+    # Schedule file deletion after 1 hour
+    delete_file(csv_path, 60)                                                                           # Delete the created file.
+
+    # Send the file as a download response
+    return {'filename': csv_filename}
 
 if __name__ == '__main__':
     app.run(debug = True)

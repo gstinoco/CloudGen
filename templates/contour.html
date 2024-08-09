@@ -9,8 +9,8 @@
 		<script>
 			// Declare variables for canvas, context, and image object
 			var canvas, context, imageObj;
-			var points = [];  // Array to store points clicked on the canvas
-			var scale  = 1;  // Scale factor for zoom
+			var points = [];  																			// Array to store points clicked on the canvas.
+			var scale  = 1;  																			// Scale factor for zoom.
 
 			// Function to initialize canvas and load the image
 			window.onload = function() {
@@ -22,26 +22,26 @@
 				imageObj.onload = function() {
 					var vw = window.innerWidth / 100;
         			scale = (60 * vw) / imageObj.width;
-					drawImage();  // Adjust the initial size of the canvas
+					drawImage();  																		// Adjust the initial size of the canvas.
 				};
 				
-				imageObj.src = "{{ url_for('uploaded_file', filename=filename) }}";  // Set the source of the image
+				imageObj.src = "{{ url_for('uploaded_file', filename=filename) }}";  					// Set the source of the image.
 			};
 
 			// Function to draw the image on the canvas
 			function drawImage() {
-				canvas.width  = imageObj.width * scale;  // Set canvas width based on image width and scale
-				canvas.height = imageObj.height * scale;  // Set canvas height based on image height and scale
-				context.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
-				context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);  // Draw the image
+				canvas.width  = imageObj.width * scale;  												// Set canvas width based on image width and scale.
+				canvas.height = imageObj.height * scale;  												// Set canvas height based on image height and scale.
+				context.clearRect(0, 0, canvas.width, canvas.height);  									// Clear the canvas.
+				context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);  						// Draw the image.
 
 				if (points.length > 0) {
 					// Draw points and connect them with lines
 					context.beginPath();
-					context.moveTo(points[0].x * scale, points[0].y * scale);  // Move to the position of the first point
+					context.moveTo(points[0].x * scale, points[0].y * scale);  							// Move to the position of the first point.
 					for (var i = 1; i < points.length; i++) {
-						context.lineTo(points[i].x * scale, points[i].y * scale);  // Draw line to the next point
-						context.moveTo(points[i].x * scale, points[i].y * scale);  // Move to the position of the next point
+						context.lineTo(points[i].x * scale, points[i].y * scale);  						// Draw line to the next point.
+						context.moveTo(points[i].x * scale, points[i].y * scale);  						// Move to the position of the next point.
 					}
 					context.strokeStyle = '#000000';
 					context.lineWidth = 2;
@@ -51,7 +51,7 @@
 					points.forEach(p => {
 						context.fillStyle = "#FF0000";
 						context.beginPath();
-						context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);  // Draw a circle at the point
+						context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);  						// Draw a circle at the point.
 						context.fill();
 					});
 				}
@@ -59,46 +59,46 @@
 
 			// Function to zoom in on the canvas
 			function zoomIn() {
-				scale *= 1.5;  // Increase the scale by 1.5
-				drawImage();  // Redraw the image with the new scale
+				scale *= 1.5;  																			// Increase the scale by 1.5.
+				drawImage();  																			// Redraw the image with the new scale.
 			}
 
 			// Function to zoom out on the canvas
 			function zoomOut() {
-				scale /= 1.5;  // Decrease the scale by 1.5
-				drawImage();  // Redraw the image with the new scale
+				scale /= 1.5;  																			// Decrease the scale by 1.5.
+				drawImage();  																			// Redraw the image with the new scale.
 			}
 
 			// Function to reset the zoom level
 			function resetZoom() {
 				var vw = window.innerWidth / 100;
         		scale = (60 * vw) / imageObj.width;
-				//scale = 1;  // Reset the scale to 1
-				drawImage();  // Redraw the image with the new scale
+				//scale = 1;  																			// Reset the scale to 1.
+				drawImage();  																			// Redraw the image with the new scale.
 			}
 
 			// Function to get the click position on the canvas
 			function getClickPosition(e) {
-				var rect = canvas.getBoundingClientRect();  // Get the bounding rectangle of the canvas
-				var xPosition = (e.clientX - rect.left) / scale;  // Calculate the x position based on the scale
-				var yPosition = (e.clientY - rect.top) / scale;  // Calculate the y position based on the scale
+				var rect = canvas.getBoundingClientRect();  											// Get the bounding rectangle of the canvas.
+				var xPosition = (e.clientX - rect.left) / scale;  										// Calculate the x position based on the scale.
+				var yPosition = (e.clientY - rect.top) / scale;  										// Calculate the y position based on the scale.
 
-				points.push({x: xPosition, y: yPosition});  // Add the new point to the points array
-				drawImage();  // Redraw the image with the new point
+				points.push({x: xPosition, y: yPosition});  											// Add the new point to the points array.
+				drawImage();  																			// Redraw the image with the new point.
 			}
 
 			// Function to undo the last point added
 			function undoLastPoint() {
 				if (points.length > 0) {
-					points.pop();  // Remove the last point from the points array
-					drawImage();  // Redraw the image without the last point
+					points.pop();  																		// Remove the last point from the points array.
+					drawImage();  																		// Redraw the image without the last point.
 				}
 			}
 
 			// Function to reset the canvas and clear all points
 			function resetCanvas() {
-				points = [];  // Clear the points array
-				drawImage();  // Redraw the image without any points
+				points = [];  																			// Clear the points array.
+				drawImage();  																			// Redraw the image without any points.
 			}
 
 			// Function to download the points as a CSV file
@@ -115,20 +115,21 @@
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({points: normalizedPoints})  // Send the normalized points in the request body
+					body: JSON.stringify({points: normalizedPoints})  									// Send the normalized points in the request body.
 				})
-				.then(response => response.blob())
-				.then(blob => {
-					var url = window.URL.createObjectURL(blob);  // Create a URL for the blob
-					var a = document.createElement('a');  // Create a temporary anchor element
+				.then(response => response.json())
+				.then(data => {
+					var filename = data.filename;  														// Get the filename from the server response.
+					var url = '{{ url_for("static_files", filename="") }}' + filename;  				// Build the URL to the file.
+					var a = document.createElement('a');  												// Create a temporary anchor element.
 					a.href = url;
-					a.download = "points.csv";  // Set the download attribute with the desired file name
+					a.download = filename;  															// Set the download attribute with the filename from the server.
 					document.body.appendChild(a);
-					a.click();  // Programmatically click the anchor to trigger the download
-					a.remove();  // Remove the anchor element from the document
+					a.click();  																		// Programmatically click the anchor to trigger the download.
+					a.remove();  																		// Remove the anchor element from the document.
 				})
 				.catch((error) => {
-					console.error('Error:', error);  // Log any errors to the console
+					console.error('Error:', error);  													// Log any errors to the console.
 				});
 			}
 		</script>
