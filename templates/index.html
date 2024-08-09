@@ -21,7 +21,7 @@
 									<a href="{{ url_for('upload_image') }}">ContourCreator</a>
 									<a href="{{ url_for('upload_files') }}">CloudGenerator</a>
 									<a href="{{ url_for('about') }}">About</a>
-									<a href="/"><i class='fas fa-question-circle'></i></a>
+									<a href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
 								</nav>
 							</header>
 						</div>
@@ -51,9 +51,16 @@
 
 			<!-- Footer -->
 			<div id="footer-wrapper">
-				<div class="contain">
+				<div class="container">
 					<div class="col-12">
 						<div id="copyright">
+							<ul class="small-image-horizontal">
+								<li>
+									<a href="#"><img src="../static/images/UMSNH.png" alt="" class="left" /></a>
+									<a href="#"><img src="../static/images/CONAHCYT.png" alt="" class="left" /></a>
+									<a href="#"><img src="../static/images/IngeIA.png" alt="" class="left" /></a>
+								</li>
+								
 							&copy; CloudGen. All rights reserved.
 						</div>
 					</div>

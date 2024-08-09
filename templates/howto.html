@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>CloudGen: A Simple Cloud of Points Generator</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+	</head>
+
+	<body>
+		<div id="page-wrapper">
+			<!-- Header -->
+			<div id="header-wrapper">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<header id="header">
+								<h1><a href="{{ url_for('index') }}" id="logo"><img src="../static/images/logo.png" alt="CloudGen Logo" height="80"/></a></h1>
+								<nav id="nav">
+									<a href="{{ url_for('index') }}">Home</a>
+									<a href="{{ url_for('upload_image') }}">ContourCreator</a>
+									<a href="{{ url_for('upload_files') }}">CloudGenerator</a>
+									<a href="{{ url_for('about') }}" class="current-page-item">About</a>
+									<a href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
+								</nav>
+							</header>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main -->
+			<div id="main1">
+				<div class="container-about">
+						<div class="col-8 col-12-medium imp-medium">
+							<section>
+								<h4>CloudGen</h4>
+								<h13>
+									CloudGen was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo
+									in an effort of bringing an easy way to create clouds for irregular domains in order to compare
+									different methods to numerically solve partial differential equations without an structured mesh.
+								</h13>
+							</section>
+						</div>
+				</div>
+			</div>				
+
+			<!-- Footer -->
+			<div id="footer-wrapper">
+				<div class="container">
+					<div class="col-12">
+						<div id="copyright">
+							<ul class="small-image-horizontal">
+								<li>
+									<a href="#"><img src="../static/images/UMSNH.png" alt="" class="left" /></a>
+									<a href="#"><img src="../static/images/CONAHCYT.png" alt="" class="left" /></a>
+									<a href="#"><img src="../static/images/IngeIA.png" alt="" class="left" /></a>
+								</li>
+								
+							&copy; CloudGen. All rights reserved.
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>

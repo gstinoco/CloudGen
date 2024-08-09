@@ -253,6 +253,13 @@ def about():
     """
     return render_template('about.html')                                                                # Render the about page.
 
+@app.route('/howto')
+def howto():
+    """
+    Render the info page.
+    """
+    return render_template('howto.html')                                                                 # Render the info page.
+
 @app.route('/uploadI', methods = ['GET', 'POST'])
 def upload_image():
     """

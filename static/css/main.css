@@ -529,7 +529,7 @@ mark {
     }
 
         ul.small-image-list li img {
-            width: 78px;
+            width: 100px;
         }
 
     ul.small-image-horizontal li {
@@ -538,7 +538,8 @@ mark {
     }
     
         ul.small-image-horizontal li img {
-                width: 85px;
+                height: 125px;
+                width: auto;
                 margin: 0 20px 80px 0;
         }    
 
@@ -705,6 +706,24 @@ mark {
             letter-spacing: -1px;
             opacity: 0.8;
         }
+
+
+
+/* Contenedor padre que utiliza Flexbox */
+#main-researchers-students .main-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Columna izquierda (Researchers) */
+.col-left {
+    width: 48%; /* Ajusta el ancho según sea necesario */
+}
+
+/* Columna derecha (Students) */
+.col-right {
+    width: 48%; /* Ajusta el ancho según sea necesario */
+}
 
 /* Main */
 
