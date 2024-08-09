@@ -278,7 +278,7 @@ def upload_image():
             filename = secure_filename(file.filename)                                                   # Secure the filename.
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)                              # Save the path for the file.
             file.save(filepath)                                                                         # Save the file.
-            delete_file(filepath, 60)                                                                   # Schedule file deletion.
+            delete_file(filepath, 3600)                                                                 # Schedule file deletion.
 
             return render_template('contour.html', filename = filename)                                 # Render the contour page.
     return render_template('uploadI.html')                                                              # Render the UploadI page.
@@ -300,7 +300,7 @@ def upload_files():
             filename = secure_filename(exterior_file.filename)                                          # Secure the filename.
             exterior_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                         # Save the path for the file.
             exterior_file.save(exterior_path)                                                           # Save the file.
-            delete_file(exterior_path, 60)                                                             # Schedule external boundary file deletion.
+            delete_file(exterior_path, 3600)                                                            # Schedule external boundary file deletion.
 
         ## Check for internal boundary files.
         interior_files = request.files.getlist('interiors')                                             # Get all the files for external boundaries.
@@ -321,7 +321,7 @@ def upload_files():
         
         # Delete Files
         for path in interior_paths:                                                                     # For each path in external boundaries.
-            delete_file(path, 60)                                                                      # Schedule external boundaries files deletion.
+            delete_file(path, 3600)                                                                     # Schedule external boundaries files deletion.
 
         #Generate the name of the files:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")                                            # Generate a timestamp with the date and time.
@@ -336,8 +336,8 @@ def upload_files():
                      (app.config['OUTPUT_FOLDER'], p_csv_name), index = False)                          # Create a DataFrame and save it to a csv file.
         
         # Delete Files
-        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 60)                        # Delete the image file.
-        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name), 60)                        # Delete the csv file.
+        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 3600)                        # Delete the image file.
+        delete_file(os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name), 3600)                        # Delete the csv file.
 
         return render_template('cloud.html', image_name = image_name, p_csv_name = p_csv_name, \
                                tables = [pd.DataFrame(p, columns = ["x", "y", "boundary_flag"]).\
@@ -378,7 +378,7 @@ def download_csv():
         cw.writerows([[p['x'], p['y']] for p in points])                                                # Write the points data.
 
     # Schedule file deletion after 1 hour
-    delete_file(csv_path, 60)                                                                           # Delete the created file.
+    delete_file(csv_path, 3600)                                                                         # Delete the created file.
 
     # Send the file as a download response
     return {'filename': csv_filename}
