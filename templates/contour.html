@@ -25,7 +25,7 @@
 					drawImage();  // Adjust the initial size of the canvas
 				};
 				
-				imageObj.src = "{{ url_for('static', filename='uploads/' ~ filename) }}";  // Set the source of the image
+				imageObj.src = "{{ url_for('uploaded_file', filename=filename) }}";  // Set the source of the image
 			};
 
 			// Function to draw the image on the canvas

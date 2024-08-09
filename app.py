@@ -84,8 +84,8 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
     
     # Polygons creation
     boundary_polygon = Polygon(np.column_stack((xb, yb)))                                               # Create the main polygon.
-    holes = [Polygon(np.column_stack((hx, hy))) for hx, hy in h_coor_sets]                              # Create a polygon for each of the holes.
-    holes_union = unary_union(holes) if holes else Polygon()                                            # Create the union of the holes.
+    holes            = [Polygon(np.column_stack((hx, hy))) for hx, hy in h_coor_sets]                   # Create a polygon for each of the holes.
+    holes_union      = unary_union(holes) if holes else Polygon()                                       # Create the union of the holes.
 
     # Calculate the minimum distance between consecutive boundary points
     dist = distance(xb, yb)/num                                                                         # Distance for the cloud generation.
@@ -93,7 +93,7 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
     
     # Cloud Generation
     min_x, min_y, max_x, max_y = boundary_polygon.bounds                                                # Bounding box coordinates for the cloud generation.
-    grid_points = generate_grid(min_x, max_x, min_y, max_y, dist)                                       # Generate a grid of points with the calculated minimum distance.
+    grid_points                = generate_grid(min_x, max_x, min_y, max_y, dist)                        # Generate a grid of points with the calculated minimum distance.
 
     # Add a flag for each of the nodes.
     points = [[x, y, 1] for x, y in zip(xb, yb)]                                                        # Boundary points with flag 1.
@@ -105,7 +105,7 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
 
     # Randomization
     if rand != 0:                                                                                       # If random is selected.
-        perturbation = 0.5 * dist * (np.random.rand(generated_points.shape[0], 2) - 0.5)                # Define a perturbation for each internal node.
+        perturbation              = 0.5 * dist * (np.random.rand(generated_points.shape[0], 2) - 0.5)   # Define a perturbation for each internal node.
         generated_points[:, 0:2] += perturbation                                                        # Apply the perturbation.
 
     # Combine all points
@@ -142,14 +142,14 @@ def load_and_create_cloud(exterior_file, interior_files, num, rand):
     """
     # Data loading.
     pat_out = pd.read_csv(exterior_file)                                                                # Load external boundary CSV.
-    xb = pat_out['x'].values                                                                            # Get x-coordinates of the boundary.
-    yb = pat_out['y'].values                                                                            # Get y-coordinates of the boundary.
+    xb      = pat_out['x'].values                                                                       # Get x-coordinates of the boundary.
+    yb      = pat_out['y'].values                                                                       # Get y-coordinates of the boundary.
 
     h_coor_sets = []                                                                                    # Create an empty list to store the internal boundaries.
     for interior_file in interior_files:                                                                # For each received file for internal boundaries.
         pat_in = pd.read_csv(interior_file)                                                             # Load the internal boundary CSV.
-        hx = pat_in['x'].values                                                                         # Get x-coordinates of the hole.
-        hy = pat_in['y'].values                                                                         # Get y-coordinates of the hole.
+        hx     = pat_in['x'].values                                                                     # Get x-coordinates of the hole.
+        hy     = pat_in['y'].values                                                                     # Get y-coordinates of the hole.
         h_coor_sets.append((hx, hy))                                                                    # Append hole coordinates.
 
     # Cloud creation.
@@ -174,8 +174,8 @@ def GraphCloud(p, xb, yb, h_coor_sets, folder):
     plt.rcParams["figure.figsize"] = (16, 12)                                                           # Set figure size.
     
     # Complete the polygon for graphics.
-    xb = np.append(xb, xb[0])                                                                           # Copy the first x-coordinate in the end.
-    yb = np.append(yb, yb[0])                                                                           # Copy the first y-coordinate in the end.
+    xb          = np.append(xb, xb[0])                                                                  # Copy the first x-coordinate in the end.
+    yb          = np.append(yb, yb[0])                                                                  # Copy the first y-coordinate in the end.
     h_coor_sets = [(np.append(hx, hx[0]), np.append(hy, hy[0])) for hx, hy in h_coor_sets]              # Copy the first coordinates in the end.
 
     # Plot the boundary and holes
@@ -330,9 +330,16 @@ def upload_files():
 @app.route('/tmp/results/<path:filename>')
 def static_files(filename):
     """
-    Serve static result files.
+    Serve result files.
     """
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
+
+@app.route('/tmp/uploads/<path:filename>')
+def uploaded_file(filename):
+    """
+    Serve uploaded files.
+    """
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/download_csv', methods = ['POST'])
 def download_csv():
