@@ -166,8 +166,9 @@ h15{
 }
 
 p1{
-    color:#fff;
-    font-size:18px
+    text-shadow: 0 0 5px #00ffff, 0 0 5px #00ffff, 0 0 5px #00ffff, 0 0 5px #00ffff;
+    font-size: 18px;
+    color:#ffff;
 }
 
 p,ul{
