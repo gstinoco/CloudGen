@@ -169,9 +169,8 @@ h15{
 }
 
 p1{
-    text-shadow: 0 0 5px #00ffff, 0 0 5px #00ffff, 0 0 5px #00ffff, 0 0 5px #00ffff;
     font-size: 18px;
-    color:#ffff;
+    color:#fd7608;
 }
 
 p,ul{
@@ -430,7 +429,7 @@ ul.link-list li:first-child{
 }
 
 #banner-wrapper{
-    background:url(../images/cielo3.jpeg);
+    background:url(../images/background.png);
     background-attachment:cover;
     background-repeat:no-repeat;
     background-size:100% 100%
