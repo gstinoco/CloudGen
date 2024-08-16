@@ -429,7 +429,7 @@ ul.link-list li:first-child{
 }
 
 #banner-wrapper{
-    background:url(../images/background.png);
+    background: linear-gradient(to bottom,black,rgb(6, 14, 20),rgb(51, 109, 156));
     background-attachment:cover;
     background-repeat:no-repeat;
     background-size:100% 100%
@@ -487,7 +487,7 @@ ul.link-list li:first-child{
 }
 
 #main{
-    background:#040404;
+    background: linear-gradient(to bottom,rgb(51, 109, 156),black,black,black);
     padding:4em 0
 }
 
