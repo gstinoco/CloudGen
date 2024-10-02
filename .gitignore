@@ -166,3 +166,4 @@ cython_debug/
 app_org.py
 CloudGen.py
 static/images/prev*
+*org*
