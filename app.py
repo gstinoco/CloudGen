@@ -262,6 +262,13 @@ def howto():
     """
     return render_template('howto.html')                                                                 # Render the info page.
 
+@app.route('/modify')
+def modify():
+    """
+    Render the info page.
+    """
+    return render_template('modify.html')                                                                # Render the modify page.
+
 @app.route('/uploadI', methods = ['GET', 'POST'])
 def upload_image():
     """
