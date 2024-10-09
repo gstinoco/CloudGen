@@ -1,30 +1,26 @@
-/* Ajuste del body para el diseño flex */
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Asegura que el contenido ocupe toda la altura de la ventana */
+    min-height: 100vh;
     margin: 0;
 }
 
-/* Main como contenedor principal */
 #main-wrapper {
     display: flex;
     flex-direction: column;
-    flex: 1; /* Permite que el contenido crezca y empuje el footer hacia abajo */
-    background: url('../images/bg.webp') no-repeat center center fixed; /* Ajusta la ruta de la imagen */
+    flex: 1;
+    background: url('../images/bg.webp') no-repeat center center fixed;
     background-size: cover;
-    padding: 60px 0; /* Ajusta el espaciado según necesites */
+    padding: 60px 0;
     color: rgb(1, 1, 1);
 }
 
-/* Ajusta el texto para mejor legibilidad sobre la imagen */
 #main-wrapper h2,
 #main-wrapper p {
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-/* Estilo del footer */
 footer {
     background-color: #f8f9fa;
     text-align: center;
@@ -35,8 +31,8 @@ footer {
 }
 
 footer .footer-image {
-    height: 120px; /* Ajusta la altura de las imágenes */
-    margin: 0 50px; /* Añade margen horizontal entre las imágenes */
+    height: 120px;
+    margin: 0 50px;
 }
 
 .upload-container{
@@ -49,7 +45,7 @@ footer .footer-image {
 #banner{
     position:relative;
     width:100%;
-    padding:3em 0;
+    padding:4em 4em;
     border-radius:10px;
     background-size:cover;
     text-align:center;
@@ -329,4 +325,36 @@ ul.small-image-list li img{
 img.left{
     float:left;
     margin:2px 1.25em 0 0
+}
+
+.point-controls {
+    text-align: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.point-controls label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.point-controls input {
+    width: 80px;
+    padding: 2px;
+    font-size: 0.9em;
+}
+
+.point-controls button {
+    padding: 4px 8px;
+    font-size: 0.9em;
+    
+    display:inline-block;
+    background-color:#2874a6;
+    border-radius:7px;
+    text-decoration:none;
+    color:#fff;
+    letter-spacing:.5px;
+    border:solid 1px #2874a6;
+    box-shadow:inset 0 0 0 1px #aed6f1
 }

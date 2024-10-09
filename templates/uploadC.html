@@ -9,51 +9,57 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
         <script>
+            // Function to handle the 'dragover' event
             function dragoverHandler(ev) {
-                ev.preventDefault();
-                ev.dataTransfer.dropEffect = "move";
-                console.log(ev);
+                ev.preventDefault();                                                                // Prevent default behavior to allow dropping.
+                ev.dataTransfer.dropEffect = "move";                                                // Set the drop effect to indicate move operation.
+                console.log(ev);                                                                    // Log the event to the console for debugging.
             }
-        
+            
+            // Function to handle the 'drop' event
             function dropHandler(ev) {
-                ev.preventDefault();
-                const fileInput = ev.target.querySelector('input[type="file"]');
-                if (fileInput) {
-                    fileInput.files = ev.dataTransfer.files;
-                    fileChangeHandler({ target: fileInput });
+                ev.preventDefault();                                                                // Prevent default behavior to allow file drop.
+                const fileInput = ev.target.querySelector('input[type="file"]');                    // Find the file input element within the drop target.
+                if (fileInput) {                                                                    // If a file input element exists in the drop target.
+                    fileInput.files = ev.dataTransfer.files;                                        // Assign dropped files to the file input.
+                    fileChangeHandler({ target: fileInput });                                       // Trigger file change handler with updated file input.
                 }
-                console.log(ev);
+                console.log(ev);                                                                    // Log the event to the console for debugging.
             }
-        
+            
+            // Function to handle changes in the file input (called when files are added or removed).
             function fileChangeHandler(ev) {
-                const fileInput = ev.target;
-                const fileLabel = fileInput.nextElementSibling.querySelector('.file-name');
+                const fileInput = ev.target;                                                        // Get the file input element that triggered the event.
+                const fileLabel = fileInput.nextElementSibling.querySelector('.file-name');         // Get the file name label element.
         
-                if (fileInput.files.length > 0) {
+                if (fileInput.files.length > 0) {                                                   // Check if there are files selected in the file input.
                     const fileName = fileInput.files.length > 1 ? `${fileInput.files.length} files` : fileInput.files[0].name;
-                    fileLabel.textContent = fileName;
-                    fileInput.nextElementSibling.querySelector('.default').style.display = 'none';
-                    fileInput.nextElementSibling.querySelector('.success').style.display = 'block';
-                    fileInput.classList.add('has-files');
+                                                                                                    // Determine the file name to display (show count if multiple files are selected).
+                    fileLabel.textContent = fileName;                                               // Update the label with the file name or count.
+                    fileInput.nextElementSibling.querySelector('.default').style.display = 'none';  // Hide default label.
+                    fileInput.nextElementSibling.querySelector('.success').style.display = 'block'; // Show success label.
+                    fileInput.classList.add('has-files');                                           // Add a class to indicate files are present.
                 } else {
-                    fileLabel.textContent = '';
-                    fileInput.nextElementSibling.querySelector('.default').style.display = 'block';
-                    fileInput.nextElementSibling.querySelector('.success').style.display = 'none';
-                    fileInput.classList.remove('has-files');
+                    fileLabel.textContent = '';                                                     // Clear the file name label text.
+                    fileInput.nextElementSibling.querySelector('.default').style.display = 'block'; // Show default label.
+                    fileInput.nextElementSibling.querySelector('.success').style.display = 'none';  // Hide success label.
+                    fileInput.classList.remove('has-files');                                        // Remove the class indicating files are present.
                 }
             }
-        
+            
+            // Function to reset the file input, allowing the user to select a new file.
             function enableChangeFile(ev) {
-                const fileInput = ev.target.closest('.file-dummy').previousElementSibling;
-                fileInput.value = "";  // Reset the input value
-                fileInput.nextElementSibling.querySelector('.default').style.display = 'block';
-                fileInput.nextElementSibling.querySelector('.success').style.display = 'none';
-                fileInput.classList.remove('has-files');
+                const fileInput = ev.target.closest('.file-dummy').previousElementSibling;          // Find the closest file input element to the clicked button.
+                fileInput.value = "";                                                               // Reset the file input value to clear the selected files.
+                fileInput.nextElementSibling.querySelector('.default').style.display = 'block';     // Show default label.
+                fileInput.nextElementSibling.querySelector('.success').style.display = 'none';      // Hide success label.
+                fileInput.classList.remove('has-files');                                            // Remove the class indicating files are present.
             }
-        
+            
+            // Wait for the DOM content to be fully loaded before setting up event listeners.
             document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.file-area .success button').forEach(button => {
-                    button.addEventListener('click', enableChangeFile);
+                document.querySelectorAll('.file-area .success button').forEach(button => {         // Find all 'change file' buttons within file area and set up click event listeners.
+                    button.addEventListener('click', enableChangeFile);                             // Attach enableChangeFile function to each button.
                 });
             });
         </script>
@@ -94,68 +100,66 @@
         <!-- Main Contenedor -->
 		<div id="main-wrapper">
 	    	<!-- Main -->
-    		<div id="main" class="container mt-4">
-        		<div id="banner" class="upload-container">
-                    <h8>CloudGenerator: <h9>Create clouds of points from countours.</h9></h8>
+            <div id="banner" class="upload-container">
+                <h8>CloudGenerator: <h9>Create clouds of points from countours.</h9></h8>
+                <br /><br />
+                <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+                    <div class="file-area">
+                        <input type="file" name="exterior" id="exterior" onchange="fileChangeHandler(event)" required>
+                        <div class="file-dummy">
+                            <div class="default">
+                                <h10>Upload external boundary.</h10>
+                                <br /><br />
+                                <h11>or</h11>
+                                <br /><br />
+                                <button>Select a file</button>
+                            </div>
+                            <div class="success">
+                                <h10>File Loaded: <span class="file-name"></span></h10>
+                                <br /><br />
+                                <button type="button">Change file</button>
+                            </div>
+                        </div>
+                    </div>
                     <br /><br />
-                    <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
-                        <div class="file-area">
-                            <input type="file" name="exterior" id="exterior" onchange="fileChangeHandler(event)" required>
-                            <div class="file-dummy">
-                                <div class="default">
-                                    <h10>Upload external boundary.</h10>
-                                    <br /><br />
-                                    <h11>or</h11>
-                                    <br /><br />
-                                    <button>Select a file</button>
-                                </div>
-                                <div class="success">
-                                    <h10>File Loaded: <span class="file-name"></span></h10>
-                                    <br /><br />
-                                    <button type="button">Change file</button>
-                                </div>
+                    <div class="file-area">
+                        <input type="file" name="interiors" id="interiors" onchange="fileChangeHandler(event)" multiple>
+                        <div class="file-dummy">
+                            <div class="default">
+                                <h10>Upload internal boundaries.</h10>
+                                <br /><br />
+                                <h11>or</h11>
+                                <br /><br />
+                                <button>Select a file</button>
+                            </div>
+                            <div class="success">
+                                <h10>File Loaded: <span class="file-name"></span></h10>
+                                <br /><br />
+                                <button type="button">Change file</button>
                             </div>
                         </div>
-                        <br /><br />
-                        <div class="file-area">
-                            <input type="file" name="interiors" id="interiors" onchange="fileChangeHandler(event)" multiple>
-                            <div class="file-dummy">
-                                <div class="default">
-                                    <h10>Upload internal boundaries.</h10>
-                                    <br /><br />
-                                    <h11>or</h11>
-                                    <br /><br />
-                                    <button>Select a file</button>
-                                </div>
-                                <div class="success">
-                                    <h10>File Loaded: <span class="file-name"></span></h10>
-                                    <br /><br />
-                                    <button type="button">Change file</button>
-                                </div>
-                            </div>
-                        </div>
-                        <br /><br />
-                        <div class="slidecontainer">
-                            <h12>How dense would you like the cloud?</h12>
-                            <br /> <br />
-                            <p1>min <input type="range" min="1" max="5" value="1" class="slider" id="num" name="num"> max</p1>
-                        </div>
-                        <br /><br />
-                        <div class="slidecontainer">
-                            <h12>Would you like a random or a uniform distribution?</h12>
-                            <br /> <br />
-                            <p1>
-                                <input type="radio" value="1" id="rand01" name="rand" checked/><label for="rand01">Random</label>
-                                <input type="radio" value="0" id="rand00" name="rand"><label for="rand00">Uniform</label>
-                            </p1>
-                        </div>
-                        <br /><br />
-                        <div id="action-buttons">
-                            <button type="submit">Submit</button>
-                        </div>
-                    </form>
-                </div>
-		    </div>
+                    </div>
+                    <br /><br />
+                    <div class="slidecontainer">
+                        <h12>How dense would you like the cloud?</h12>
+                        <br /> <br />
+                        <p1>min <input type="range" min="1" max="5" value="1" class="slider" id="num" name="num"> max</p1>
+                    </div>
+                    <br /><br />
+                    <div class="slidecontainer">
+                        <h12>Would you like a random or a uniform distribution?</h12>
+                        <br /> <br />
+                        <p1>
+                            <input type="radio" value="1" id="rand01" name="rand" checked/><label for="rand01">Random</label>
+                            <input type="radio" value="0" id="rand00" name="rand"><label for="rand00">Uniform</label>
+                        </p1>
+                    </div>
+                    <br /><br />
+                    <div id="action-buttons">
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
 		</div>
 
         <!-- Footer -->

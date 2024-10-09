@@ -7,14 +7,216 @@
         <link href="../static/css/style.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
-        <style>
-            #canvas {
-                border: 1px solid black;
-            }
-            #info {
-                margin-top: 10px;
-            }
-        </style>
+        <script>
+            // Wait until the DOM is fully loaded before executing the script.
+            document.addEventListener("DOMContentLoaded", function () {
+                const canvas = document.getElementById('canvas');                                           // Select the canvas element by its ID.
+                const ctx = canvas.getContext('2d');                                                        // Get Canvas' 2D drawing context.
+
+                // Initialize variables for points and interaction.
+                let points = [];                                                                            // Array to store points on the canvas.
+                let selectedPoint = null;                                                                   // Variable to keep track of the currently selected point.
+                let isDragging = false;                                                                     // Flag to indicate if dragging is in progress.
+                const dragThreshold = 5;                                                                    // Threshold distance for initiating a drag.
+                let startX, startY;                                                                         // Variables to store the starting coordinates of a drag.
+                let scale = 1;                                                                              // Variable to manage zoom level.
+                const baseWidth = 700;                                                                      // Base width of the canvas for scaling.
+                const baseHeight = 700;                                                                     // Base height of the canvas for scaling.
+
+                // Function to load points from an external CSV file
+                function loadPoints() {
+                    fetch('{{ url_for("uploaded_file", filename=filename) }}')                              // Fetch the CSV file from the server.
+                        .then(response => response.text())                                                  // Convert the response to text.
+                        .then(csvContent => {
+                            const rows = csvContent.split('\n').filter(row => row.trim().length > 0);       // Split the CSV content into rows and filter out any empty rows.
+                            const dataRows = rows.slice(1);                                                 // Remove the header row by slicing the array from the second element onward.
+                            points = dataRows.map(row => {                                                  // Parse each row to create a point object with x, y coordinates and a flag.
+                                const [x, y, flag] = row.split(',').map(value => parseFloat(value));        // Convert values to float.
+                                return {
+                                    x: x * baseWidth,                                                       // Scale x-coordinate based on base width.
+                                    y: (1 - y) * baseHeight,                                                // Scale and invert y-coordinate based on base height.
+                                    flag: flag                                                              // Assign the flag to the point.
+                                };
+                            });
+                            adjustCanvasSize();                                                             // Adjust the canvas size based on the current scale.
+                            drawPoints();                                                                   // Draw the points on the canvas.
+                        })
+                        .catch(error => console.error("Couldn't load the points. Please check the file:", error));
+                                                                                                            // Log any errors encountered.
+                }
+
+                // Function to draw points on the canvas
+                function drawPoints() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);                                       // Clear the entire canvas before drawing new content.
+
+                    points.forEach(point => {                                                               // Iterate over each point in the points array.
+                        ctx.beginPath();                                                                    // Start a new path for the circle.
+                        ctx.arc(point.x * scale, point.y * scale, 5, 0, 2 * Math.PI);                       // Draw a circle for each point, adjusting position based on zoom scale.
+
+                        // Set the circle's color based on the point's flag
+                        if (point.flag === 0) {                                                             // If flag is 0.
+                            ctx.fillStyle = 'blue';                                                         // The color is set to blue.
+                        } else if (point.flag === 1 || point.flag === 2) {                                  // If flag is 1 or 2.
+                            ctx.fillStyle = 'red';                                                          // The color is set to red.
+                        } else if (point.flag === 3) {                                                      // If flag is 3.
+                            ctx.fillStyle = 'green';                                                        // The color is set to green.
+                        } else {                                                                            // For all the other cases.
+                            ctx.fillStyle = 'gray';                                                         // The color is set to gray.
+                        }
+
+                        ctx.fill();                                                                         // Fill the circle with the chosen color.
+                        ctx.closePath();                                                                    // End the path for the circle.
+                    });
+                }
+
+                // Function to zoom in on the canvas by increasing the scale
+                function zoomIn() {
+                    scale *= 1.5;                                                                           // Increase the scale by a factor of 1.5.
+                    adjustCanvasSize();                                                                     // Adjust the canvas dimensions based on the new scale.
+                    drawPoints();                                                                           // Redraw the points with the updated scale.
+                }
+
+                // Function to zoom out on the canvas by decreasing the scale.
+                function zoomOut() {
+                    scale /= 1.5;                                                                           // Decrease the scale by a factor of 1.5.
+                    adjustCanvasSize();                                                                     // Adjust the canvas dimensions based on the new scale.
+                    drawPoints();                                                                           // Redraw the points with the updated scale.
+                }
+
+                // Function to reset the zoom level to the default scale.
+                function resetZoom() {
+                    scale = 1;                                                                              // Reset the scale to 1.
+                    adjustCanvasSize();                                                                     // Adjust the canvas dimensions based on the new scale.
+                    drawPoints();                                                                           // Redraw the points with the updated scale.
+                }
+
+                // Function to adjust canvas size based on the current scale factor.
+                function adjustCanvasSize() {
+                    canvas.width = baseWidth * scale;                                                       // Update canvas width based on scale.
+                    canvas.height = baseHeight * scale;                                                     // Update canvas height based on scale.
+                }
+
+                // Function to get the mouse position relative to the canvas, accounting for the current scale.
+                function getMousePosition(event) {
+                    const rect = canvas.getBoundingClientRect();                                            // Get the canvas's bounding rectangle.
+                    const mouseX = (event.clientX - rect.left) / scale;                                     // Calculate the x-coordinate relative to the scale.
+                    const mouseY = (event.clientY - rect.top) / scale;                                      // Calculate the y-coordinate relative to the scale.
+                    return { x: mouseX, y: mouseY };                                                        // Return an object with the adjusted coordinates.
+                }
+
+                // Event listener for 'mousedown' to select a point for dragging.
+                canvas.addEventListener('mousedown', function (event) {
+                    const { x: mouseX, y: mouseY } = getMousePosition(event);                               // Get mouse coordinates.
+
+                    selectedPoint = points.find(point => {                                                  // Find the closest point to the mouse click.
+                        return Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2) < 5 / scale;
+                    });
+
+                    if (selectedPoint) {                                                                    // If a point was selected, initialize drag settings.
+                        startX = mouseX;                                                                    // Set the starting x-coordinate for dragging.
+                        startY = mouseY;                                                                    // Set the starting y-coordinate for dragging.
+                        isDragging = false;                                                                 // Set dragging to false.
+                        canvas.addEventListener('mousemove', initiateDrag);                                 // Add listener to check if dragging starts.
+                    }
+                });
+
+                // Function to initiate dragging when mouse movement is detected beyond the threshold.
+                function initiateDrag(event) {
+                    const { x: mouseX, y: mouseY } = getMousePosition(event);                               // Get updated mouse position.
+
+                    // Check if mouse movement exceeds drag threshold.
+                    if (Math.abs(mouseX - startX) > dragThreshold || Math.abs(mouseY - startY) > dragThreshold) {
+                        isDragging = true;                                                                  // Enable dragging mode.
+                        canvas.addEventListener('mousemove', dragPoint);                                    // Add listener to handle point dragging.
+                        canvas.removeEventListener('mousemove', initiateDrag);                              // Remove the initiateDrag listener.
+                    }
+                }
+
+                // Function to handle dragging of the selected point.
+                function dragPoint(event) {
+                    if (!isDragging) return;                                                                // If not dragging, exit the function.
+
+                    const { x: mouseX, y: mouseY } = getMousePosition(event);                               // Get updated mouse position.
+
+                    if (selectedPoint) {                                                                    // Update the coordinates of the selected point.
+                        selectedPoint.x = mouseX;                                                           // Set the new x-coordinate.
+                        selectedPoint.y = mouseY;                                                           // Set the new y-coordinate.
+                        drawPoints();                                                                       // Redraw the points to reflect the new position.
+                    }
+                }
+
+                // Event listener for 'mouseup' to end dragging.
+                canvas.addEventListener('mouseup', function () {
+                    isDragging = false;                                                                     // Disable dragging mode.
+                    canvas.removeEventListener('mousemove', dragPoint);                                     // Remove the dragPoint listener.
+                    canvas.removeEventListener('mousemove', initiateDrag);                                  // Remove the initiateDrag listener.
+                });
+
+                // Event listener for 'click' to select a point and display its values.
+                canvas.addEventListener('click', function (event) {
+                    const { x: mouseX, y: mouseY } = getMousePosition(event);                               // Get click position on the canvas
+
+                    selectedPoint = points.find(point => {                                                  // Find the closest point to the click location
+                        return Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2) < 5 / scale;
+                    });
+
+                    if (selectedPoint) {                                                                    // If a point was selected, update input fields with its data
+                        document.getElementById('xValue').value = (selectedPoint.x / baseWidth).toFixed(16);
+                                                                                                            // Update x-value input
+                        document.getElementById('yValue').value = (1 - selectedPoint.y / baseHeight).toFixed(16);
+                                                                                                            // Update y-value input
+                        document.getElementById('flagValue').value = selectedPoint.flag;                    // Update flag input
+                    }
+                });
+                
+                // Event listener for 'click' on the update button to modify a point's values
+                document.getElementById('updatePoint').addEventListener('click', function () {
+                    if (selectedPoint) {
+                        const newX = parseFloat(document.getElementById('xValue').value) * baseWidth;       // Parse input value for x.
+                        const newY = (1 - parseFloat(document.getElementById('yValue').value)) * baseHeight;// Parse input value for y.
+                        const newFlag = parseInt(document.getElementById('flagValue').value);               // Parse input value for flag.
+
+                        selectedPoint.x = newX;                                                             // Update selected point's x-value.
+                        selectedPoint.y = newY;                                                             // Update selected point's y-value.
+                        selectedPoint.flag = newFlag;                                                       // Update selected point's flag-value.
+                        drawPoints();                                                                       // Redraw points with updated values.
+                    }
+                });
+
+                // Event listener for 'click' on the download CSV button.
+                document.getElementById('downloadCSV').addEventListener('click', downloadCSV);
+
+                // Function to generate and download a CSV file of the points
+                function downloadCSV() {
+                    let csvContent = "x,y,boundary_flag\n";                                                 // Initialize CSV content with headers.
+                    points.forEach(point => {
+                        const x = (point.x / baseWidth).toFixed(16);                                        // Normalize x coordinates and add each point to CSV content.
+                        const y = (1 - point.y / baseHeight).toFixed(16);                                   // Normalize y coordinates and add each point to CSV content.
+                        csvContent += `${x},${y},${point.flag}\n`;                                          // Append normalized point data.
+                    });
+
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });               // Create a Blob with the CSV data.
+                    const url = URL.createObjectURL(blob);                                                  // Generate a download URL.
+                    
+                    const now = new Date();                                                                 // Get current date and time for timestamp.
+                    const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+                    
+                    const link = document.createElement("a");                                               // Create a temporary link to initiate the CSV download.
+                    link.setAttribute("href", url);                                                         // Set the Blob URL as the link href.
+                    link.setAttribute("download", `mcloud_${timestamp}.csv`);                               // Set the download filename.
+                    document.body.appendChild(link);                                                        // Add the link to the document.
+                    link.click();                                                                           // Programmatically click the link to start download.
+                    document.body.removeChild(link);                                                        // Remove the link from the document.
+                    URL.revokeObjectURL(url);                                                               // Release memory by revoking the URL.
+                }
+                
+                document.getElementById('zoom-in').addEventListener('click', zoomIn);                       // Set up event a listener for zoom in button.
+                document.getElementById('zoom-out').addEventListener('click', zoomOut);                     // Set up event a listener for zoom out button.
+                document.getElementById('original-size').addEventListener('click', resetZoom);              // Set up event a listener for reset zoom button.
+
+                loadPoints();                                                                               // Load points from the CSV file when the page is loaded
+            });
+        </script>
     </head>
     <body>
         <!-- Header -->
@@ -52,33 +254,29 @@
         <!-- Main Contenedor -->
 		<div id="main-wrapper">
 	    	<!-- Main -->
-    		<div id="main" class="container mt-4">
-		        <div class="row">
-					<div id="banner" class="upload-container">
-                        <center>
-                            <h8>Boundary Selection</h8><br /><h9>Upload a Cloud:</h9>
-                            <br />
-                            <br />
-                            <h9><input type="file" id="fileInput" accept=".csv" /></h9>
-                            <br />
-                            <br />
-                            <canvas id="canvas" width="700" height="700"></canvas>
-
-                            <div id="info">
-                                <h9>Selected point information: <br /> <br />
-                                <label>X: <input type="number" id="xValue" /></label>
-                                <label>Y: <input type="number" id="yValue" /></label>
-                                <label>Flag: <input type="text" id="flagValue" /></label>
-                                <button type="button" id="updatePoint">Update Point</button>
-                                <br />
-                                <br />
-                                <button type="button" id="downloadCSV">Download modified cloud</button>
-                                </h9>
-                            </div>
-                        </center>
-					</div>
-    	    	</div>
-		    </div>
+    		<div id="banner" class="upload-container">
+                <div id="canvas-actions-container">
+                    <div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
+                        <canvas id="canvas" width="700" height="700"></canvas>
+                    </div>
+                    <div id="action-buttons-canvas">
+                        <button id="original-size"><i class='fas fa-expand-arrows-alt'></i></button>
+                        <button id="zoom-in"><i class='fas fa-search-plus'></i></button>
+                        <button id="zoom-out"><i class='fas fa-search-minus'></i></button>
+                    </div>
+                    <div class="point-controls">
+                        <label>X: <input type="number" id="xValue" /></label>
+                        <label>Y: <input type="number" id="yValue" /></label>
+                        <label>Flag: <input type="text" id="flagValue" /></label>
+                        <button type="button" id="updatePoint">Update Point</button>
+                    </div>
+                </div>
+                <div id="action-buttons">
+                    <center>
+                        <button type="button" id="downloadCSV">Download modified cloud</button>
+                    </center>
+                </div>
+            </div>
 		</div>
 
         <!-- Footer -->
@@ -92,166 +290,5 @@
 				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
 			</div>
 		</footer>
-
-        <!-- Scripts -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-                let points = [];
-                let selectedPoint = null;
-                let isDragging = false;
-                const dragThreshold = 5;  // Umbral de sensibilidad para iniciar el arrastre
-                let startX, startY;
-
-                document.getElementById('fileInput').addEventListener('change', handleFileUpload);
-
-                function handleFileUpload(event) {
-                    const file = event.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const csvContent = e.target.result;
-                        const rows = csvContent.split('\n').filter(row => row.trim().length > 0);
-                        points = rows.map(row => {
-                            const [x, y, flag] = row.split(',').map(value => parseFloat(value));
-                            return { x: x * canvas.width, y: (1 - y) * canvas.height, flag: flag };
-                        });
-                        drawPoints();
-                    };
-                    reader.readAsText(file);
-                }
-
-                function drawPoints() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    points.forEach(point => {
-                        ctx.beginPath();
-                        ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
-
-                        if (point.flag === 0) {
-                            ctx.fillStyle = 'blue';
-                        } else if (point.flag === 1 || point.flag === 2) {
-                            ctx.fillStyle = 'red';
-                        } else if (point.flag === 3) {
-                            ctx.fillStyle = 'green';
-                        } else {
-                            ctx.fillStyle = 'gray';
-                        }
-
-                        ctx.fill();
-                        ctx.closePath();
-                    });
-                }
-
-                canvas.addEventListener('mousedown', function (event) {
-                    const rect = canvas.getBoundingClientRect();
-                    const mouseX = event.clientX - rect.left;
-                    const mouseY = event.clientY - rect.top;
-
-                    selectedPoint = points.find(point => {
-                        return Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2) < 5;
-                    });
-
-                    if (selectedPoint) {
-                        startX = mouseX;
-                        startY = mouseY;
-                        isDragging = false;  // Arrastre aún no iniciado
-                        canvas.addEventListener('mousemove', initiateDrag);
-                    }
-                });
-
-                function initiateDrag(event) {
-                    const rect = canvas.getBoundingClientRect();
-                    const mouseX = event.clientX - rect.left;
-                    const mouseY = event.clientY - rect.top;
-
-                    if (Math.abs(mouseX - startX) > dragThreshold || Math.abs(mouseY - startY) > dragThreshold) {
-                        isDragging = true;
-                        canvas.addEventListener('mousemove', dragPoint);
-                        canvas.removeEventListener('mousemove', initiateDrag);
-                    }
-                }
-
-                function dragPoint(event) {
-                    if (!isDragging) return;
-
-                    const rect = canvas.getBoundingClientRect();
-                    const mouseX = event.clientX - rect.left;
-                    const mouseY = event.clientY - rect.top;
-
-                    if (selectedPoint) {
-                        selectedPoint.x = mouseX;
-                        selectedPoint.y = mouseY;
-                        drawPoints();
-                    }
-                }
-
-                canvas.addEventListener('mouseup', function () {
-                    isDragging = false;
-                    canvas.removeEventListener('mousemove', dragPoint);
-                    canvas.removeEventListener('mousemove', initiateDrag);
-                });
-
-                canvas.addEventListener('click', function (event) {
-                    const rect = canvas.getBoundingClientRect();
-                    const mouseX = event.clientX - rect.left;
-                    const mouseY = event.clientY - rect.top;
-
-                    selectedPoint = points.find(point => {
-                        return Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2) < 5;
-                    });
-
-                    if (selectedPoint) {
-                        document.getElementById('xValue').value = (selectedPoint.x / canvas.width).toFixed(6);
-                        document.getElementById('yValue').value = (1 - selectedPoint.y / canvas.height).toFixed(6);
-                        document.getElementById('flagValue').value = selectedPoint.flag;
-                    }
-                });
-
-                document.getElementById('updatePoint').addEventListener('click', function () {
-                    if (selectedPoint) {
-                        const newX = parseFloat(document.getElementById('xValue').value) * canvas.width;
-                        const newY = (1 - parseFloat(document.getElementById('yValue').value)) * canvas.height;
-                        const newFlag = parseInt(document.getElementById('flagValue').value);
-
-                        selectedPoint.x = newX;
-                        selectedPoint.y = newY;
-                        selectedPoint.flag = newFlag;
-                        drawPoints();
-                    }
-                });
-
-                document.getElementById('downloadCSV').addEventListener('click', downloadCSV);
-
-                function downloadCSV() {
-                    // Crear una cadena CSV
-                    let csvContent = "x,y,flag\n";
-                    points.forEach(point => {
-                        // Convertir cada punto a la escala original entre 0 y 1
-                        const x = (point.x / canvas.width).toFixed(6);
-                        const y = (1 - point.y / canvas.height).toFixed(6);
-                        csvContent += `${x},${y},${point.flag}\n`;
-                    });
-
-                    // Crear un blob con el contenido CSV
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const url = URL.createObjectURL(blob);
-
-                    // Crear un enlace temporal para la descarga
-                    const link = document.createElement("a");
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", "modified_points.csv");
-                    document.body.appendChild(link);
-
-                    // Simular un clic para iniciar la descarga
-                    link.click();
-
-                    // Limpiar el enlace temporal
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }
-            });
-            </script>
     </body>
 </html>

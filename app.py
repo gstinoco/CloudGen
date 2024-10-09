@@ -262,12 +262,26 @@ def howto():
     """
     return render_template('howto.html')                                                                 # Render the info page.
 
-@app.route('/modify')
+@app.route('/modify', methods = ['GET', 'POST'])
 def modify():
     """
     Render the info page.
     """
-    return render_template('modify.html')                                                                # Render the modify page.
+    if request.method == 'POST':                                                                        # If a POST was performed.
+        if 'file' not in request.files:                                                                 # If there is no file.
+            return redirect(request.url)                                                                # Render the UploadI page.
+        file = request.files['file']                                                                    # Get the loaded file.
+        if file.filename == '':                                                                         # If no file was selected.
+            return redirect(request.url)                                                                # Render the UploadI page.
+        
+        if file and allowed_file_D(file.filename):                                                        # If the file exists and has a valid file extension.
+            filename = secure_filename(file.filename)                                                   # Secure the filename.
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)                              # Save the path for the file.
+            file.save(filepath)                                                                         # Save the file.
+            delete_file(filepath, 3600)                                                                 # Schedule file deletion.
+
+            return render_template('modify.html', filename = filename)                                 # Render the contour page.
+    return render_template('uploadM.html')                                                                # Render the modify page.
 
 @app.route('/uploadI', methods = ['GET', 'POST'])
 def upload_image():
@@ -333,7 +347,7 @@ def upload_files():
         #Generate the name of the files:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")                                            # Generate a timestamp with the date and time.
         image_name = f'plot_{timestamp}.png'                                                            # Name for the saved plot.
-        p_csv_name = f'p_{timestamp}.csv'                                                               # Name of the resulting file.
+        p_csv_name = f'cloud_{timestamp}.csv'                                                           # Name of the resulting file.
 
         # Create the graphic.
         GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'], image_name=image_name)   # Graph the generated cloud of points.

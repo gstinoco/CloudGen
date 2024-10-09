@@ -9,129 +9,124 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
 		<script>
-			// Declare variables for canvas, context, and image object
-			var canvas, context, imageObj;
+			// Declare variables for canvas, context, and image object.
+			var canvas, context, imageObj;																// Canvas and context for drawing, and an image object to load the image.
 			var points = [];  																			// Array to store points clicked on the canvas.
 			var scale  = 1;  																			// Scale factor for zoom.
 
-			// Function to initialize canvas and load the image
+			// Function to initialize canvas and load the image.
 			window.onload = function() {
-				canvas   = document.getElementById('imageCanvas');
-				context  = canvas.getContext('2d');
-				imageObj = new Image();
+				canvas   = document.getElementById('imageCanvas');										// Select the canvas element by its ID.
+				context  = canvas.getContext('2d');														// Get Canvas' 2D drawing context.
 
-				// When the image is loaded, draw it on the canvas
-				imageObj.onload = function() {
-					var vw = window.innerWidth / 100;
-        			scale = (60 * vw) / imageObj.width;
+				imageObj = new Image();																	// Create a new image object to load the source image.
+
+				imageObj.onload = function() {															// When the image is fully loaded, proceed to draw it on the canvas.
+					var vw = window.innerWidth / 100;													// Calculate viewport width in vw units.
+        			scale = (60 * vw) / imageObj.width;													// Set initial scale based on viewport and image width.
 					drawImage();  																		// Adjust the initial size of the canvas.
 				};
 				
-				imageObj.src = "{{ url_for('uploaded_file', filename=filename) }}";  					// Set the source of the image.
+				imageObj.src = "{{ url_for('uploaded_file', filename=filename) }}";  					// Set the source path of the image to be loaded
 			};
 
-			// Function to draw the image on the canvas
+			// Function to draw the image and points on the canvas.
 			function drawImage() {
 				canvas.width  = imageObj.width * scale;  												// Set canvas width based on image width and scale.
 				canvas.height = imageObj.height * scale;  												// Set canvas height based on image height and scale.
-				context.clearRect(0, 0, canvas.width, canvas.height);  									// Clear the canvas.
-				context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);  						// Draw the image.
-
-				if (points.length > 0) {
-					// Draw points and connect them with lines
-					context.beginPath();
+				context.clearRect(0, 0, canvas.width, canvas.height);  									// Clear the canvas to prepare for new drawing.
+				context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);  						// Draw the scaled image on the canvas.
+				
+				if (points.length > 0) {																// If there are points in the points array, proceed to draw them.
+					context.beginPath();																// Start a new path for drawing lines between points.
 					context.moveTo(points[0].x * scale, points[0].y * scale);  							// Move to the position of the first point.
 					for (var i = 1; i < points.length; i++) {
 						context.lineTo(points[i].x * scale, points[i].y * scale);  						// Draw line to the next point.
 						context.moveTo(points[i].x * scale, points[i].y * scale);  						// Move to the position of the next point.
 					}
-					context.strokeStyle = '#000000';
-					context.lineWidth = 2;
-					context.stroke();
+					context.strokeStyle = '#000000';													// Set line color to black.
+					context.lineWidth = 2;																// Set the line width to 2px.
+					context.stroke();																	// Draw the line on the canvas.
 
-					// Draw circles at each point
-					points.forEach(p => {
-						context.fillStyle = "#FF0000";
-						context.beginPath();
-						context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);  						// Draw a circle at the point.
-						context.fill();
+					points.forEach(p => {																// Draw a red circle at each point location.
+						context.fillStyle = "#FF0000";													// Set fill color to red for each point.
+						context.beginPath();															// Begin a new path for each point.
+						context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);  						// Draw a circle centered at the point's location, with radius 5.
+						context.fill();																	// Fill the circle with red color.
 					});
 				}
 			}
 
-			// Function to zoom in on the canvas
+			// Function to zoom in on the canvas by increasing the scale factor.
 			function zoomIn() {
-				scale *= 1.5;  																			// Increase the scale by 1.5.
-				drawImage();  																			// Redraw the image with the new scale.
+				scale *= 1.5;  																			// Increase the scale by a factor of 1.5 to zoom in.
+				drawImage();  																			// Redraw the image and points at the new scale.
 			}
 
-			// Function to zoom out on the canvas
+			// Function to zoom out on the canvas by decreasing the scale factor.
 			function zoomOut() {
-				scale /= 1.5;  																			// Decrease the scale by 1.5.
-				drawImage();  																			// Redraw the image with the new scale.
+				scale /= 1.5;  																			// Decrease the scale by a factor of 1.5 to zoom out.
+				drawImage();  																			// Redraw the image and points at the new scale.
 			}
 
-			// Function to reset the zoom level
+			// Function to reset the zoom level to the initial scale.
 			function resetZoom() {
-				var vw = window.innerWidth / 100;
-        		scale = (60 * vw) / imageObj.width;
-				//scale = 1;  																			// Reset the scale to 1.
-				drawImage();  																			// Redraw the image with the new scale.
+				var vw = window.innerWidth / 100;														// Calculate viewport width in vw units.
+        		scale = (60 * vw) / imageObj.width;														// Reset scale to the initial value based on viewport and image width.
+				drawImage();  																			// Redraw the image and points at the reset scale.
 			}
 
-			// Function to get the click position on the canvas
+			// Function to capture the position of a click on the canvas.
 			function getClickPosition(e) {
-				var rect = canvas.getBoundingClientRect();  											// Get the bounding rectangle of the canvas.
-				var xPosition = (e.clientX - rect.left) / scale;  										// Calculate the x position based on the scale.
-				var yPosition = (e.clientY - rect.top) / scale;  										// Calculate the y position based on the scale.
+				var rect = canvas.getBoundingClientRect();  											// Get the canvas's bounding rectangle.
+				var xPosition = (e.clientX - rect.left) / scale;  										// Calculate the x position of the click relative to the canvas, adjusted for scale.
+				var yPosition = (e.clientY - rect.top) / scale;  										// Calculate the y position of the click relative to the canvas, adjusted for scale.
 
 				points.push({x: xPosition, y: yPosition});  											// Add the new point to the points array.
-				drawImage();  																			// Redraw the image with the new point.
+				drawImage();  																			// Redraw the image and points with the newly added point.
 			}
 
-			// Function to undo the last point added
+			// Function to undo the last point added to the points array.
 			function undoLastPoint() {
-				if (points.length > 0) {
-					points.pop();  																		// Remove the last point from the points array.
-					drawImage();  																		// Redraw the image without the last point.
+				if (points.length > 0) {																// Check if there are points to remove.
+					points.pop();  																		// Remove the last point from the array.
+					drawImage();  																		// Redraw the image and points without the last point.
 				}
 			}
 
-			// Function to reset the canvas and clear all points
+			// Function to reset the canvas by clearing all points.
 			function resetCanvas() {
-				points = [];  																			// Clear the points array.
+				points = [];  																			// Clear the points array to reset the canvas.
 				drawImage();  																			// Redraw the image without any points.
 			}
 
-			// Function to download the points as a CSV file
+			// Function to download the points array as a CSV file.
 			function downloadCSV() {
-				// Normalize points based on the image dimensions
-				const normalizedPoints = points.map(p => ({
-					x: p.x / imageObj.width,
-					y: (imageObj.height - p.y) / imageObj.height
+				const normalizedPoints = points.map(p => ({												// Normalize each point's coordinates based on the image dimensions.
+					x: p.x / imageObj.width,															// Normalize x-coordinate by image width.
+					y: (imageObj.height - p.y) / imageObj.height										// Normalize y-coordinate by image width.
 				}));
 
-				// Send a POST request to download the CSV file
-				fetch('{{ url_for("download_csv") }}', {
-					method: 'POST',
+				fetch('{{ url_for("download_csv") }}', {												// Send a POST request to initiate the CSV file download with normalized points.
+					method: 'POST',																		// Specify POST method for sending data.
 					headers: {
-						'Content-Type': 'application/json',
+						'Content-Type': 'application/json',												// Set content type to JSON.
 					},
-					body: JSON.stringify({points: normalizedPoints})  									// Send the normalized points in the request body.
+					body: JSON.stringify({points: normalizedPoints})  									// Convert points to JSON and include in the request body.
 				})
-				.then(response => response.json())
+				.then(response => response.json())														// Parse the response JSON.
 				.then(data => {
-					var filename = data.filename;  														// Get the filename from the server response.
-					var url = '{{ url_for("static_files", filename="") }}' + filename;  				// Build the URL to the file.
+					var filename = data.filename;  														// Retrieve the filename from the server response.
+					var url = '{{ url_for("static_files", filename="") }}' + filename;  				// Construct full URL for the file.
 					var a = document.createElement('a');  												// Create a temporary anchor element.
-					a.href = url;
-					a.download = filename;  															// Set the download attribute with the filename from the server.
-					document.body.appendChild(a);
-					a.click();  																		// Programmatically click the anchor to trigger the download.
-					a.remove();  																		// Remove the anchor element from the document.
+					a.href = url;																		// Set the URL as the anchor href.
+					a.download = filename;  															// Set the filename for download.
+					document.body.appendChild(a);														// Add the anchor to the DOM.
+					a.click();  																		// Programmatically click the anchor to start download.
+					a.remove();  																		// Remove the anchor element from the DOM after download.
 				})
 				.catch((error) => {
-					console.error('Error:', error);  													// Log any errors to the console.
+					console.error('Error:', error);  													// Log any errors encountered.
 				});
 			}
 		</script>
@@ -173,29 +168,27 @@
 		<!-- Main Contenedor -->
 		<div id="main-wrapper">
 	    	<!-- Main -->
-    		<div id="main" class="container mt-4">
-		        <div class="row main-row">
-					<div id="workspace">
-						<div id="canvas-actions-container">
-							<div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
-								<canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
-							</div>
-							<div id="action-buttons-canvas">
-								<button id="original-size" onclick="resetZoom()"><i class='fas fa-expand-arrows-alt'></i></button>
-								<button id="zoom-in" onclick="zoomIn()"><i class='fas fa-search-plus'></i></button>
-								<button id="zoom-out" onclick="zoomOut()"><i class='fas fa-search-minus'></i></button>
-								<button id="undo" onclick="undoLastPoint()"><i class='fas fa-undo'></i></button>
-							</div>
+			<div id="banner" class="upload-container">
+				<div id="workspace">
+					<div id="canvas-actions-container">
+						<div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
+							<canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
 						</div>
-						<div id="action-buttons">
-							<center>
-								<button id="reset" onclick="resetCanvas()">Reset</button>
-								<button id="download" onclick="downloadCSV()">Download</button>
-							</center>
+						<div id="action-buttons-canvas">
+							<button id="original-size" onclick="resetZoom()"><i class='fas fa-expand-arrows-alt'></i></button>
+							<button id="zoom-in" onclick="zoomIn()"><i class='fas fa-search-plus'></i></button>
+							<button id="zoom-out" onclick="zoomOut()"><i class='fas fa-search-minus'></i></button>
+							<button id="undo" onclick="undoLastPoint()"><i class='fas fa-undo'></i></button>
 						</div>
 					</div>
+					<div id="action-buttons">
+						<center>
+							<button id="reset" onclick="resetCanvas()">Reset</button>
+							<button id="download" onclick="downloadCSV()">Download</button>
+						</center>
+					</div>
 				</div>
-		    </div>
+			</div>
 		</div>
 
 
