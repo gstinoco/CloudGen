@@ -167,3 +167,6 @@ app_org.py
 CloudGen.py
 static/images/prev*
 *org*
+static/css/main*.css
+CloudGen.py
+run.py
