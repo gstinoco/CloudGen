@@ -91,7 +91,6 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
     # Calculate the minimum distance between consecutive boundary points
     dist = distance(xb, yb)/num                                                                         # Distance for the cloud generation.
 
-    
     # Cloud Generation
     min_x, min_y, max_x, max_y = boundary_polygon.bounds                                                # Bounding box coordinates for the cloud generation.
     grid_points                = generate_grid(min_x, max_x, min_y, max_y, dist)                        # Generate a grid of points with the calculated minimum distance.

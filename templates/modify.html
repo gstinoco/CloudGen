@@ -20,6 +20,8 @@
                 const dragThreshold = 5;                                                                    // Threshold distance for initiating a drag.
                 let startX, startY;                                                                         // Variables to store the starting coordinates of a drag.
                 let scale = 1;                                                                              // Variable to manage zoom level.
+                let maxX = 1;                                                                               // Initialize maxX as 1.
+                let maxY = 1;                                                                               // Initialize maxY as 1.
                 const baseWidth = 700;                                                                      // Base width of the canvas for scaling.
                 const baseHeight = 700;                                                                     // Base height of the canvas for scaling.
 
@@ -32,6 +34,10 @@
                             const dataRows = rows.slice(1);                                                 // Remove the header row by slicing the array from the second element onward.
                             points = dataRows.map(row => {                                                  // Parse each row to create a point object with x, y coordinates and a flag.
                                 const [x, y, flag] = row.split(',').map(value => parseFloat(value));        // Convert values to float.
+
+                                if (x > maxX) maxX = x;                                                     // Maximum value for maxX is updated if needed.
+                                if (y > maxY) maxY = y;                                                     // Maximum value for maxY is updated if needed.
+
                                 return {
                                     x: x * baseWidth,                                                       // Scale x-coordinate based on base width.
                                     y: (1 - y) * baseHeight,                                                // Scale and invert y-coordinate based on base height.
@@ -118,6 +124,17 @@
                         isDragging = false;                                                                 // Set dragging to false.
                         canvas.addEventListener('mousemove', initiateDrag);                                 // Add listener to check if dragging starts.
                     }
+                });
+                
+                // Event listener to display mouse coordinates on the canvas
+                canvas.addEventListener('mousemove', function (event) {
+                    const { x: mouseX, y: mouseY } = getMousePosition(event);                               // Get the mouse position relative to the canvas.
+
+                    const normalizedX = (mouseX / baseWidth) * maxX;                                        // Normalize the value of X to show on screen.
+                    const normalizedY = (1 - (mouseY / baseHeight)) * maxY;                                 // Normalize the value of Y to show on screen.
+                    
+                    document.getElementById('mouse-coordinates').textContent = `X: ${normalizedX.toFixed(6)}, Y: ${normalizedY.toFixed(6)}`;
+                                                                                                            // Update the text with the mouse coordinates.
                 });
 
                 // Function to initiate dragging when mouse movement is detected beyond the threshold.
@@ -258,6 +275,9 @@
                 <div id="canvas-actions-container">
                     <div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
                         <canvas id="canvas" width="700" height="700"></canvas>
+                        <div id="mouse-coordinates" style="position:absolute; bottom:10px; left:10px; background:rgba(255, 255, 255, 0.7); padding:5px; border-radius:5px; font-size:12px;">
+                            X: 0.00, Y: 0.00
+                        </div>
                     </div>
                     <div id="action-buttons-canvas">
                         <button id="original-size"><i class='fas fa-expand-arrows-alt'></i></button>
@@ -270,6 +290,7 @@
                         <label>Flag: <input type="text" id="flagValue" /></label>
                         <button type="button" id="updatePoint">Update Point</button>
                     </div>
+                    <br />
                 </div>
                 <div id="action-buttons">
                     <center>
