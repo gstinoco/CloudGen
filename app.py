@@ -4,11 +4,11 @@ import numpy as np
 import getpass
 import logging
 import csv
-import io
 import os
 os.environ['MPLCONFIGDIR'] = "/tmp/" + getpass.getuser()
 
 # Import parts of some libraries needed for the code later
+#import dmsh, meshio, meshplex, x21
 from flask import Flask, render_template, request, redirect, Response, send_from_directory
 from shapely.geometry import Point, Polygon
 from werkzeug.utils import secure_filename
@@ -126,8 +126,62 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
 
     return p
 
+"""
+Temporary under construction
+
+
+def CreateCloud_v2(xb, yb, h_coor_sets, num, rand):
+    Create an adaptive cloud of points with potential holes inside a polygon.
+
+    Parameters:
+        xb (array):             x-coordinates of the boundary.
+        yb (array):             y-coordinates of the boundary.
+        h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
+        num (int):              How dense the cloud should be.
+
+    Returns:
+        np.array:               Array of generated points with boundary and hole flags.
+
+    # Variable initialization
+    dist = np.max(np.sqrt(np.diff(xb.T)**2 + np.diff(yb.T)**2))/num                                     # Calculate the distance between points in the boundary.
+    pb   = np.column_stack((xb, yb))                                                                    # Stack x and y boundary coordinates.
+    geo  = dmsh.Polygon(pb)                                                                             # Create a polygon from boundary points
+    
+    ## Holes initialization
+    for hx, hy in h_coor_sets:                                                                          # For each of the holes.
+        hole_pb  = np.column_stack((hx, hy))                                                            # Stack x and y coordinates of the hole.
+        hole_geo = dmsh.Polygon(hole_pb)                                                                # Create a polygon for the hole.
+        geo     -= hole_geo                                                                             # Subtract hole geometry from the main polygon.
+    
+    # Cloud Generation
+    X, _       = dmsh.generate(geo, dist)                                                               # Generate points within the polygon.
+    poly       = Polygon(pb).buffer(-dist/4)                                                            # Create a buffer around the polygon boundary.
+    hole_polys = [Polygon(np.column_stack((hx, hy))).buffer(dist/4) for hx, hy in h_coor_sets]          # Buffer for holes.
+    points     = [Point(point[0], point[1]) for point in X]                                             # Convert points to shapely Point objects.
+    A          = np.zeros([len(points), 1])                                                             # Initialize an array to store boundary/hole flags.
+    
+    # Flag the nodes at the boundaries
+    for i, point in enumerate(points):                                                                  # For each of the points.
+        if not point.within(poly):                                                                      # If the node is not inside the external boundary.
+            A[i] = 1                                                                                    # Mark as a node within the external boundary.
+        else:
+            for hole_poly in hole_polys:                                                                # For each of the nodes inside the external boundary.
+                if point.within(hole_poly):                                                             # If the node is in the internal boundary.
+                    A[i] = 2                                                                            # Mark as a node within a internal boundary.
+                    break
+    p = np.column_stack((X, A))                                                                         # Combine points and flags into a single array
+
+    # Randomization
+    if rand != 0:                                                                                       # If random is selected.
+        mask = p[:, 2] == 0                                                                             # Create a mask for points with boundary_flag == 0.
+        perturbation = 0.5 * dist * (np.random.rand(np.sum(mask), 2) - 0.5)                             # Define a perturbation for each internal node.
+        p[mask, 0:2] += perturbation                                                                    # Apply the perturbation to internal nodes.
+
+    return p
+"""
+
 # Function to load CSV files and create the point cloud
-def load_and_create_cloud(exterior_file, interior_files, num, rand):
+def load_and_create_cloud(exterior_file, interior_files, num, rand, mod):
     """
     Load CSV files and create the point cloud with possible randomization.
 
@@ -152,8 +206,11 @@ def load_and_create_cloud(exterior_file, interior_files, num, rand):
         hy     = pat_in['y'].values                                                                     # Get y-coordinates of the hole.
         h_coor_sets.append((hx, hy))                                                                    # Append hole coordinates.
 
-    # Cloud creation.
-    p = CreateCloud(xb, yb, h_coor_sets, num, rand)                                                     # Create the cloud of points.
+    # Select the cloud creation method based on the value of "mod".
+    if mod == 0:
+        p = CreateCloud(xb, yb, h_coor_sets, num, rand)                                                 # Use a simple implementation.
+#    else:
+#        p = CreateCloud_v2(xb, yb, h_coor_sets, num, rand)                                              # Use the original implementation
 
     return p, xb, yb, h_coor_sets
 
@@ -333,11 +390,13 @@ def upload_files():
                 interior_paths.append(path)                                                             # Save the file path.
 
         # Get parameters from HTML.
-        num = int(request.form.get('num', 100))                                                         # Get num from HTML form.
+        num  = int(request.form.get('num', 100))                                                        # Get num from HTML form.
         rand = int(request.form.get('rand', 100))                                                       # Get rand from HTML form.
+        #mod  = int(request.form.get('mod', 100))                                                       # Get mod form HTML form.
+        mod = 0                                                                                         # mod 0 for regular generation.
         
         # Cloud creation.
-        p, xb, yb, h_coor_sets = load_and_create_cloud(exterior_path, interior_paths, num, rand)        # Create the cloud of points.
+        p, xb, yb, h_coor_sets = load_and_create_cloud(exterior_path, interior_paths, num, rand, mod)   # Create the cloud of points.
         
         # Delete Files
         for path in interior_paths:                                                                     # For each path in external boundaries.

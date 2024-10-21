@@ -133,7 +133,7 @@
                                 <button>Select a file</button>
                             </div>
                             <div class="success">
-                                <h10>File Loaded: <span class="file-name"></span></h10>
+                                <h10>File(s) Loaded: <span class="file-name"></span></h10>
                                 <br /><br />
                                 <button type="button">Change file</button>
                             </div>
@@ -143,16 +143,25 @@
                     <div class="slidecontainer">
                         <h12>How dense would you like the cloud?</h12>
                         <br /> <br />
-                        <p1>min <input type="range" min="1" max="5" value="1" class="slider" id="num" name="num"> max</p1>
+                        <p1>min <input type="range" min="2" max="6" value="2" class="slider" id="num" name="num"> max</p1>
                     </div>
-                    <br /><br />
-                    <div class="slidecontainer">
-                        <h12>Would you like a random or a uniform distribution?</h12>
-                        <br /> <br />
-                        <p1>
-                            <input type="radio" value="1" id="rand01" name="rand" checked/><label for="rand01">Random</label>
-                            <input type="radio" value="0" id="rand00" name="rand"><label for="rand00">Uniform</label>
-                        </p1>
+                    <div class="radio-container">
+                        <!--
+                        <div class="radio-group">
+                            <h12>Model for generation:</h12>
+                            <p1>
+                                <label for="mod00"> <input type="radio" value="0" id="mod00" name="mod" checked /> Simple distribution </label>
+                                <label for="mod01"> <input type="radio" value="1" id="mod01" name="mod" /> Adaptive distribution</label>
+                            </p1>
+                        </div>
+                        -->
+                        <div class="radio-group">
+                            <h12>Randomize:</h12>
+                            <p1>
+                                <label for="rand00"><input type="radio" value="0" id="rand00" name="rand" checked /> False</label>
+                                <label for="rand01"><input type="radio" value="1" id="rand01" name="rand" /> True</label>
+                            </p1>
+                        </div>
                     </div>
                     <br /><br />
                     <div id="action-buttons">
