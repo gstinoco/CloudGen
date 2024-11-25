@@ -3,12 +3,12 @@ import pandas as pd
 import numpy as np
 import getpass
 import logging
+import dmsh
 import csv
 import os
 os.environ['MPLCONFIGDIR'] = "/tmp/" + getpass.getuser()
 
 # Import parts of some libraries needed for the code later
-#import dmsh, meshio, meshplex, x21
 from flask import Flask, render_template, request, redirect, Response, send_from_directory
 from shapely.geometry import Point, Polygon
 from werkzeug.utils import secure_filename
@@ -126,11 +126,9 @@ def CreateCloud(xb, yb, h_coor_sets, num, rand):
 
     return p
 
-"""
-Temporary under construction
-
-
+'''
 def CreateCloud_v2(xb, yb, h_coor_sets, num, rand):
+    """
     Create an adaptive cloud of points with potential holes inside a polygon.
 
     Parameters:
@@ -141,6 +139,7 @@ def CreateCloud_v2(xb, yb, h_coor_sets, num, rand):
 
     Returns:
         np.array:               Array of generated points with boundary and hole flags.
+    """
 
     # Variable initialization
     dist = np.max(np.sqrt(np.diff(xb.T)**2 + np.diff(yb.T)**2))/num                                     # Calculate the distance between points in the boundary.
@@ -178,7 +177,7 @@ def CreateCloud_v2(xb, yb, h_coor_sets, num, rand):
         p[mask, 0:2] += perturbation                                                                    # Apply the perturbation to internal nodes.
 
     return p
-"""
+'''
 
 # Function to load CSV files and create the point cloud
 def load_and_create_cloud(exterior_file, interior_files, num, rand, mod):
@@ -209,8 +208,8 @@ def load_and_create_cloud(exterior_file, interior_files, num, rand, mod):
     # Select the cloud creation method based on the value of "mod".
     if mod == 0:
         p = CreateCloud(xb, yb, h_coor_sets, num, rand)                                                 # Use a simple implementation.
-#    else:
-#        p = CreateCloud_v2(xb, yb, h_coor_sets, num, rand)                                              # Use the original implementation
+    else:
+        p = CreateCloud_v2(xb, yb, h_coor_sets, num, rand)                                              # Use the original implementation
 
     return p, xb, yb, h_coor_sets
 
@@ -392,8 +391,7 @@ def upload_files():
         # Get parameters from HTML.
         num  = int(request.form.get('num', 100))                                                        # Get num from HTML form.
         rand = int(request.form.get('rand', 100))                                                       # Get rand from HTML form.
-        #mod  = int(request.form.get('mod', 100))                                                       # Get mod form HTML form.
-        mod = 0                                                                                         # mod 0 for regular generation.
+        mod  = int(request.form.get('mod', 100))                                                        # Get mod form HTML form.
         
         # Cloud creation.
         p, xb, yb, h_coor_sets = load_and_create_cloud(exterior_path, interior_paths, num, rand, mod)   # Create the cloud of points.
