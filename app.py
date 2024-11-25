@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import getpass
 import logging
-import dmsh
+#import dmsh
 import csv
 import os
 os.environ['MPLCONFIGDIR'] = "/tmp/" + getpass.getuser()
