@@ -18,7 +18,6 @@
 			window.onload = function() {
 				canvas   = document.getElementById('imageCanvas');										// Select the canvas element by its ID.
 				context  = canvas.getContext('2d');														// Get Canvas' 2D drawing context.
-
 				imageObj = new Image();																	// Create a new image object to load the source image.
 
 				imageObj.onload = function() {															// When the image is fully loaded, proceed to draw it on the canvas.
@@ -175,10 +174,10 @@
 							<canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
 						</div>
 						<div id="action-buttons-canvas">
-							<button id="original-size" onclick="resetZoom()"><i class='fas fa-expand-arrows-alt'></i></button>
-							<button id="zoom-in" onclick="zoomIn()"><i class='fas fa-search-plus'></i></button>
-							<button id="zoom-out" onclick="zoomOut()"><i class='fas fa-search-minus'></i></button>
-							<button id="undo" onclick="undoLastPoint()"><i class='fas fa-undo'></i></button>
+							<button id="original-size" onclick="resetZoom()" aria-label="Original Size"><i class='fas fa-expand-arrows-alt'></i></button>
+							<button id="zoom-in" onclick="zoomIn()" aria-label="Zoom In"><i class='fas fa-search-plus'></i></button>
+							<button id="zoom-out" onclick="zoomOut()" aria-label="Zoom Out"><i class='fas fa-search-minus'></i></button>
+							<button id="undo" onclick="undoLastPoint()" aria-label="Undo"><i class='fas fa-undo'></i></button>
 						</div>
 					</div>
 					<div id="action-buttons">
