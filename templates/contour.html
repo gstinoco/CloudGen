@@ -4,15 +4,98 @@
         <title>CloudGen: A Simple Cloud of Points Generator</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!--<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">-->
-		<link href="../static/css/style.css" rel="stylesheet">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" >
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <!-- Header -->
+		<header class="navbar navbar-expand-lg">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/">
+					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
+					mGFD: Cloud Generator
+				</a>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('index') }}">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('upload_image') }}">ContourCreator</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('upload_files') }}">CloudGenerator</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('modify') }}">CloudMod</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('about') }}">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</header>
+
+		<!-- Main Contenedor -->
+		<main class="container-fluid bg-image">
+			<div class="hero-content">
+				<h1 class="display-4">ContourCreator</h1>
+                <p class="lead mt-3">Click on the image to draw points.</p>
+				<div id="canvas-actions-container">
+					<div id="canvas-container" style="width:55vw; height:55vh; overflow:auto;">
+						<canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
+					</div>
+					<div id="action-buttons-canvas">
+						<button id="original-size" onclick="resetZoom()" aria-label="Original Size" title="Original Size"><i class='fas fa-expand-arrows-alt'></i></button>
+						<button id="zoom-in" onclick="zoomIn()" aria-label="Zoom In" title="Zoom In"><i class='fas fa-search-plus'></i></button>
+						<button id="zoom-out" onclick="zoomOut()" aria-label="Zoom Out" title="Zoom Out"><i class='fas fa-search-minus'></i></button>
+						<button id="undo" onclick="undoLastPoint()" aria-label="Undo" title="Undo"><i class='fas fa-undo'></i></button>
+					</div>
+				</div>
+				<div id="action-buttons">
+					<div id="left-group">
+						<button id="new-zone" onclick="createNewZone()" aria-label="New Zone" title="New Zone">New Zone</button>
+						<div id="zone-indicator">
+							Current Zone: <span id="active-zone">1</span>
+						</div>
+					</div>
+					<div id="right-group">
+						<button id="reset" onclick="resetCanvas()">Reset</button>
+						<button id="download" onclick="downloadCSV()">Download</button>
+						<div id="zone-indicator">
+							&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+        <!-- Footer -->
+		<footer class="text-center py-3">
+			<div class="container">
+				<div class="logos mb-3">
+					<a href="https://www.umich.mx/"><img src="../static/images/umsnh.webp" alt="UMSNH Logo" class="footer-image" /></a>
+					<a href="https://conahcyt.mx/"><img src="../static/images/conahcyt.webp" alt="CONAHCYT Logo" class="footer-image" /></a>
+					<a href="https://siiia.com.mx/"><img src="../static/images/siiia.webp" alt="SIIIA MATH Logo" class="footer-image" /></a>
+				</div>
+				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
+			</div>
+		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 		<script>
 			// Declare variables for canvas, context, and image object.
 			var canvas, context, imageObj;																// Canvas and context for drawing, and an image object to load the image.
 			var points = [];  																			// Array to store points clicked on the canvas.
 			var scale  = 1;  																			// Scale factor for zoom.
+			let currentFlag = 1; 																		// Current zone flag.
+			const zoneColors = ["#FF0000"]; 															// Red color for the first zone.
 
 			// Function to initialize canvas and load the image.
 			window.onload = function() {
@@ -22,7 +105,7 @@
 
 				imageObj.onload = function() {															// When the image is fully loaded, proceed to draw it on the canvas.
 					var vw = window.innerWidth / 100;													// Calculate viewport width in vw units.
-        			scale = (60 * vw) / imageObj.width;													// Set initial scale based on viewport and image width.
+        			scale = (55 * vw) / imageObj.width;													// Set initial scale based on viewport and image width.
 					drawImage();  																		// Adjust the initial size of the canvas.
 				};
 				
@@ -36,22 +119,14 @@
 				context.clearRect(0, 0, canvas.width, canvas.height);  									// Clear the canvas to prepare for new drawing.
 				context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);  						// Draw the scaled image on the canvas.
 				
-				if (points.length > 0) {																// If there are points in the points array, proceed to draw them.
-					context.beginPath();																// Start a new path for drawing lines between points.
-					context.moveTo(points[0].x * scale, points[0].y * scale);  							// Move to the position of the first point.
-					for (var i = 1; i < points.length; i++) {
-						context.lineTo(points[i].x * scale, points[i].y * scale);  						// Draw line to the next point.
-						context.moveTo(points[i].x * scale, points[i].y * scale);  						// Move to the position of the next point.
-					}
-					context.strokeStyle = '#000000';													// Set line color to black.
-					context.lineWidth = 2;																// Set the line width to 2px.
-					context.stroke();																	// Draw the line on the canvas.
-
-					points.forEach(p => {																// Draw a red circle at each point location.
-						context.fillStyle = "#FF0000";													// Set fill color to red for each point.
-						context.beginPath();															// Begin a new path for each point.
-						context.arc(p.x * scale, p.y * scale, 5, 0, 2 * Math.PI);  						// Draw a circle centered at the point's location, with radius 5.
-						context.fill();																	// Fill the circle with red color.
+				// Draw all points, grouped by flag
+				if (points.length > 0){
+					points.forEach(point => {
+						const color = zoneColors[point.flag - 1];
+						context.fillStyle = color;
+						context.beginPath();
+						context.arc(point.x * scale, point.y * scale, 5, 0, 2 * Math.PI);
+						context.fill();
 					});
 				}
 			}
@@ -71,7 +146,7 @@
 			// Function to reset the zoom level to the initial scale.
 			function resetZoom() {
 				var vw = window.innerWidth / 100;														// Calculate viewport width in vw units.
-        		scale = (60 * vw) / imageObj.width;														// Reset scale to the initial value based on viewport and image width.
+        		scale = (55 * vw) / imageObj.width;														// Reset scale to the initial value based on viewport and image width.
 				drawImage();  																			// Redraw the image and points at the reset scale.
 			}
 
@@ -80,9 +155,19 @@
 				var rect = canvas.getBoundingClientRect();  											// Get the canvas's bounding rectangle.
 				var xPosition = (e.clientX - rect.left) / scale;  										// Calculate the x position of the click relative to the canvas, adjusted for scale.
 				var yPosition = (e.clientY - rect.top) / scale;  										// Calculate the y position of the click relative to the canvas, adjusted for scale.
+				
+				if (xPosition >= 0 && xPosition <= imageObj.width && yPosition >= 0 && yPosition <= imageObj.height) {
+    				points.push({ x: xPosition, y: yPosition, flag: currentFlag });  					// Add the new point to the points array.
+    				drawImage();  																		// Redraw the image and points with the newly added point.
+				}
+			}
 
-				points.push({x: xPosition, y: yPosition});  											// Add the new point to the points array.
-				drawImage();  																			// Redraw the image and points with the newly added point.
+			// Create a new zone
+			function createNewZone() {
+				currentFlag++;
+				const newColor = getRandomColor();
+				zoneColors.push(newColor);
+				document.getElementById('active-zone').textContent = currentFlag;
 			}
 
 			// Function to undo the last point added to the points array.
@@ -94,113 +179,56 @@
 			}
 
 			// Function to reset the canvas by clearing all points.
+
+
 			function resetCanvas() {
-				points = [];  																			// Clear the points array to reset the canvas.
-				drawImage();  																			// Redraw the image without any points.
+				if (confirm("Are you sure you want to reset all points?")) {
+					points = [];
+					currentFlag = 1;
+					zoneColors.length = 0;
+					zoneColors.push("#FF0000");
+					
+					const zoneIndicator = document.getElementById('active-zone');
+					if (zoneIndicator) {
+						zoneIndicator.textContent = currentFlag;
+					}
+					drawImage();
+				}
 			}
 
 			// Function to download the points array as a CSV file.
 			function downloadCSV() {
-				const normalizedPoints = points.map(p => ({												// Normalize each point's coordinates based on the image dimensions.
-					x: p.x / imageObj.width,															// Normalize x-coordinate by image width.
-					y: (imageObj.height - p.y) / imageObj.height										// Normalize y-coordinate by image width.
+				const normalizedPoints = points.map(p => ({
+					x: p.x / imageObj.width,
+					y: (imageObj.height - p.y) / imageObj.height,
+					flag: p.flag
 				}));
 
-				fetch('{{ url_for("download_csv") }}', {												// Send a POST request to initiate the CSV file download with normalized points.
-					method: 'POST',																		// Specify POST method for sending data.
-					headers: {
-						'Content-Type': 'application/json',												// Set content type to JSON.
-					},
-					body: JSON.stringify({points: normalizedPoints})  									// Convert points to JSON and include in the request body.
+				fetch('{{ url_for("download_csv") }}', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ points: normalizedPoints })
 				})
-				.then(response => response.json())														// Parse the response JSON.
+				.then(response => response.json())
 				.then(data => {
-					var filename = data.filename;  														// Retrieve the filename from the server response.
-					var url = '{{ url_for("static_files", filename="") }}' + filename;  				// Construct full URL for the file.
-					var a = document.createElement('a');  												// Create a temporary anchor element.
-					a.href = url;																		// Set the URL as the anchor href.
-					a.download = filename;  															// Set the filename for download.
-					document.body.appendChild(a);														// Add the anchor to the DOM.
-					a.click();  																		// Programmatically click the anchor to start download.
-					a.remove();  																		// Remove the anchor element from the DOM after download.
+					const filename = data.filename;
+					const url = '{{ url_for("static_files", filename="") }}' + filename;
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = filename;
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
 				})
-				.catch((error) => {
-					console.error('Error:', error);  													// Log any errors encountered.
+				.catch(error => {
+					console.error('Error:', error);
+					alert("Couldn't download the CSV file. Please try again.");
 				});
 			}
+
+			function getRandomColor() {
+				return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+			}
 		</script>
-    </head>
-
-    <body>
-        <!-- Header -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('index') }}" id="logo"><img src="../static/images/logo.png" alt="CloudGen Logo" height="60"/> mGFD: CloudGenerator</a>
-	           	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    	           	<span class="navbar-toggler-icon"></span>
-	       	    </button>
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto">
-						<li class="nav-item">
-							<a href="{{ url_for('index') }}" class="nav-link">Home</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('upload_image') }}" class="nav-link">ContourCreator</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('upload_files') }}" class="nav-link">CloudGenerator</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('modify') }}" class="nav-link">CloudMod</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('about') }}" class="nav-link">About</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('howto') }}" class="nav-link"><i class='fas fa-question-circle'></i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-		<!-- Main Contenedor -->
-		<div id="main-wrapper">
-	    	<!-- Main -->
-			<div id="banner" class="upload-container">
-				<div id="workspace">
-					<div id="canvas-actions-container">
-						<div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
-							<canvas id="imageCanvas" onclick="getClickPosition(event)"></canvas>
-						</div>
-						<div id="action-buttons-canvas">
-							<button id="original-size" onclick="resetZoom()" aria-label="Original Size"><i class='fas fa-expand-arrows-alt'></i></button>
-							<button id="zoom-in" onclick="zoomIn()" aria-label="Zoom In"><i class='fas fa-search-plus'></i></button>
-							<button id="zoom-out" onclick="zoomOut()" aria-label="Zoom Out"><i class='fas fa-search-minus'></i></button>
-							<button id="undo" onclick="undoLastPoint()" aria-label="Undo"><i class='fas fa-undo'></i></button>
-						</div>
-					</div>
-					<div id="action-buttons">
-						<center>
-							<button id="reset" onclick="resetCanvas()">Reset</button>
-							<button id="download" onclick="downloadCSV()">Download</button>
-						</center>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-        <!-- Footer -->
-		<footer class="footer">
-			<div class="container text-center">
-				<div class="d-flex justify-content-center align-items-center">
-					<a href="#"><img src="../static/images/UMSNH.png" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/CONAHCYT.png" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/siiia.png" alt="SIIIA MATH Logo" class="footer-image" /></a>
-				</div>
-				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
-			</div>
-		</footer>
     </body>
 </html>

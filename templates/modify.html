@@ -2,11 +2,82 @@
 <html lang="es">
     <head>
         <title>CloudGen: A Simple Cloud of Points Generator</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <link href="../static/css/style.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+    </head>
+    <body>
+         <!-- Header -->
+		<header class="navbar navbar-expand-lg">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/">
+					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
+					mGFD: Cloud Generator
+				</a>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('upload_image') }}">ContourCreator</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('upload_files') }}">CloudGenerator</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('modify') }}">CloudMod</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+						<li class="nav-item"><a class="nav-link" href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</header>
+
+        <!-- Main Contenedor -->
+        <main class="container-fluid bg-image">
+			<div class="hero-content">
+                <h1 class="display-4">CloudMod</h1>
+                <p class="lead mt-3">Click on a point to update its values.</p>
+				<div id="canvas-actions-container">
+					<div id="canvas-container" style="width:55vw; height:55vh; overflow:auto; background-color: rgba(255, 255, 255, 0.7);">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <div id="mouse-coordinates" class="mouse-coordinates">
+                        X: 0.00, Y: 0.00
+                    </div>
+                    <div id="action-buttons-canvas">
+                        <button id="original-size"><i class='fas fa-expand-arrows-alt'></i></button>
+                        <button id="zoom-in"><i class='fas fa-search-plus'></i></button>
+                        <button id="zoom-out"><i class='fas fa-search-minus'></i></button>
+                    </div>
+				</div>
+                <div id="action-buttons">
+					<label>X: <input type="number" id="xValue" step="0.0001" /></label>
+                    <label>Y: <input type="number" id="yValue" step="0.0001" /></label>
+                    <label>Region: <input type="number" id="flagValue" step="1" /></label>
+                    <label>Flag: <input type="number" id="boundaryFlagValue" step="1" /></label>
+                    <button type="button" id="updatePoint">Update Point</button>
+				</div>
+                
+				<div id="action-buttons">
+					<div id="left-group">
+					</div>
+					<div id="right-group">
+						<button type="button" id="downloadCSV">Download modified cloud</button>
+					</div>
+				</div>
+			</div>
+		</main>
+
+        <!-- Footer -->
+		<footer class="text-center py-3">
+			<div class="container">
+				<div class="logos mb-3">
+					<a href="https://www.umich.mx/"><img src="../static/images/umsnh.webp" alt="UMSNH Logo" class="footer-image" /></a>
+					<a href="https://conahcyt.mx/"><img src="../static/images/conahcyt.webp" alt="CONAHCYT Logo" class="footer-image" /></a>
+					<a href="https://siiia.com.mx/"><img src="../static/images/siiia.webp" alt="SIIIA MATH Logo" class="footer-image" /></a>
+				</div>
+				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
+			</div>
+		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             // Wait until the DOM is fully loaded before executing the script.
             document.addEventListener("DOMContentLoaded", function () {
@@ -27,28 +98,27 @@
 
                 // Function to load points from an external CSV file
                 function loadPoints() {
-                    fetch('{{ url_for("uploaded_file", filename=filename) }}')                              // Fetch the CSV file from the server.
-                        .then(response => response.text())                                                  // Convert the response to text.
+                    fetch('{{ url_for("uploaded_file", filename=filename) }}')
+                        .then(response => response.text())
                         .then(csvContent => {
-                            const rows = csvContent.split('\n').filter(row => row.trim().length > 0);       // Split the CSV content into rows and filter out any empty rows.
-                            const dataRows = rows.slice(1);                                                 // Remove the header row by slicing the array from the second element onward.
-                            points = dataRows.map(row => {                                                  // Parse each row to create a point object with x, y coordinates and a flag.
-                                const [x, y, flag] = row.split(',').map(value => parseFloat(value));        // Convert values to float.
-
-                                if (x > maxX) maxX = x;                                                     // Maximum value for maxX is updated if needed.
-                                if (y > maxY) maxY = y;                                                     // Maximum value for maxY is updated if needed.
+                            const rows = csvContent.split('\n').filter(row => row.trim().length > 0);
+                            const dataRows = rows.slice(1); // Omit header row
+                            points = dataRows.map(row => {
+                                const [x, y, flag, boundaryFlag] = row.split(',').map(value => parseFloat(value));
+                                if (x > maxX) maxX = x;
+                                if (y > maxY) maxY = y;
 
                                 return {
-                                    x: x * baseWidth,                                                       // Scale x-coordinate based on base width.
-                                    y: (1 - y) * baseHeight,                                                // Scale and invert y-coordinate based on base height.
-                                    flag: flag                                                              // Assign the flag to the point.
+                                    x: x * baseWidth,
+                                    y: (1 - y) * baseHeight,
+                                    flag,
+                                    boundaryFlag,
                                 };
                             });
-                            adjustCanvasSize();                                                             // Adjust the canvas size based on the current scale.
-                            drawPoints();                                                                   // Draw the points on the canvas.
+                            adjustCanvasSize();
+                            drawPoints();
                         })
-                        .catch(error => console.error("Couldn't load the points. Please check the file:", error));
-                                                                                                            // Log any errors encountered.
+                        .catch(error => console.error("Couldn't load points:", error));
                 }
 
                 // Function to draw points on the canvas
@@ -183,20 +253,23 @@
                         document.getElementById('yValue').value = (1 - selectedPoint.y / baseHeight).toFixed(16);
                                                                                                             // Update y-value input
                         document.getElementById('flagValue').value = selectedPoint.flag;                    // Update flag input
+                        document.getElementById('boundaryFlagValue').value = selectedPoint.boundaryFlag;    // Update flag input
                     }
                 });
                 
                 // Event listener for 'click' on the update button to modify a point's values
                 document.getElementById('updatePoint').addEventListener('click', function () {
                     if (selectedPoint) {
-                        const newX = parseFloat(document.getElementById('xValue').value) * baseWidth;       // Parse input value for x.
-                        const newY = (1 - parseFloat(document.getElementById('yValue').value)) * baseHeight;// Parse input value for y.
-                        const newFlag = parseInt(document.getElementById('flagValue').value);               // Parse input value for flag.
+                        const newX = parseFloat(document.getElementById('xValue').value) * baseWidth;
+                        const newY = (1 - parseFloat(document.getElementById('yValue').value)) * baseHeight;
+                        const newFlag = parseInt(document.getElementById('flagValue').value, 10);
+                        const newBoundaryFlag = parseInt(document.getElementById('boundaryFlagValue').value, 10);
 
-                        selectedPoint.x = newX;                                                             // Update selected point's x-value.
-                        selectedPoint.y = newY;                                                             // Update selected point's y-value.
-                        selectedPoint.flag = newFlag;                                                       // Update selected point's flag-value.
-                        drawPoints();                                                                       // Redraw points with updated values.
+                        selectedPoint.x = newX;
+                        selectedPoint.y = newY;
+                        selectedPoint.flag = newFlag;
+                        selectedPoint.boundaryFlag = newBoundaryFlag;
+                        drawPoints();
                     }
                 });
 
@@ -205,26 +278,26 @@
 
                 // Function to generate and download a CSV file of the points
                 function downloadCSV() {
-                    let csvContent = "x,y,boundary_flag\n";                                                 // Initialize CSV content with headers.
+                    let csvContent = "x,y,flag,boundary_flag\n";
                     points.forEach(point => {
-                        const x = (point.x / baseWidth).toFixed(16);                                        // Normalize x coordinates and add each point to CSV content.
-                        const y = (1 - point.y / baseHeight).toFixed(16);                                   // Normalize y coordinates and add each point to CSV content.
-                        csvContent += `${x},${y},${point.flag}\n`;                                          // Append normalized point data.
+                        const x = (point.x / baseWidth).toFixed(16);
+                        const y = (1 - point.y / baseHeight).toFixed(16);
+                        csvContent += `${x},${y},${point.flag},${point.boundaryFlag}\n`;
                     });
 
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });               // Create a Blob with the CSV data.
-                    const url = URL.createObjectURL(blob);                                                  // Generate a download URL.
-                    
-                    const now = new Date();                                                                 // Get current date and time for timestamp.
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+
+                    const now = new Date();
                     const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
-                    
-                    const link = document.createElement("a");                                               // Create a temporary link to initiate the CSV download.
-                    link.setAttribute("href", url);                                                         // Set the Blob URL as the link href.
-                    link.setAttribute("download", `mcloud_${timestamp}.csv`);                               // Set the download filename.
-                    document.body.appendChild(link);                                                        // Add the link to the document.
-                    link.click();                                                                           // Programmatically click the link to start download.
-                    document.body.removeChild(link);                                                        // Remove the link from the document.
-                    URL.revokeObjectURL(url);                                                               // Release memory by revoking the URL.
+
+                    const link = document.createElement("a");
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", `mcloud_${timestamp}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
                 }
                 
                 document.getElementById('zoom-in').addEventListener('click', zoomIn);                       // Set up event a listener for zoom in button.
@@ -234,82 +307,5 @@
                 loadPoints();                                                                               // Load points from the CSV file when the page is loaded
             });
         </script>
-    </head>
-    <body>
-        <!-- Header -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('index') }}" id="logo"><img src="../static/images/logo.png" alt="CloudGen Logo" height="60"/> mGFD: CloudGenerator</a>
-	           	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    	           	<span class="navbar-toggler-icon"></span>
-	       	    </button>
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto">
-						<li class="nav-item">
-							<a href="{{ url_for('index') }}" class="nav-link">Home</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('upload_image') }}" class="nav-link">ContourCreator</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('upload_files') }}" class="nav-link">CloudGenerator</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('modify') }}" class="nav-link">CloudMod</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('about') }}" class="nav-link">About</a>
-						</li>
-						<li class="nav-item">
-							<a href="{{ url_for('howto') }}" class="nav-link"><i class='fas fa-question-circle'></i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-        <!-- Main Contenedor -->
-		<div id="main-wrapper">
-	    	<!-- Main -->
-    		<div id="banner" class="upload-container">
-                <div id="canvas-actions-container">
-                    <div id="canvas-container" style="width:60vw; height:60vh; overflow:auto;">
-                        <canvas id="canvas" width="700" height="700"></canvas>
-                        <div id="mouse-coordinates" style="position:absolute; bottom:10px; left:10px; background:rgba(255, 255, 255, 0.7); padding:5px; border-radius:5px; font-size:12px;">
-                            X: 0.00, Y: 0.00
-                        </div>
-                    </div>
-                    <div id="action-buttons-canvas">
-                        <button id="original-size"><i class='fas fa-expand-arrows-alt'></i></button>
-                        <button id="zoom-in"><i class='fas fa-search-plus'></i></button>
-                        <button id="zoom-out"><i class='fas fa-search-minus'></i></button>
-                    </div>
-                    <div class="point-controls">
-                        <label>X: <input type="number" id="xValue" /></label>
-                        <label>Y: <input type="number" id="yValue" /></label>
-                        <label>Flag: <input type="text" id="flagValue" /></label>
-                        <button type="button" id="updatePoint">Update Point</button>
-                    </div>
-                    <br />
-                </div>
-                <div id="action-buttons">
-                    <center>
-                        <button type="button" id="downloadCSV">Download modified cloud</button>
-                    </center>
-                </div>
-            </div>
-		</div>
-
-        <!-- Footer -->
-		<footer class="footer">
-			<div class="container text-center">
-				<div class="d-flex justify-content-center align-items-center">
-					<a href="#"><img src="../static/images/UMSNH.png" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/CONAHCYT.png" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/siiia.png" alt="SIIIA MATH Logo" class="footer-image" /></a>
-				</div>
-				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
-			</div>
-		</footer>
     </body>
 </html>

@@ -4,71 +4,78 @@
 		<title>CloudGen: A Simple Cloud of Points Generator</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!--<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">-->
-		<link href="../static/css/style.css" rel="stylesheet">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" >
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
 	</head>
 
     <body>
         <!-- Header -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<header class="navbar navbar-expand-lg">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('index') }}" id="logo"><img src="../static/images/logo.png" alt="CloudGen Logo" height="60"/> mGFD: CloudGenerator</a>
-	           	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    	           	<span class="navbar-toggler-icon"></span>
-	       	    </button>
+				<a class="navbar-brand" href="/">
+					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
+					mGFD: Cloud Generator
+				</a>
 				<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="navbar-nav ms-auto">
 						<li class="nav-item">
-							<a href="{{ url_for('index') }}" class="nav-link">Home</a>
+							<a class="nav-link" href="{{ url_for('index') }}">Home</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('upload_image') }}" class="nav-link">ContourCreator</a>
+							<a class="nav-link" href="{{ url_for('upload_image') }}">ContourCreator</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('upload_files') }}" class="nav-link">CloudGenerator</a>
+							<a class="nav-link" href="{{ url_for('upload_files') }}">CloudGenerator</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('modify') }}" class="nav-link">CloudMod</a>
+							<a class="nav-link" href="{{ url_for('modify') }}">CloudMod</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('about') }}" class="nav-link">About</a>
+							<a class="nav-link" href="{{ url_for('about') }}">About</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('howto') }}" class="nav-link"><i class='fas fa-question-circle'></i></a>
+							<a class="nav-link" href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
 						</li>
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</header>
 
 		<!-- Main Contenedor -->
-		<div id="main-wrapper">
-	    	<!-- Main -->
-    		<div id="banner" class="upload-container">
-		        <center>
-					<img src="{{ url_for('static_files', filename=image_name) }}" alt="Result Plot" height="800"><br />
-
-					<div id="action-buttons">
+		<main class="container-fluid bg-image">
+			<div class="hero-content">
+				<h1 class="display-4">CloudGenerator</h1>
+                <p class="lead mt-3">Resulting cloud of points.</p>
+				<div id="canvas-actions-container">
+					<div id="canvas-container" style="width:55vw; height:55vh; overflow:auto;">
+						<img src="{{ url_for('static_files', filename=image_name) }}" alt="Result Plot" height="600px" width="800px"> <br />
+					</div>
+				</div>
+				<div id="action-buttons">
+					<div id="left-group">
+					</div>
+					<div id="right-group">
 						<button onclick='location.href = "{{ url_for('static_files', filename=p_csv_name) }}" '>Download Points</button>
 					</div>
-				</center>
-		    </div>
-		</div>
+				</div>
+			</div>
+		</main>
 
 
         <!-- Footer -->
-		<footer class="footer">
-			<div class="container text-center">
-				<div class="d-flex justify-content-center align-items-center">
-					<a href="#"><img src="../static/images/UMSNH.png" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/CONAHCYT.png" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/siiia.png" alt="SIIIA MATH Logo" class="footer-image" /></a>
+		<footer class="text-center py-3">
+			<div class="container">
+				<div class="logos mb-3">
+					<a href="https://www.umich.mx/"><img src="../static/images/umsnh.webp" alt="UMSNH Logo" class="footer-image" /></a>
+					<a href="https://conahcyt.mx/"><img src="../static/images/conahcyt.webp" alt="CONAHCYT Logo" class="footer-image" /></a>
+					<a href="https://siiia.com.mx/"><img src="../static/images/siiia.webp" alt="SIIIA MATH Logo" class="footer-image" /></a>
 				</div>
 				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
 			</div>
 		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 
 </html>

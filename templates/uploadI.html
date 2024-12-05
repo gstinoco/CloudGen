@@ -4,142 +4,77 @@
         <title>CloudGen: A Simple Cloud of Points Generator</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!--<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">-->
-		<link href="../static/css/style.css" rel="stylesheet">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" >
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
-        <script>
-            // Function to handle the 'dragover' event
-            function dragoverHandler(ev) {
-                ev.preventDefault();                                                                // Prevent default behavior to allow dropping.
-                ev.dataTransfer.dropEffect = "move";                                                // Set the drop effect to indicate move operation.
-                console.log(ev);                                                                    // Log the event to the console for debugging.
-            }
-            
-            // Function to handle the 'drop' event
-            function dropHandler(ev) {
-                ev.preventDefault();                                                                // Prevent default behavior to allow file drop.
-                const fileInput = ev.target.querySelector('input[type="file"]');                    // Find the file input element within the drop target.
-                if (fileInput) {                                                                    // If a file input element exists in the drop target.
-                    fileInput.files = ev.dataTransfer.files;                                        // Assign dropped files to the file input.
-                    fileChangeHandler({ target: fileInput });                                       // Trigger file change handler with updated file input.
-                }
-                console.log(ev);                                                                    // Log the event to the console for debugging.
-            }
-            
-            // Function to handle changes in the file input (called when files are added or removed).
-            function fileChangeHandler(ev) {
-                const fileInput = ev.target;                                                        // Get the file input element that triggered the event.
-                const fileLabel = fileInput.nextElementSibling.querySelector('.file-name');         // Get the file name label element.
-        
-                if (fileInput.files.length > 0) {                                                   // Check if there are files selected in the file input.
-                    const fileName = fileInput.files.length > 1 ? `${fileInput.files.length} files` : fileInput.files[0].name;
-                                                                                                    // Determine the file name to display (show count if multiple files are selected).
-                    fileLabel.textContent = fileName;                                               // Update the label with the file name or count.
-                    fileInput.nextElementSibling.querySelector('.default').style.display = 'none';  // Hide default label.
-                    fileInput.nextElementSibling.querySelector('.success').style.display = 'block'; // Show success label.
-                    fileInput.classList.add('has-files');                                           // Add a class to indicate files are present.
-                } else {
-                    fileLabel.textContent = '';                                                     // Clear the file name label text.
-                    fileInput.nextElementSibling.querySelector('.default').style.display = 'block'; // Show default label.
-                    fileInput.nextElementSibling.querySelector('.success').style.display = 'none';  // Hide success label.
-                    fileInput.classList.remove('has-files');                                        // Remove the class indicating files are present.
-                }
-            }
-            
-            // Function to reset the file input, allowing the user to select a new file.
-            function enableChangeFile(ev) {
-                const fileInput = ev.target.closest('.file-dummy').previousElementSibling;          // Find the closest file input element to the clicked button.
-                fileInput.value = "";                                                               // Reset the file input value to clear the selected files.
-                fileInput.nextElementSibling.querySelector('.default').style.display = 'block';     // Show default label.
-                fileInput.nextElementSibling.querySelector('.success').style.display = 'none';      // Hide success label.
-                fileInput.classList.remove('has-files');                                            // Remove the class indicating files are present.
-            }
-            
-            // Wait for the DOM content to be fully loaded before setting up event listeners.
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.file-area .success button').forEach(button => {         // Find all 'change file' buttons within file area and set up click event listeners.
-                    button.addEventListener('click', enableChangeFile);                             // Attach enableChangeFile function to each button.
-                });
-            });
-        </script>
-        
     </head>
     <body>
         <!-- Header -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<header class="navbar navbar-expand-lg">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('index') }}" id="logo"><img src="../static/images/logo.png" alt="CloudGen Logo" height="60"/> mGFD: CloudGenerator</a>
-	           	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    	           	<span class="navbar-toggler-icon"></span>
-	       	    </button>
+				<a class="navbar-brand" href="/">
+					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
+					mGFD: Cloud Generator
+				</a>
 				<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="navbar-nav ms-auto">
 						<li class="nav-item">
-							<a href="{{ url_for('index') }}" class="nav-link">Home</a>
+							<a class="nav-link" href="{{ url_for('index') }}">Home</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('upload_image') }}" class="nav-link">ContourCreator</a>
+							<a class="nav-link" href="{{ url_for('upload_image') }}">ContourCreator</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('upload_files') }}" class="nav-link">CloudGenerator</a>
+							<a class="nav-link" href="{{ url_for('upload_files') }}">CloudGenerator</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('modify') }}" class="nav-link">CloudMod</a>
+							<a class="nav-link" href="{{ url_for('modify') }}">CloudMod</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('about') }}" class="nav-link">About</a>
+							<a class="nav-link" href="{{ url_for('about') }}">About</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url_for('howto') }}" class="nav-link"><i class='fas fa-question-circle'></i></a>
+							<a class="nav-link" href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
 						</li>
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</header>
         
         <!-- Main Contenedor -->
-		<div id="main-wrapper">
-            <div id="banner" class="upload-container">
-                <h8>ContourCreator: <h9>Create contours based on an image.</h9> </h8> 
-                <br /><br />
-                <br /><br />
-                <form method="post" enctype="multipart/form-data"> 
-                    <div class="file-area">
-                        <input type="file" name="file" onchange="fileChangeHandler(event)" required>
-                        <div class="file-dummy">
-                            <div class="default">
-                                <h10>Upload an image to create the contour.</h10>
-                                <br /><br />
-                                <h11>or</h11>
-                                <br /><br />
-                                <button>Select a file</button>
-                            </div>
-                            <div class="success">
-                                <h10>File Loaded: <span class="file-name"></span></h10>
-                                <br /><br />
-                                <button type="button">Change file</button>
-                            </div>
-                        </div>
+		<main class="container-fluid bg-image">
+            <div class="hero-content">
+                <h1 class="display-4">ContourCreator</h1>
+                <p class="lead mt-3">Upload an image to create the contour.</p>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="file-upload-container">
+                        <label for="imageUpload" class="drag-and-drop">
+                            <i class="fas fa-cloud-upload-alt"></i><br />Drag and drop your image here
+                            <input type="file" id="imageUpload" name="file" class="d-none" accept="image/png, image/jpeg">
+                            <br /> or click to select a file
+                        </label>
+                        <div id="fileName" class="mt-3"></div>
                     </div>
-                    <br /><br />
-                    <div id="action-buttons">
-                        <button type="submit">Submit</button>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary" id="uploadButton" disabled>Upload</button>
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
 
         <!-- Footer -->
-		<footer class="footer">
-			<div class="container text-center">
-				<div class="d-flex justify-content-center align-items-center">
-					<a href="#"><img src="../static/images/UMSNH.png" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/CONAHCYT.png" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="#"><img src="../static/images/siiia.png" alt="SIIIA MATH Logo" class="footer-image" /></a>
+		<footer class="text-center py-3">
+			<div class="container">
+				<div class="logos mb-3">
+					<a href="https://www.umich.mx/"><img src="../static/images/umsnh.webp" alt="UMSNH Logo" class="footer-image" /></a>
+					<a href="https://conahcyt.mx/"><img src="../static/images/conahcyt.webp" alt="CONAHCYT Logo" class="footer-image" /></a>
+					<a href="https://siiia.com.mx/"><img src="../static/images/siiia.webp" alt="SIIIA MATH Logo" class="footer-image" /></a>
 				</div>
 				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
 			</div>
 		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='js/uploadI.js') }}"></script>
     </body>
 </html>
