@@ -163,11 +163,5 @@ cython_debug/
 
 */.DS_Store
 .DS_Store
-app_org.py
-CloudGen.py
-static/images/prev*
-*org*
-CloudGen.py
-run.py
-static/css/main_old.css
-static/css/main.css
+.vscode
+temp
