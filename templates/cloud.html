@@ -52,13 +52,14 @@
                 <p class="lead mt-3">Resulting cloud of points.</p>
 				<div id="canvas-actions-container">
 					<div id="canvas-container" style="width:55vw; height:55vh; overflow:auto;">
-						<img src="{{ url_for('static_files', filename=image_name) }}" alt="Result Plot" height="600px" width="800px"> <br />
+						<img src="{{ url_for('static_files', filename=image_name) }}" alt="Result Plot" height="100%"> <br />
 					</div>
 				</div>
 				<div id="action-buttons">
 					<div id="left-group">
 					</div>
 					<div id="right-group">
+						<button onclick='location.href = "{{ url_for('static_files', filename=eps_name) }}" '>Download Figure</button>
 						<button onclick='location.href = "{{ url_for('static_files', filename=p_csv_name) }}" '>Download Points</button>
 					</div>
 				</div>

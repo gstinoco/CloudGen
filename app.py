@@ -215,7 +215,7 @@ def CreateCloud_v2(xb, yb, h_coor_sets, num, rand, region_flag):
     """
 
     # Variable initialization
-    dist = np.max(np.sqrt(np.diff(xb.T)**2 + np.diff(yb.T)**2))/num                                     # Calculate the distance between points in the boundary.
+    dist = distance(xb, yb)/num                                                                         # Distance for the cloud generation.
     pb   = np.column_stack((xb, yb))                                                                    # Stack x and y boundary coordinates.
     geo  = dmsh.Polygon(pb)                                                                             # Create a polygon from boundary points
     
@@ -296,7 +296,7 @@ def load_and_create_cloud(exterior_file, interior_files, num, rand, mod, gen):
     return p, xb, yb, h_coor_sets
 
 # --- Visualization ---
-def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name):
+def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name, eps_name):
     """
     Graph the generated point cloud and save the plot.
 
@@ -306,15 +306,17 @@ def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name):
         yb (array):             y-coordinates of the boundary.
         h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
         folder (str):           Directory to save the plot.
-        image_name (str):       Name to correctly save the file.
+        image_name (str):       Name to correctly save the PNG file.
+        eps_name (str):         Name to correctly save the EPS file.
     """
-    nomp  = os.path.join(folder, image_name)                                                            # Define the plot filename.
+    nomp  = os.path.join(folder, image_name)                                                            # Define the PNG plot filename.
+    nome  = os.path.join(folder, eps_name)                                                              # Define the EPS plot filename.
     
     # Unique flags for regions
     unique_flags = np.unique(p[:, 2])
     colors = plt.cm.get_cmap('tab10', len(unique_flags))                                                # Generate a colormap for the regions.
 
-    plt.rcParams["figure.figsize"] = (16, 12)                                                           # Set figure size.
+    plt.rcParams["figure.figsize"] = (32, 24)                                                           # Set figure size.
     
     # Complete the polygon for graphics.
     xb          = np.append(xb, xb[0])                                                                  # Copy the first x-coordinate in the end.
@@ -337,8 +339,8 @@ def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name):
 
     plt.title('Generated Cloud')                                                                        # Set plot title.
     plt.axis('equal')                                                                                   # Set equal axes.
-    #plt.legend(loc='upper right')                                                                       # Add a legend for regions and boundaries.
-    plt.savefig(nomp)                                                                                   # Save the plot.
+    plt.savefig(nomp, format='png')                                                                     # Save the plot.
+    plt.savefig(nome, format='eps')                                                                     # Save the plot.
     plt.close()                                                                                         # Close the plot.
 
 # --- File Handling ---
@@ -469,12 +471,13 @@ def upload_files():
                     return f"Error generating the cloud: {e}", 500
 
                 # Generar nombres de archivos de resultados
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                timestamp  = datetime.now().strftime("%Y%m%d_%H%M%S")
                 image_name = f'plot_{timestamp}.png'
+                eps_name   = f'plot_{timestamp}.eps'
                 p_csv_name = f'cloud_{timestamp}.csv'
 
                 # Crear la gráfica
-                GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'], image_name=image_name)
+                GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'], image_name = image_name, eps_name = eps_name)
 
                 # Guardar la nube en CSV
                 csv_path = os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name)
@@ -486,15 +489,17 @@ def upload_files():
                 for path in interior_file_paths:
                     delete_file(path, 3600)
                 delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 3600)
+                delete_file(os.path.join(app.config['OUTPUT_FOLDER'], eps_name), 3600)
                 delete_file(csv_path, 3600)
 
                 # Renderizar resultados
                 return render_template(
                     'cloud.html',
-                    image_name=image_name,
-                    p_csv_name=p_csv_name,
-                    tables=[pd.DataFrame(p, columns=["x", "y", "region", "boundary_flag"]).to_html(classes='data')],
-                    titles=['na', 'Cloud Data']
+                    image_name = image_name,
+                    eps_name   = eps_name,
+                    p_csv_name = p_csv_name,
+                    tables = [pd.DataFrame(p, columns=["x", "y", "region", "boundary_flag"]).to_html(classes='data')],
+                    titles = ['na', 'Cloud Data']
                 )
 
             finally:
