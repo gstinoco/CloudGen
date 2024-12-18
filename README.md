@@ -17,7 +17,7 @@ To run this application locally, follow these steps:
 1. Clone this repository:
    ```bash
    git clone https://github.com/gstinoco/CloudGen.git
-   cd mgfd-cloud-generator
+   cd CloudGen
    ```
 
 2. Create a virtual environment and activate it:
