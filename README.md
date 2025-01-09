@@ -44,7 +44,7 @@ To run this application locally, follow these steps:
 ## Project Structure
 
 ```
-mgfd-cloud-generator/
+CloudGen/
 ├── app.py                # Main application file
 ├── requirements.txt      # Python dependencies
 ├── LICENSE               # License information

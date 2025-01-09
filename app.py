@@ -14,7 +14,7 @@ Features:
 
 Author: Gerardo Tinoco-Guerrero
 Created: May 7th, 2024.
-Last Modified: December 4th, 2024.
+Last Modified: January 9th, 2024.
 
 Dependencies:
 - Flask: Web framework for routing and rendering.
@@ -52,9 +52,11 @@ import numpy as np
 import dmsh
 import csv
 
+# Plot imports
 import matplotlib
 matplotlib.use('Agg')                                                                                   # Use Agg backend for non-GUI environments
 import matplotlib.pyplot as plt
+from matplotlib.lines import lineStyles
 
 # --- Flask Configuration ---
 app = Flask(__name__)
@@ -92,20 +94,31 @@ Functions Overview:
 
 
 # --- General Utilities ---
-def distance(x, y):
+def distance(x, y, hole_coordinates=None):
     """
-    Calculate the mean distance between consecutive points.
+    Calcula la distancia promedio entre puntos consecutivos en el contorno principal y los huecos.
 
-    Parameters:
-        x (array):              x-coordinates of the points.
-        y (array):              y-coordinates of the points.
+    Args:
+        xb (list): Coordenadas X del polígono principal.
+        yb (list): Coordenadas Y del polígono principal.
+        hole_coordinates (list): Lista de pares de coordenadas ([hx], [hy]) para los huecos.
 
     Returns:
-        float:                  Mean distance between consecutive points.
+        float: Distancia promedio considerando el polígono principal y los huecos.
     """
-    coords = np.column_stack((x, y))                                                                    # Combine x and y into a single array.
-    dists = np.sqrt(np.sum(np.diff(coords, axis=0)**2, axis=1))                                         # Calculate Euclidean distances.
-    return np.mean(dists)                                                                               # Return the mean distance.
+    # Combinar coordenadas del contorno principal
+    coords = np.column_stack((x, y))                                                                    # Crear un array de las coordenadas principales
+    
+    # Agregar coordenadas de los huecos, si existen
+    if hole_coordinates:
+        for hx, hy in hole_coordinates:
+            hole_coords = np.column_stack((hx, hy))                                                     # Crear array para cada hueco
+            coords = np.vstack((coords, hole_coords))                                                   # Combinar coordenadas de huecos con las principales
+    
+    # Calcular distancias entre puntos consecutivos
+    dists = np.sqrt(np.sum(np.diff(coords, axis=0)**2, axis=1))
+    
+    return np.mean(dists)                                                                               # Retornar la distancia promedio
 
 def generate_grid(min_x, max_x, min_y, max_y, spacing):
     """
@@ -151,197 +164,207 @@ def allowed_file_D(filename):
             in app.config['ALLOWED_EXTENSIONS_D']                                                       # Check if the file has an allowed extension.
 
 # --- Data Processing ---
-def CreateCloud(xb, yb, h_coor_sets, num, rand, region_flag):
+def CreateCloud(xb, yb, h_coor_sets, dist, rand, region_flag, method = 1):
     """
-    Create a cloud of points with potential holes inside a polygon.
+    Genera una nube de puntos dentro de un polígono delimitado, permitiendo agujeros internos y opciones de aleatoriedad.
 
-    Parameters:
-        xb (array):             x-coordinates of the boundary.
-        yb (array):             y-coordinates of the boundary.
-        h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
-        num (int):              To determine the density of the cloud.
-        rand (int):             Randomization.
-
+    Args:
+        xb (list): Coordenadas X del polígono principal.
+        yb (list): Coordenadas Y del polígono principal.
+        h_coor_sets (list): Lista de huecos, donde cada hueco es un par de listas ([hx], [hy]).
+        dist (float): Distancia mínima entre puntos generados.
+        rand (int): Si es diferente de 0, aplica aleatoriedad a los puntos.
+        region_flag (int): Bandera que identifica la región.
+        method (str): Método de generación ("v1" o "v2").
     Returns:
-        np.array:               Array of generated points with boundary and hole flags.
+        np.ndarray: Nube de puntos generada con columnas [x, y, region_flag, tipo].
     """
+    boundary_polygon = Polygon(np.column_stack((xb, yb)))
+    holes            = [Polygon(np.column_stack((hx, hy))) for hx, hy in h_coor_sets]
+    holes_union      = unary_union(holes) if holes else Polygon()
     
-    # Polygons creation
-    boundary_polygon = Polygon(np.column_stack((xb, yb)))                                               # Create the main polygon.
-    holes            = [Polygon(np.column_stack((hx, hy))) for hx, hy in h_coor_sets]                   # Create a polygon for each of the holes.
-    holes_union      = unary_union(holes) if holes else Polygon()                                       # Create the union of the holes.
-
-    # Calculate the minimum distance between consecutive boundary points
-    dist = distance(xb, yb)/num                                                                         # Distance for the cloud generation.
-
-    # Cloud Generation
-    min_x, min_y, max_x, max_y = boundary_polygon.bounds                                                # Bounding box coordinates for the cloud generation.
-    grid_points                = generate_grid(min_x, max_x, min_y, max_y, dist)                        # Generate a grid of points with the calculated minimum distance.
-
-    # Add a flag for each of the nodes.
-    points = [[x, y, region_flag, 1] for x, y in zip(xb, yb)]                                           # Boundary points with flag 1.
+    if method == 0:
+        # Usar dmsh para generar puntos
+        geo = dmsh.Polygon(np.column_stack((xb, yb)))
+        for hx, hy in h_coor_sets:
+            geo -= dmsh.Polygon(np.column_stack((hx, hy)))
+        X, _ = dmsh.generate(geo, dist)
+        
+        # Clasificar los puntos generados
+        points = [Point(p[0], p[1]) for p in X]
+        A = np.zeros([len(points), 1])
+        cloud = np.column_stack((X, np.full((len(X), 1), region_flag), A))
     
-    for hx, hy in h_coor_sets:                                                                          # For each of the holes.
-        points.extend([[x, y, region_flag, 2] for x, y in zip(hx, hy)])                                 # Hole points with flag 2.
-    
-    generated_points = [
-        [x, y, region_flag, 0] for x, y in grid_points\
-        if boundary_polygon.contains(Point(x, y)) and not holes_union.contains(Point(x, y))]            # Add grid points if they are inside the main polygon and outside holes
-    
-    generated_points = np.array(generated_points)                                                       # Convert list to numpy array
-
-    # Randomization
-    if rand != 0:                                                                                       # If random is selected.
-        perturbation              = 0.5 * dist * (np.random.rand(generated_points.shape[0], 2) - 0.5)   # Define a perturbation for each internal node.
-        generated_points[:, 0:2] += perturbation                                                        # Apply the perturbation.
-
-    # Combine all points
-    p = np.vstack((points, generated_points))                                                           # Combine all the points in one array.
-
-    return p
-
-def CreateCloud_v2(xb, yb, h_coor_sets, num, rand, region_flag):
-    """
-    Create an adaptive cloud of points with potential holes inside a polygon.
-
-    Parameters:
-        xb (array):             x-coordinates of the boundary.
-        yb (array):             y-coordinates of the boundary.
-        h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
-        num (int):              How dense the cloud should be.
-
-    Returns:
-        np.array:               Array of generated points with boundary and hole flags.
-    """
-
-    # Variable initialization
-    dist = distance(xb, yb)/num                                                                         # Distance for the cloud generation.
-    pb   = np.column_stack((xb, yb))                                                                    # Stack x and y boundary coordinates.
-    geo  = dmsh.Polygon(pb)                                                                             # Create a polygon from boundary points
-    
-    ## Holes initialization
-    for hx, hy in h_coor_sets:                                                                          # For each of the holes.
-        hole_pb  = np.column_stack((hx, hy))                                                            # Stack x and y coordinates of the hole.
-        hole_geo = dmsh.Polygon(hole_pb)                                                                # Create a polygon for the hole.
-        geo     -= hole_geo                                                                             # Subtract hole geometry from the main polygon.
-    
-    # Cloud Generation
-    X, _       = dmsh.generate(geo, dist)                                                               # Generate points within the polygon.
-    poly       = Polygon(pb).buffer(-dist/4)                                                            # Create a buffer around the polygon boundary.
-    hole_polys = [Polygon(np.column_stack((hx, hy))).buffer(dist/4) for hx, hy in h_coor_sets]          # Buffer for holes.
-    points     = [Point(point[0], point[1]) for point in X]                                             # Convert points to shapely Point objects.
-    A          = np.zeros([len(points), 1])                                                             # Initialize an array to store boundary/hole flags.
-    
-    # Flag the nodes at the boundaries
-    for i, point in enumerate(points):                                                                  # For each of the points.
-        if not point.within(poly):                                                                      # If the node is not inside the external boundary.
-            A[i] = 1                                                                                    # Mark as a node within the external boundary.
-        else:
-            for hole_poly in hole_polys:                                                                # For each of the nodes inside the external boundary.
-                if point.within(hole_poly):                                                             # If the node is in the internal boundary.
-                    A[i] = 2                                                                            # Mark as a node within a internal boundary.
-                    break
-    p = np.column_stack((X, np.full((len(X), 1), region_flag), A))                                      # Combine points and flags into a single array
-
-    # Randomization
-    if rand != 0:                                                                                       # If random is selected.
-        mask = p[:, 3] == 0                                                                             # Create a mask for points with boundary_flag == 0.
-        perturbation = 0.5 * dist * (np.random.rand(np.sum(mask), 2) - 0.5)                             # Define a perturbation for each internal node.
-        p[mask, 0:2] += perturbation                                                                    # Apply the perturbation to internal nodes.
-
-    return p
-
-# Function to load CSV files and create the point cloud
-def load_and_create_cloud(exterior_file, interior_files, num, rand, mod, gen):
-    """
-    Load CSV files and create the point cloud with possible randomization.
-
-    Parameters:
-        exterior_file (str):    Path to the exterior boundary CSV file.
-        interior_files (list):  List of paths to interior hole CSV files.
-        num (int):              To determine the density of the cloud.
-        rand (int):             Randomization.
-
-    Returns:
-        np.array:               Array of generated and possibly randomized points.
-    """
-    # Data loading.
-    pat_out = pd.read_csv(exterior_file)                                                                # Load external boundary CSV.
-    xb      = pat_out['x'].values                                                                       # Get x-coordinates of the boundary.
-    yb      = pat_out['y'].values                                                                       # Get y-coordinates of the boundary.
-
-    h_coor_sets = []                                                                                    # Create an empty list to store the internal boundaries.
-    for interior_file in interior_files:                                                                # For each received file for internal boundaries.
-        pat_in = pd.read_csv(interior_file)                                                             # Load the internal boundary CSV.
-        hx     = pat_in['x'].values                                                                     # Get x-coordinates of the hole.
-        hy     = pat_in['y'].values                                                                     # Get y-coordinates of the hole.
-        h_coor_sets.append((hx, hy))                                                                    # Append hole coordinates.
-
-    # Select the cloud creation method based on the value of "mod".
-    if mod == 0:
-        p = CreateCloud(xb, yb, h_coor_sets, num, rand, region_flag = 1)                                # Use a simple implementation.
+    elif method == 1:
+        # Generar una cuadrícula de puntos y filtrar
+        min_x, min_y, max_x, max_y = boundary_polygon.bounds
+        grid_points = generate_grid(min_x, max_x, min_y, max_y, dist)
+        
+        # Filtrar los puntos que están dentro del polígono y fuera de los huecos
+        generated_points = [
+            [x, y, region_flag, 0] for x, y in grid_points
+            if boundary_polygon.contains(Point(x, y)) and not holes_union.contains(Point(x, y))
+        ]
+        cloud = np.array(generated_points)
     else:
-        p = CreateCloud_v2(xb, yb, h_coor_sets, num, rand, region_flag = 1)                             # Use the original implementation
+        raise ValueError("Método no soportado. Use 'v1' o 'v2'.")
     
-    if gen == 1:
-        for i, (hx, hy) in enumerate(h_coor_sets, start = 2):                                           # Loop through each interior boundary.
-            if mod == 0:
-                interior_cloud = CreateCloud(hx, hy, [], num, rand, region_flag = i)                    # Create cloud with the interior as exterior.
-            else:
-                interior_cloud = CreateCloud_v2(hx, hy, [], num, rand, region_flag = i)                 # Use alternative method.
-            
-            # Add the points from the individual cloud to the main cloud
-            p = np.vstack((p, interior_cloud))
+    # Agregar puntos de borde y huecos
+    points = [[x, y, region_flag, 1] for x, y in zip(xb, yb)]
+    for hx, hy in h_coor_sets:
+        points.extend([[x, y, region_flag, 2] for x, y in zip(hx, hy)])
+    cloud = np.vstack((points, cloud)) if cloud.size else np.array(points)
+    
+    # Aplicar aleatoriedad
+    if rand != 0 and cloud.size:
+        mask = cloud[:, 3] == 0
+        perturbation = 0.5 * dist * (np.random.rand(np.sum(mask), 2) - 0.5)
+        cloud[mask, 0:2] += perturbation
+    
+    return cloud
 
-    return p, xb, yb, h_coor_sets
+# Function to load CSV files
+def process_csv(file_path):
+    try:
+        df = pd.read_csv(file_path)
+        required_columns = {'x', 'y', 'flag'}
+        if not required_columns.issubset(df.columns):
+            raise ValueError("El archivo CSV debe contener las columnas: 'x', 'y', 'flag'")
+        df = df[['x', 'y', 'flag']]
+        points_by_region = (
+            df.groupby('flag', group_keys=False)
+            .apply(lambda group: group[['x', 'y']].values.tolist(), include_groups=False)
+            .to_dict()
+        )
+        return points_by_region
+    except Exception as e:
+        raise RuntimeError(f"Error al procesar el archivo: {e}")
+
+def generate_polygons(points_by_region):
+    polygons_by_region = {}
+    
+    for region, points in points_by_region.items():
+        # Eliminar duplicados y validar entrada
+        points = pd.DataFrame(points, columns=['x', 'y']).drop_duplicates()
+        
+        try:
+            if len(points) < 3:
+                raise ValueError(f"La región {region} tiene menos de 3 puntos únicos, no se puede formar un polígono.")
+            polygon = Polygon(points.values)
+            if not polygon.is_valid:
+                print(f"El polígono de la región {region} no es válido. Intentando crear un Convex Hull.")
+                polygon = Polygon(points.values).convex_hull
+            polygons_by_region[region] = polygon
+        except Exception as e:
+            print(f"Error al procesar la región {region}: {e}")
+    return polygons_by_region
+
+def test_region_containment(polygon_1, polygon_2):
+    if polygon_1 is None or polygon_2 is None:
+        raise ValueError("Los polígonos proporcionados no son válidos.")
+    return polygon_2.within(polygon_1) or (polygon_2.intersects(polygon_1) and polygon_1.area > polygon_2.area)
+
+def test_all_region_containments(polygons_by_region):
+    containment_results = {region: [] for region in polygons_by_region}
+    for region_1, polygon_1 in polygons_by_region.items():
+        for region_2, polygon_2 in polygons_by_region.items():
+            if region_1 != region_2 and test_region_containment(polygon_1, polygon_2):
+                if region_2 not in containment_results[region_1]:
+                    containment_results[region_1].append(region_2)
+    return containment_results
+
+def remove_duplicate_containments(containment_results):
+    for region in containment_results:
+        direct_contained = set(containment_results[region])
+        for subregion in list(direct_contained):
+            nested = set(containment_results.get(subregion, []))
+            direct_contained -= nested
+        containment_results[region] = list(direct_contained)
+    return containment_results
+
+def generate_clouds_for_all_regions(polygons_by_region, containment_results, num, rand, mod, gen):
+    all_points = []
+    
+    for region, polygon in polygons_by_region.items():
+        try:
+            # Validar que el polígono sea válido y tenga un contorno exterior
+            if not polygon.is_valid or not polygon.exterior:
+                raise ValueError(f"El polígono de la región {region} no es válido.")
+
+            # Obtener coordenadas de los huecos para la región actual
+            holes = []
+            for contained_region in containment_results.get(region, []):
+                # Validar que los huecos existan y sean válidos
+                if contained_region not in polygons_by_region:
+                    print(f"Advertencia: La región {contained_region} no está en polygons_by_region.")
+                    continue
+                contained_polygon = polygons_by_region[contained_region]
+                if not contained_polygon.is_valid or not contained_polygon.exterior:
+                    print(f"Advertencia: El polígono interior {contained_region} no es válido.")
+                    continue
+                holes.append(np.array(contained_polygon.exterior.xy)[:, :-1])
+            
+            # Formatear los huecos como una lista de pares (x, y)
+            hole_coordinates = [(hx, hy) for hx, hy in holes]
+
+            # Extraer coordenadas del contorno del polígono, eliminando el último punto repetido
+            xb, yb = np.array(polygon.exterior.xy)[:, :-1]
+            dist = distance(xb, yb, hole_coordinates)/num
+            while max(max(xb),max(yb))/dist < 21:
+                dist = dist/2
+
+            # Generar la nube de puntos para la región
+            cloud = CreateCloud(xb, yb, hole_coordinates, dist, rand, region, mod)
+            
+            # Almacenar la nube generada
+            all_points.append(cloud)
+
+            if gen == 0:
+                break
+
+        except Exception as e:
+            print(f"Error al generar nube para la región {region}: {e}")
+            continue
+
+    # Combinar todas las nubes en un único arreglo
+    if all_points:
+        return np.vstack(all_points)
+    else:
+        print("No se generaron nubes de puntos para ninguna región.")
+        return np.array([])  # Retorna un arreglo vacío en caso de error
 
 # --- Visualization ---
-def GraphCloud(p, xb, yb, h_coor_sets, folder, image_name, eps_name):
+def GraphCloud(all_clouds, folder, image_name, eps_name):
     """
     Graph the generated point cloud and save the plot.
 
     Parameters:
-        p (np.array):           Array of points with boundary flags.
-        xb (array):             x-coordinates of the boundary.
-        yb (array):             y-coordinates of the boundary.
-        h_coor_sets (list):     List of tuples containing x and y coordinates of the holes.
-        folder (str):           Directory to save the plot.
-        image_name (str):       Name to correctly save the PNG file.
-        eps_name (str):         Name to correctly save the EPS file.
+        p (np.array): Array of points with boundary flags.
+        xb (array): x-coordinates of the boundary.
+        yb (array): y-coordinates of the boundary.
+        h_coor_sets (list): List of tuples containing x and y coordinates of the holes.
+        folder (str): Directory to save the plot.
+        image_name (str): Name to save the PNG file.
+        eps_name (str): Name to save the EPS file.
     """
-    nomp  = os.path.join(folder, image_name)                                                            # Define the PNG plot filename.
-    nome  = os.path.join(folder, eps_name)                                                              # Define the EPS plot filename.
-    
-    # Unique flags for regions
-    unique_flags = np.unique(p[:, 2])
-    colors = plt.cm.get_cmap('tab10', len(unique_flags))                                                # Generate a colormap for the regions.
+    plt.figure(figsize=(12, 8))
+    unique_flags = np.unique(all_clouds[:, 2])
+    colors = plt.cm.get_cmap('tab20', len(unique_flags))
 
-    plt.rcParams["figure.figsize"] = (32, 24)                                                           # Set figure size.
-    
-    # Complete the polygon for graphics.
-    xb          = np.append(xb, xb[0])                                                                  # Copy the first x-coordinate in the end.
-    yb          = np.append(yb, yb[0])                                                                  # Copy the first y-coordinate in the end.
-    h_coor_sets = [(np.append(hx, hx[0]), np.append(hy, hy[0])) for hx, hy in h_coor_sets]              # Copy the first coordinates in the end.
-
-    # Plot the boundary and holes
-    plt.plot(xb, yb, 'r-', label="External Boundary")                                                   # Plot the boundary
-    for hx, hy in h_coor_sets:                                                                          # For each of the holes.
-        plt.plot(hx, hy, 'b-', label="Hole Boundary")                                                   # Plot the holes
-    
-    # Scatter plot for each region
+    # Scatter points by region
     for i, flag in enumerate(unique_flags):
-        region_points = p[p[:, 2] == flag]                                                              # Points belonging to the current region.
-        boundary_points = region_points[region_points[:, 3] == 1]                                       # Boundary points.
-        interior_points = region_points[region_points[:, 3] == 0]                                       # Interior points.
+        cloud = all_clouds[all_clouds[:, 2] == flag]
+        plt.scatter(cloud[:, 0], cloud[:, 1], s=5, c=[colors(i)], label=f'Región {int(flag)}')
+        bound = cloud[cloud[:,3] == 1]
+        bound = np.vstack([bound, bound[0]])
+        plt.plot(bound[:, 0], bound[:, 1], color=colors(i), linestyle='solid')
 
-        plt.scatter(boundary_points[:, 0], boundary_points[:, 1], c=[colors(i)], s=50, label=f"Region {int(flag)} (Boundary)")
-        plt.scatter(interior_points[:, 0], interior_points[:, 1], c=[colors(i)], s=20, alpha=0.5, label=f"Region {int(flag)} (Interior)")
-
-    plt.title('Generated Cloud')                                                                        # Set plot title.
-    plt.axis('equal')                                                                                   # Set equal axes.
-    plt.savefig(nomp, format='png')                                                                     # Save the plot.
-    plt.savefig(nome, format='eps')                                                                     # Save the plot.
-    plt.close()                                                                                         # Close the plot.
+    plt.legend()
+    plt.grid(True)
+    plt.title("Generated Cloud of Points")
+    plt.savefig(os.path.join(folder, image_name), format='png')
+    plt.savefig(os.path.join(folder, eps_name), format='eps')
+    plt.close()
 
 # --- File Handling ---
 def delete_file(path, delay):
@@ -432,41 +455,19 @@ def upload_files():
 
             # Leer el CSV y validar columnas
             try:
-                df = pd.read_csv(file_path)
-                required_columns = {'x', 'y', 'flag'}
-                if not required_columns.issubset(df.columns):
-                    return "CSV file must contain columns: 'x', 'y', 'flag'", 400
-            except Exception as e:
-                return f"Error reading the file: {e}", 500
-
-            # Separar puntos
-            exterior_points = df[df['flag'] == 1][['x', 'y']].values.tolist()
-            interior_points = [
-                df[df['flag'] == flag_value][['x', 'y']].values.tolist()
-                for flag_value in sorted(df['flag'].unique()) if flag_value != 1
-            ]
-
-            # Crear archivos temporales
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as ext_file:
-                pd.DataFrame(exterior_points, columns=['x', 'y']).to_csv(ext_file.name, index=False)
-                exterior_file_path = ext_file.name
-
-            interior_file_paths = []
-            try:
-                for points in interior_points:
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as int_file:
-                        pd.DataFrame(points, columns=['x', 'y']).to_csv(int_file.name, index=False)
-                        interior_file_paths.append(int_file.name)
+                regions = process_csv(file_path)
+                polygons = generate_polygons(regions)
+                containment_results = test_all_region_containments(polygons)
+                depurated_results = remove_duplicate_containments(containment_results)
 
                 # Obtener parámetros
-                num = int(request.form.get('num', 3))
+                num  = int(request.form.get('num', 3))
                 rand = int(request.form.get('rand', 1))
-                mod = int(request.form.get('mod', 1))
-                gen = int(request.form.get('gen', 1))
+                mod  = int(request.form.get('mod', 1))
+                gen  = int(request.form.get('gen', 0))
 
-                # Crear la nube de puntos
                 try:
-                    p, xb, yb, h_coor_sets = load_and_create_cloud(exterior_file_path, interior_file_paths, num, rand, mod, gen)
+                    all_clouds = generate_clouds_for_all_regions(polygons, depurated_results, num, rand, mod, gen)
                 except Exception as e:
                     return f"Error generating the cloud: {e}", 500
 
@@ -477,17 +478,14 @@ def upload_files():
                 p_csv_name = f'cloud_{timestamp}.csv'
 
                 # Crear la gráfica
-                GraphCloud(p, xb, yb, h_coor_sets, folder=app.config['OUTPUT_FOLDER'], image_name = image_name, eps_name = eps_name)
+                GraphCloud(all_clouds, folder=app.config['OUTPUT_FOLDER'], image_name = image_name, eps_name = eps_name)
 
                 # Guardar la nube en CSV
                 csv_path = os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name)
-                pd.DataFrame(p, columns=["x", "y", "region", "boundary_flag"]).to_csv(csv_path, index=False)
+                pd.DataFrame(all_clouds, columns=["x", "y", "region", "boundary_flag"]).to_csv(csv_path, index=False)
 
                 # Programar eliminación de archivos
                 delete_file(file_path, 3600)
-                delete_file(exterior_file_path, 3600)
-                for path in interior_file_paths:
-                    delete_file(path, 3600)
                 delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 3600)
                 delete_file(os.path.join(app.config['OUTPUT_FOLDER'], eps_name), 3600)
                 delete_file(csv_path, 3600)
@@ -498,18 +496,13 @@ def upload_files():
                     image_name = image_name,
                     eps_name   = eps_name,
                     p_csv_name = p_csv_name,
-                    tables = [pd.DataFrame(p, columns=["x", "y", "region", "boundary_flag"]).to_html(classes='data')],
+                    tables = [pd.DataFrame(all_clouds, columns=["x", "y", "region", "boundary_flag"]).to_html(classes='data')],
                     titles = ['na', 'Cloud Data']
                 )
 
-            finally:
-                # Asegurarse de eliminar archivos temporales en caso de error
-                for path in interior_file_paths:
-                    if os.path.exists(path):
-                        os.unlink(path)
-                if os.path.exists(exterior_file_path):
-                    os.unlink(exterior_file_path)
 
+            except Exception as e:
+                return f"Error reading the file: {e}", 500
     # Renderizar la página de carga
     return render_template('uploadC.html')
 

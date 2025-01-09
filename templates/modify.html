@@ -93,6 +93,7 @@
 		</footer>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
         <script>
             // Wait until the DOM is fully loaded before executing the script.
             document.addEventListener("DOMContentLoaded", function () {
@@ -130,6 +131,12 @@
                                     boundaryFlag,
                                 };
                             });
+                            
+                            const uniqueFlags = [...new Set(points.map(point => point.flag))];
+                            colorScale = d3.scaleOrdinal()
+                                .domain(uniqueFlags)
+                                .range(d3.schemeTableau10);
+
                             adjustCanvasSize();
                             drawPoints();
                         })
@@ -138,25 +145,14 @@
 
                 // Function to draw points on the canvas
                 function drawPoints() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);                                       // Clear the entire canvas before drawing new content.
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                    points.forEach(point => {                                                               // Iterate over each point in the points array.
-                        ctx.beginPath();                                                                    // Start a new path for the circle.
-                        ctx.arc(point.x * scale, point.y * scale, 5, 0, 2 * Math.PI);                       // Draw a circle for each point, adjusting position based on zoom scale.
-
-                        // Set the circle's color based on the point's flag
-                        if (point.flag === 0) {                                                             // If flag is 0.
-                            ctx.fillStyle = 'blue';                                                         // The color is set to blue.
-                        } else if (point.flag === 1 || point.flag === 2) {                                  // If flag is 1 or 2.
-                            ctx.fillStyle = 'red';                                                          // The color is set to red.
-                        } else if (point.flag === 3) {                                                      // If flag is 3.
-                            ctx.fillStyle = 'green';                                                        // The color is set to green.
-                        } else {                                                                            // For all the other cases.
-                            ctx.fillStyle = 'gray';                                                         // The color is set to gray.
-                        }
-
-                        ctx.fill();                                                                         // Fill the circle with the chosen color.
-                        ctx.closePath();                                                                    // End the path for the circle.
+                    points.forEach(point => {
+                        ctx.beginPath();
+                        ctx.arc(point.x * scale, point.y * scale, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = colorScale(point.flag);
+                        ctx.fill();
+                        ctx.closePath();
                     });
                 }
 
