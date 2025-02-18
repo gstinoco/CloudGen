@@ -68,7 +68,7 @@
     /* Estilo para el fondo del Main */
     .bg-image {
         background-color: rgba(0, 0, 0, 0.5);
-        background-image: url('/static/images/bg.webp');
+        background-image: url("{{ url_for('static', filename='images/bg.webp') }}");
         background-size: cover;
         background-position: fixed;
         min-height: 100vh;                                                  /* Asegura que el fondo ocupe toda la altura de la ventana */

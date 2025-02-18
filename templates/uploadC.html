@@ -12,7 +12,7 @@
         <!-- Header -->
 		<header class="navbar navbar-expand-lg">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="/">
+				<a class="navbar-brand" href="{{ url_for('index') }}">
 					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -45,7 +45,7 @@
 		</header>
         
         <!-- Main Contenedor -->
-		<main class="container-fluid bg-image">
+		<main class="container-fluid bg-image" style="background-image: url({{ url_for('static', filename='images/bg.webp') }})">
             <div class="hero-content">
                 <h1 class="display-4">CloudGenerator</h1>
                 <p class="lead mt-3">Upload a CSV file to generate the cloud of points.</p>
@@ -90,9 +90,9 @@
 		<footer class="text-center py-3">
 			<div class="container">
 				<div class="logos mb-3">
-					<a href="https://www.umich.mx/"><img src="../static/images/umsnh.webp" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="https://conahcyt.mx/"><img src="../static/images/conahcyt.webp" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="https://siiia.com.mx/"><img src="../static/images/siiia.webp" alt="SIIIA MATH Logo" class="footer-image" /></a>
+					<a href="https://www.umich.mx/"><img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="UMSNH Logo" class="footer-image" /></a>
+					<a href="https://conahcyt.mx/"><img src="{{ url_for('static', filename='images/conahcyt.webp') }}" alt="CONAHCYT Logo" class="footer-image" /></a>
+					<a href="https://siiia.com.mx/"><img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH Logo" class="footer-image" /></a>
 				</div>
 				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
 			</div>

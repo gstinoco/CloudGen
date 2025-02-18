@@ -60,8 +60,8 @@ from matplotlib.lines import lineStyles
 
 # --- Flask Configuration ---
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './tmp/uploads/'                                                          # Directory for uploaded files
-app.config['OUTPUT_FOLDER'] = './tmp/results/'                                                          # Directory for output files
+app.config['UPLOAD_FOLDER'] = './CloudGen/tmp/uploads/'                                                 # Directory for uploaded files
+app.config['OUTPUT_FOLDER'] = './CloudGen/tmp/results/'                                                 # Directory for output files
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}                                               # Allowed extensions for image uploads
 app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                                            # Allowed extensions for CSV uploads
 
@@ -69,7 +69,7 @@ app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                    
 logging.basicConfig(level=logging.INFO)                                                                 # Set logging level
 
 # --- Environment Variables ---
-os.environ['MPLCONFIGDIR'] = "./tmp/" + getpass.getuser()                                               # Ensure matplotlib uses a temporary directory
+os.environ['MPLCONFIGDIR'] = "./CloudGen/tmp/" + getpass.getuser()                                      # Ensure matplotlib uses a temporary directory
 
 # --- Ensure Directories Exist ---
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok = True)                                               # Ensure the output folder exists.
@@ -555,14 +555,14 @@ def modify():
     return render_template('uploadM.html')                                                                # Render the modify page.
 
 # --- File Serving Routes ---
-@app.route('/tmp/results/<path:filename>')
+@app.route('/CloudGen/tmp/results/<path:filename>')
 def static_files(filename):
     """ 
     Serve result files.
     """
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
-@app.route('/tmp/uploads/<path:filename>')
+@app.route('/CloudGen/tmp/uploads/<path:filename>')
 def uploaded_file(filename):
     """
     Serve uploaded files.
