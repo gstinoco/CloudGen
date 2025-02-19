@@ -60,8 +60,9 @@ from matplotlib.lines import lineStyles
 
 # --- Flask Configuration ---
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './CloudGen/tmp/uploads/'                                                 # Directory for uploaded files
-app.config['OUTPUT_FOLDER'] = './CloudGen/tmp/results/'                                                 # Directory for output files
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))                                                   # Absolute route for the script.
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'tmp', 'uploads')                                  # Directory for uploaded files
+app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'tmp', 'results')                                  # Directory for output files
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}                                               # Allowed extensions for image uploads
 app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                                            # Allowed extensions for CSV uploads
 
@@ -69,7 +70,7 @@ app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                    
 logging.basicConfig(level=logging.INFO)                                                                 # Set logging level
 
 # --- Environment Variables ---
-os.environ['MPLCONFIGDIR'] = "./CloudGen/tmp/" + getpass.getuser()                                      # Ensure matplotlib uses a temporary directory
+os.environ['MPLCONFIGDIR'] = os.path.join(BASE_DIR, 'tmp', 'matplotlib')                                # Ensure matplotlib uses a temporary directory
 
 # --- Ensure Directories Exist ---
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok = True)                                               # Ensure the output folder exists.
@@ -233,7 +234,7 @@ def process_csv(file_path):
         df = df[['x', 'y', 'flag']]
         points_by_region = (
             df.groupby('flag', group_keys=False)
-            .apply(lambda group: group[['x', 'y']].values.tolist(), include_groups=False)
+            .apply(lambda group: group[['x', 'y']].values.tolist(), include_groups = False)
             .to_dict()
         )
         return points_by_region
@@ -555,14 +556,14 @@ def modify():
     return render_template('uploadM.html')                                                                # Render the modify page.
 
 # --- File Serving Routes ---
-@app.route('/CloudGen/tmp/results/<path:filename>')
+@app.route('/CloudGen/results/<path:filename>')
 def static_files(filename):
     """ 
     Serve result files.
     """
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
-@app.route('/CloudGen/tmp/uploads/<path:filename>')
+@app.route('/CloudGen/uploads/<path:filename>')
 def uploaded_file(filename):
     """
     Serve uploaded files.
