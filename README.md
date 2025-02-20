@@ -1,3 +1,7 @@
+<p align="center" width="100%">
+   <img width="66%" src="static/images/logo.webp">
+</p>
+
 # mGFD: Cloud Generator :rocket: :cloud:
 
 mGFD: Cloud Generator was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo to bring an easy way to create clouds for irregular domains to compare different methods to numerically solve partial differential equations without a structured mesh.
