@@ -1,16 +1,22 @@
-# mGFD: Cloud Generator
+# mGFD: Cloud Generator :rocket: :cloud:
 
 mGFD: Cloud Generator was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo to bring an easy way to create clouds for irregular domains to compare different methods to numerically solve partial differential equations without a structured mesh.
 
-## Features
+## Features :sparkles:
 
-- **ContourCreator**: Upload an image to generate contours for your projects.
-- **CloudGen**: Upload a CSV file to produce point clouds for irregular domains.
-- **CloudMod**: Modify and refine existing clouds by uploading CSV files.
-- **User-Friendly Interface**: Drag-and-drop functionality for seamless file uploads.
-- **Responsive Design**: Optimized for desktop and mobile devices.
+- **:framed_picture: ContourCreator**: Upload an image to generate contours for your projects.
+- **:bar_chart: CloudGen**: Upload a CSV file to produce point clouds for irregular domains.
+- **:hammer_and_wrench: CloudMod**: Modify and refine existing clouds by uploading CSV files.
+- **:computer_mouse: User-Friendly Interface**: Drag-and-drop functionality for seamless file uploads.
+- **:iphone: Responsive Design**: Optimized for desktop and mobile devices.
 
-## Installation
+## Deployment :earth_americas:
+
+A live deployment of this repository is available for academic and testing purposes. You can access it at:
+
+:link: [mGFD: Cloud Generator Deployment](https://malla.umich.mx/CloudGen/)
+
+## Installation :hammer_and_wrench:
 
 To run this application locally, follow these steps:
 
@@ -41,7 +47,7 @@ To run this application locally, follow these steps:
    http://127.0.0.1:5000
    ```
 
-## Project Structure
+## Project Structure :open_file_folder:
 
 ```
 CloudGen/
@@ -53,18 +59,18 @@ CloudGen/
 └── README.md             # Project documentation
 ```
 
-## License
+## License :scroll:
 
 This project is licensed under the terms specified in the `LICENSE` file.
 
-## Acknowledgments
+## Acknowledgments :raised_hands:
 
 This application was developed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo. Special thanks to the contributors and researchers involved in the project.
 
-## Contributing
+## Contributing :handshake:
 
 Contributions are welcome! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
 
 ---
 
-We hope mGFD: Cloud Generator becomes a valuable tool for your numerical analysis and research projects.
+We hope mGFD: Cloud Generator becomes a valuable tool for your numerical analysis and research projects. :rocket:

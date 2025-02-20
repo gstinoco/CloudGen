@@ -37,8 +37,6 @@ Configuration:
 # Standard library imports
 from datetime import datetime
 from threading import Timer
-import tempfile
-import getpass
 import logging
 import os
 
