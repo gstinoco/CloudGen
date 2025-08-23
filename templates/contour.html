@@ -202,9 +202,10 @@
 
 			// Function to download the points array as a CSV file.
 			function downloadCSV() {
+				const maxDimension = Math.max(imageObj.width, imageObj.height);
 				const normalizedPoints = points.map(p => ({
-					x: p.x / imageObj.width,
-					y: (imageObj.height - p.y) / imageObj.height,
+					x: p.x / maxDimension,
+					y: (imageObj.height - p.y) / maxDimension,
 					flag: p.flag
 				}));
 
@@ -231,7 +232,11 @@
 			}
 
 			function getRandomColor() {
-				return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+				let color;
+				do {
+					color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+				} while (zoneColors.includes(color)); // Evita duplicados
+				return color;
 			}
 		</script>
     </body>

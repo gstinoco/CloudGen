@@ -14,7 +14,7 @@ Features:
 
 Author: Gerardo Tinoco-Guerrero
 Created: May 7th, 2024.
-Last Modified: March 3rd, 2025.
+Last Modified: April 1st, 2025.
 
 Dependencies:
 - Flask: Web framework for routing and rendering.
@@ -37,11 +37,10 @@ Configuration:
 # Standard library imports
 from datetime import datetime
 from threading import Timer
-import logging
 import os
 
 # Third-party library imports
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, Response
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, Response, flash
 from shapely.geometry import Point, Polygon
 from werkzeug.utils import secure_filename
 from shapely.ops import unary_union
@@ -57,6 +56,10 @@ from core import (
     generate_clouds_for_all_regions,
     GraphCloud
 )
+
+# Logging imports
+from utils import app_logger, log_error
+
 # Plot imports
 import matplotlib
 matplotlib.use('Agg')                                                                                   # Use Agg backend for non-GUI environments
@@ -65,14 +68,12 @@ from matplotlib.lines import lineStyles
 
 # --- Flask Configuration ---
 app = Flask(__name__)
+app.secret_key = os.urandom(24)                                                                         # Generate a random secret key
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))                                                   # Absolute route for the script.
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'tmp', 'uploads')                                  # Directory for uploaded files
 app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'tmp', 'results')                                  # Directory for output files
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}                                               # Allowed extensions for image uploads
 app.config['ALLOWED_EXTENSIONS_D'] = {'csv'}                                                            # Allowed extensions for CSV uploads
-
-# --- Logging ---
-logging.basicConfig(level = logging.INFO)                                                               # Set logging level
 
 # --- Environment Variables ---
 os.environ['MPLCONFIGDIR'] = os.path.join(BASE_DIR, 'tmp', 'matplotlib')                                # Ensure matplotlib uses a temporary directory
@@ -137,12 +138,12 @@ def delete_file(path, delay):
         try:
             if os.path.exists(path):                                                                    # Check if the file exists.
                 os.remove(path)                                                                         # Remove the file from the system.
-                logging.info(f"File deleted: {path}")                                                   # Log successful deletion.
+                app_logger.info(f"File deleted: {path}")                                                # Log successful deletion.
             else:                                                                                       # If the file does not exist.
-                logging.warning(f"The file doesn't exists: {path}")                                     # Log a warning about missing file.
+                app_logger.warning(f"The file doesn't exists: {path}")                                  # Log a warning about missing file.
         
         except Exception as e:                                                                          # Handle any deletion errors.
-            logging.error(f"Error while deleting the file {path}: {str(e)}")                            # Log the error details.
+            app_logger.error(f"Error while deleting the file {path}: {str(e)}")                         # Log the error details.
 
     timer = Timer(delay, delayed_delete)                                                                # Create a timer to delay file deletion.
     timer.start()                                                                                       # Start the timer.
@@ -233,75 +234,115 @@ def upload_files():
         Response:                                       Renders different templates based on request method and file status.
     """
 
-    if request.method == 'POST':                                                                        # If the request method is POST.
-        # Verify if the file was uploaded.
-        if 'points_file' not in request.files:                                                          # If the file key is missing.
-            print("No file found.")                                                                     # Print warning message.
-            return redirect(request.url)                                                                # Redirect to the upload page.
+    if request.method == 'POST':                                                                        # Check if the request is POST
+        # Check if a file has been uploaded
+        if 'points_file' not in request.files:                                                          # Check if a file exists in the request
+            app_logger.warning("No file found in the request")                                          # Log a warning if no file is found
+            flash("Please select a file to upload", "error")                                            # Show error message to user
+            return redirect(request.url)                                                                # Redirect user to upload page
 
-        file = request.files['points_file']                                                             # Retrieve the uploaded file.
+        file = request.files['points_file']                                                             # Get file from request
 
-        if file.filename == '':                                                                         # If no file was selected.
-            return redirect(request.url)                                                                # Redirect to the upload page.
+        if file.filename == '':                                                                         # Check if a file was selected
+            app_logger.warning("Empty filename")                                                        # Log warning if filename is empty
+            flash("No file has been selected", "error")                                                 # Show error message to user
+            return redirect(request.url)                                                                # Redirect user to upload page
 
-        if file and allowed_file_D(file.filename):                                                      # If the file is valid and has an allowed extension.
-            filename  = secure_filename(file.filename)                                                  # Secure the filename.
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                             # Define the file path.
-            file.save(file_path)                                                                        # Save the uploaded file.
-
-            # Read and validate the CSV file.
+        if file and allowed_file_D(file.filename):                                                      # Check if file exists and has allowed extension
+            filename = secure_filename(file.filename)                                                   # Ensure filename is secure
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                             # Build complete path to save file
+            
             try:
-                regions             = process_csv(file_path)                                            # Process the CSV file and extract region data.
-                polygons            = generate_polygons(regions)                                        # Generate polygons from the region data.
-                containment_results = test_all_region_containments(polygons)                            # Determine containment relationships.
-                depurated_results   = remove_duplicate_containments(containment_results)                # Remove redundant containment relationships.
+                file.save(file_path)                                                                    # Try to save file on server
+                app_logger.info(f"File saved successfully: {filename}")                                 # Log successful operation
+            except Exception as e:
+                error_msg = log_error(e, "Error saving the file")                                       # Log any errors during save
+                flash("Error saving the file. Please try again.", "error")                              # Inform user of error
+                return redirect(request.url)                                                            # Redirect user to upload page
 
-                # Retrieve parameters from the form.
-                num  = int(request.form.get('num', 3))                                                  # Density of the points for cloud generation.
-                rand = int(request.form.get('rand', 1))                                                 # Random perturbation flag.
-                mod  = int(request.form.get('mod', 1))                                                  # Method for generating clouds of points.
-                gen  = int(request.form.get('gen', 0))                                                  # Flag for generating all clouds or only the outer one.
+            # Read and validate CSV file
+            try:
+                app_logger.info(f"Starting file processing: {filename}")                                # Log start of processing
+                regions = process_csv(file_path)                                                        # Process CSV file to get regions
+                polygons = generate_polygons(regions)                                                   # Generate polygons from regions
+                containment_results = test_all_region_containments(polygons)                            # Test containment relationships between regions
+                depurated_results = remove_duplicate_containments(containment_results)                  # Remove duplicate containment results
+                app_logger.info("Data processing completed successfully")                               # Log successful completion of processing
 
                 try:
-                    # Generate the cloud of points based on the extracted data.
+                    # Retrieve form parameters
+                    num = int(request.form.get('num', 3))                                               # Get number of points per region
+                    rand = int(request.form.get('rand', 1))                                             # Get randomness factor
+                    mod = int(request.form.get('mod', 1))                                               # Get density modifier
+                    gen = int(request.form.get('gen', 0))                                               # Get generation type
+                except ValueError as e:
+                    error_msg = log_error(e, "Error in input parameters")                               # Log errors in parameters
+                    flash("Parameter values are invalid. Please verify the entered data.", "error")     # Inform user of error
+                    return redirect(request.url)                                                        # Redirect user to upload page
+
+                try:
+                    app_logger.info("Starting cloud of points generation")                              # Log start of cloud generation
                     all_clouds = generate_clouds_for_all_regions(polygons, depurated_results, num, rand, mod, gen)
+                                                                                                        # Generate point clouds
+                    app_logger.info("Cloud of points generated successfully")                           # Log successful generation
                 except Exception as e:
-                    return f"Error generating the cloud: {e}", 500                                      # Return error if cloud generation fails.
+                    error_msg = log_error(e, "Error in cloud generation")                               # Log errors in generation
+                    flash("Error generating the cloud of points. Please verify the data and try again.", "error")
+                    return redirect(request.url)                                                        # Redirect user to upload page
 
-                # Generate unique filenames for output files using timestamps.
-                timestamp  = datetime.now().strftime("%Y%m%d_%H%M%S")                                   # Generate timestamp for unique filenames.
-                image_name = f'plot_{timestamp}.png'                                                    # Define PNG image name.
-                eps_name   = f'plot_{timestamp}.eps'                                                    # Define EPS image name.
-                p_csv_name = f'cloud_{timestamp}.csv'                                                   # Define CSV filename.
+                try:
+                    # Generate unique names for output files
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")                                # Create unique timestamp
+                    image_name = f'plot_{timestamp}.png'                                                # Name for PNG image
+                    eps_name = f'plot_{timestamp}.eps'                                                  # Name for EPS image
+                    p_csv_name = f'cloud_{timestamp}.csv'                                               # Name for CSV file
 
-                # Generate the cloud of points visualization.
-                GraphCloud(all_clouds, folder = app.config['OUTPUT_FOLDER'], image_name = image_name, eps_name = eps_name)
+                    # Generate visualizations and save data
+                    app_logger.info("Generating visualizations and saving data")                        # Log start of visualization
+                    GraphCloud(all_clouds, folder=app.config['OUTPUT_FOLDER'], image_name=image_name, eps_name=eps_name)
+                                                                                                        # Create graphs
 
-                # Save the generated cloud of points as a CSV file.
-                csv_path = os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name)                        # Define the output CSV file path.
-                pd.DataFrame(all_clouds, columns = ["x", "y", "region", "boundary_flag"]).to_csv(csv_path, index = False)
+                    csv_path = os.path.join(app.config['OUTPUT_FOLDER'], p_csv_name)                    # Build path for CSV file
+                    pd.DataFrame(all_clouds, columns=["x", "y", "region", "boundary_flag"]).to_csv(csv_path, index=False)
+                                                                                                        # Save data
 
-                # Schedule deletion of uploaded and generated files after 3600 seconds.
-                delete_file(file_path, 3600)                                                            # Delete the uploaded file.
-                delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 3600)                # Delete the PNG image.
-                delete_file(os.path.join(app.config['OUTPUT_FOLDER'], eps_name), 3600)                  # Delete the EPS image.
-                delete_file(csv_path, 3600)                                                             # Delete the generated CSV.
+                    # Schedule file deletion
+                    delete_file(file_path, 3600)                                                        # Delete original file after 1 hour
+                    delete_file(os.path.join(app.config['OUTPUT_FOLDER'], image_name), 3600)            # Delete PNG image
+                    delete_file(os.path.join(app.config['OUTPUT_FOLDER'], eps_name), 3600)              # Delete EPS image
+                    delete_file(csv_path, 3600)                                                         # Delete CSV file
 
-                # Render the result page with visualization and data.
-                return render_template(
-                    'cloud.html',
-                    image_name = image_name,
-                    eps_name  = eps_name,
-                    p_csv_name = p_csv_name,
-                    tables = [pd.DataFrame(all_clouds, columns = ["x", "y", "region", "boundary_flag"]).to_html(classes = 'data')],
-                    titles = ['na', 'Cloud Data']
-                )
+                    app_logger.info("Process completed successfully")                                   # Log successful completion
+                    flash("Cloud of points has been generated successfully", "success")                 # Inform user of success
 
+                    return render_template(                                                             # Render template with results
+                        'cloud.html',
+                        image_name=image_name,
+                        eps_name=eps_name,
+                        p_csv_name=p_csv_name,
+                        tables=[pd.DataFrame(all_clouds, columns=["x", "y", "region", "boundary_flag"]).to_html(classes='data')],
+                        titles=['na', 'Cloud Data']
+                    )
+
+                except Exception as e:
+                    error_msg = log_error(e, "Error generating output files")                           # Log errors in file generation
+                    flash("Error generating output files. Please try again.", "error")                  # Inform user of error
+                    return redirect(request.url)                                                        # Redirect user to upload page
+
+            except (ValueError, FileNotFoundError, pd.errors.EmptyDataError) as e:
+                error_msg = log_error(e, "Error processing the file")                                   # Log errors in file processing
+                flash(str(e), "error")                                                                  # Show error message to user
+                return redirect(request.url)                                                            # Redirect user to upload page
             except Exception as e:
-                return f"Error reading the file: {e}", 500                                              # Return error if file reading fails.
-    
-    # Render the upload page if the request is GET or if the upload fails.
-    return render_template('uploadC.html')                                                              # Render the upload page.
+                error_msg = log_error(e, "Unexpected error in processing")                              # Log unexpected errors
+                flash("An unexpected error has occurred. Please try again.", "error")                   # Inform user of error
+                return redirect(request.url)                                                            # Redirect user to upload page
+        else:
+            app_logger.warning(f"File type not allowed: {file.filename}")                               # Log warning for not allowed file type
+            flash("File type not allowed. Please use a CSV file.", "error")                             # Inform user of error
+            return redirect(request.url)                                                                # Redirect user to upload page
+
+    return render_template('uploadC.html')
 
 @app.route('/modify', methods = ['GET', 'POST'])
 def modify():
