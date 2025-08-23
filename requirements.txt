@@ -6,7 +6,9 @@ meshplex==0.18.11
 numpy==2.2.3
 npx==0.1.6
 pandas==2.2.3
+python-magic==0.4.27
 rich==13.9.4
+Rtree==1.4.0
 scipy==1.15.2
 shapely==2.0.7
 Werkzeug==3.0.4

@@ -1,28 +1,37 @@
 # --- Imports ---
-# Standard library imports
-from datetime import datetime
-from threading import Timer
-import logging
-import os
+# Standard library imports for basic functionality
+from datetime import datetime                                                                           # For timestamp generation and date handling
+from threading import Timer                                                                             # For scheduling delayed operations
+import logging                                                                                          # For application logging
+import os                                                                                               # For file and path operations
 
-# Third-party library imports
-from shapely.geometry import Point, Polygon
-from shapely.ops import unary_union
-import pandas as pd
-import numpy as np
-import dmsh
-import csv
+# Third-party library imports for geometric operations and data handling
+from concurrent.futures import ThreadPoolExecutor
+from shapely.geometry import Point, Polygon                                                             # For creating and manipulating geometric objects
+from shapely.ops import unary_union                                                                     # For combining multiple geometric objects
+from shapely.prepared import prep                                                                       # For geometry preparation
+from functools import partial
+from rtree import index                                                                                 # For spatial indexing
+import pandas as pd                                                                                     # For data manipulation and analysis
+import numpy as np                                                                                      # For numerical operations
+import dmsh                                                                                             # For mesh generation
+import csv                                                                                              # For CSV file operations
 
-# Plot imports
+# Matplotlib imports for plotting and visualization
 import matplotlib
-matplotlib.use('Agg')                                                                                   # Use Agg backend for non-GUI environments
-import matplotlib.pyplot as plt
-from matplotlib.lines import lineStyles
+matplotlib.use('Agg')                                                                                   # Use Agg backend for non-GUI environments (server-side)
+import matplotlib.pyplot as plt                                                                         # For creating plots
+from matplotlib.lines import lineStyles                                                                 # For line style customization
+from matplotlib.colors import to_rgb                                                                    # For color conversion
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox                                            # For adding images to plots
+import matplotlib.image as mpimg                                                                        # For image handling in plots
 
+# Custom logger import
+from utils import app_logger, log_error                                                                 # Import custom logging utilities
 
 '''
 ======================================
-2. DATA PROCESSING
+1. DATA PROCESSING
 ======================================
 '''
 
@@ -39,32 +48,68 @@ def process_csv(file_path):
 
     Raises:
         ValueError:                                     If the CSV file does not contain the required columns.
-        RuntimeError:                                   If any error occurs during file processing.
+        FileNotFoundError:                             If the specified file does not exist.
+        pd.errors.EmptyDataError:                      If the CSV file is empty.
+        RuntimeError:                                   If any other error occurs during file processing.
     """
+
     try:
-        # Load the CSV file into a DataFrame.
-        df = pd.read_csv(file_path)                                                                     # Read the CSV file.
+        # Verify file existence before processing
+        if not os.path.exists(file_path):                                                               # Check if the file exists at the specified path
+            error_msg = f"CSV file does not exist at path: {file_path}"                                 # Prepare error message
+            log_error(FileNotFoundError(error_msg), "Error processing CSV")                             # Log the error with custom error handler
+            raise FileNotFoundError(error_msg)                                                          # Raise exception to caller
 
-        # Define the required columns.
-        required_columns = {'x', 'y', 'flag'}                                                           # Columns needed in the dataset.
+        # Load and validate CSV file
+        app_logger.info(f"Starting CSV file processing: {file_path}")                                   # Log start of file processing
+        df = pd.read_csv(file_path)                                                                     # Read CSV file into pandas DataFrame
 
-        # Check if all required columns are present.
-        if not required_columns.issubset(df.columns):                                                   # Ensure that the file has the correct structure.
-            raise ValueError("The CSV file must contain the columns: 'x', 'y', 'flag'")                 # Raise an error if columns are missing.
+        # Check if the DataFrame is empty
+        if df.empty:                                                                                    # Verify if the CSV file has any data
+            error_msg = "The CSV file is empty"                                                         # Prepare empty file error message
+            log_error(pd.errors.EmptyDataError(error_msg), "Error processing CSV")                      # Log empty file error
+            raise pd.errors.EmptyDataError(error_msg)                                                   # Raise empty file exception
+
+        # Define and validate required columns
+        required_columns = {'x', 'y', 'flag'}                                                           # Set of required column names
+
+        # Ensure all required columns are present
+        if not required_columns.issubset(df.columns):                                                   # Check if all required columns exist
+            error_msg = "CSV file must contain columns: 'x', 'y', 'flag'"                               # Prepare missing columns error
+            log_error(ValueError(error_msg), "Error processing CSV")                                    # Log missing columns error
+            raise ValueError(error_msg)                                                                 # Raise missing columns exception
         
-        # Select only the necessary columns.
-        df = df[['x', 'y', 'flag']]                                                                     # Keep only the required columns.
+        # Extract only necessary columns
+        df = df[['x', 'y', 'flag']]                                                                     # Select only the columns we need
 
-        # Group points by region flag and store them as lists of coordinate pairs.
-        points_by_region = (
-            df.groupby('flag', group_keys = False)                                                      # Group data by the 'flag' column.
-            .apply(lambda group: group[['x', 'y']].values.tolist(), include_groups = False)             # Convert each group into a list of (x, y) coordinates.
-            .to_dict()                                                                                  # Convert the grouped data into a dictionary.
+        # Validate numeric data in coordinates
+        if not pd.to_numeric(df['x'], errors='coerce').notnull().all():                                 # Check if all x-coordinates are numeric
+            error_msg = "Column 'x' contains non-numeric values"                                        # Prepare invalid x-coordinate error
+            log_error(ValueError(error_msg), "Error processing CSV")                                    # Log invalid x-coordinate error
+            raise ValueError(error_msg)                                                                 # Raise invalid x-coordinate exception
+
+        if not pd.to_numeric(df['y'], errors='coerce').notnull().all():                                 # Check if all y-coordinates are numeric
+            error_msg = "Column 'y' contains non-numeric values"                                        # Prepare invalid y-coordinate error
+            log_error(ValueError(error_msg), "Error processing CSV")                                    # Log invalid y-coordinate error
+            raise ValueError(error_msg)                                                                 # Raise invalid y-coordinate exception
+
+        # Group points by region and convert to coordinate pairs
+        points_by_region = (                                                                            # Create dictionary of points by region
+            df.groupby('flag', group_keys=False)                                                        # Group data by region flag
+            .apply(lambda group: group[['x', 'y']].values.tolist(), include_groups=False)               # Convert each group to list of coordinates
+            .to_dict()                                                                                  # Convert to dictionary format
         )
-        return points_by_region                                                                         # Return the dictionary of points grouped by region.
 
-    except Exception as e:
-        raise RuntimeError(f"Error processing the file: {e}")                                           # Raise an error if processing fails.
+        # Log successful processing and return results
+        app_logger.info(f"CSV file processed successfully: {len(points_by_region)} regions found")      # Log success
+        return points_by_region                                                                         # Return processed data
+
+    except (pd.errors.EmptyDataError, ValueError, FileNotFoundError) as e:                              # Handle expected exceptions
+        raise e                                                                                         # Re-raise expected exceptions
+    except Exception as e:                                                                              # Handle unexpected exceptions
+        error_msg = f"Error inesperado al procesar el archivo: {str(e)}"                                # Prepare unexpected error message
+        log_error(e, "Error al procesar CSV")                                                           # Log unexpected error
+        raise RuntimeError(error_msg)                                                                   # Raise as RuntimeError
 
 def generate_polygons(points_by_region):
     """
@@ -107,7 +152,7 @@ def generate_polygons(points_by_region):
 
 '''
 ======================================
-3. REGION ANALYSIS AND VALIDATION
+2. REGION ANALYSIS AND VALIDATION
 ======================================
 '''
 
@@ -129,7 +174,7 @@ def test_region_containment(polygon_1, polygon_2):
 
     # Validate that both polygons are provided.
     if polygon_1 is None or polygon_2 is None:                                                          # Ensure both polygons exist.
-        raise ValueError("Los polígonos proporcionados no son válidos.")                                # Raise an error if any is missing.
+        raise ValueError("The provided polygons are not valid.")                                        # Raise an error if any is missing.
     
     # Check if polygon_2 is completely within polygon_1
     check = polygon_2.within(polygon_1) or (polygon_2.intersects(polygon_1) and polygon_1.area > polygon_2.area)
@@ -138,7 +183,7 @@ def test_region_containment(polygon_1, polygon_2):
 
 def test_all_region_containments(polygons_by_region):
     """
-    Tests containment relationships between multiple regions.
+    Tests containment relationships between multiple regions using spatial indexing for optimization.
 
     Parameters:
         polygons_by_region (dict):                      Dictionary where keys are region identifiers and 
@@ -149,17 +194,32 @@ def test_all_region_containments(polygons_by_region):
                                                         values are lists of other regions that they contain.
     """
 
-    # Initialize a dictionary to store containment results.
-    containment_results = {region: [] for region in polygons_by_region}                                 # Create an empty list for each region.
+    # Initialize spatial index for efficient querying
+    idx = index.Index()                                                                                 # Create R-tree spatial index
+    for region_id, polygon in polygons_by_region.items():                                               # Add each region to index
+        idx.insert(region_id, polygon.bounds)                                                           # Insert region bounds
 
-    # Iterate through all region pairs to check containment.
-    for region_1, polygon_1 in polygons_by_region.items():                                              # Loop through each region's polygon.
-        for region_2, polygon_2 in polygons_by_region.items():                                          # Compare with every other region.
-            if region_1 != region_2 and test_region_containment(polygon_1, polygon_2):                  # Ensure regions are different and check containment.
-                if region_2 not in containment_results[region_1]:                                       # Avoid duplicate entries.
-                    containment_results[region_1].append(region_2)                                      # Add region_2 as contained within region_1.
+    # Initialize results dictionary
+    containment_results = {region: [] for region in polygons_by_region}                                 # Create empty lists for each region
 
-    return containment_results                                                                          # Return the dictionary of containment relationships.
+    # Prepare polygons for optimized operations
+    prepared_polygons = {region: prep(polygon) for region, polygon in polygons_by_region.items()}       # Preprocess geometries
+
+    # Check containment relationships
+    for region_1 in polygons_by_region:                                                                 # Iterate through each region
+        polygon_1 = polygons_by_region[region_1]                                                        # Get first region's polygon
+        prepared_polygon_1 = prepared_polygons[region_1]                                                # Get prepared version
+
+        # Find potential containing regions
+        for region_2 in [r for r in idx.intersection(polygon_1.bounds) if r != region_1]:               # Use spatial index
+            polygon_2 = polygons_by_region[region_2]                                                    # Get second region's polygon
+            
+            # Test containment relationship
+            if prepared_polygon_1.contains(polygon_2) or (prepared_polygon_1.intersects(polygon_2) and polygon_1.area > polygon_2.area):
+                                                                                                        # Check if region_1 contains region_2 Or if they intersect and region_1 is larger
+                containment_results[region_1].append(region_2)                                          # Add to containment list
+
+    return containment_results                                                                          # Return containment relationships
 
 def remove_duplicate_containments(containment_results):
     """
@@ -187,7 +247,7 @@ def remove_duplicate_containments(containment_results):
 
 '''
 ======================================
-4. CLOUD OF POINTS GENERATION
+3. CLOUD OF POINTS GENERATION
 ======================================
 '''
 
@@ -337,7 +397,8 @@ def generate_clouds_for_all_regions(polygons_by_region, containment_results, num
 
     all_points = []                                                                                     # List to store generated cloud of points.
     
-    for region, polygon in polygons_by_region.items():                                                  # Iterate through all regions.
+    def process_region(region_data):
+        region, polygon = region_data
         try:
             # Validate that the polygon is valid and has an exterior contour.
             if not polygon.is_valid or not polygon.exterior:                                            # Check if the polygon is well-defined.
@@ -371,18 +432,23 @@ def generate_clouds_for_all_regions(polygons_by_region, containment_results, num
                 dist = dist/2                                                                           # Reduce spacing if necessary.
 
             # Generate the cloud of points for the region.
-            cloud = CreateCloud(xb, yb, hole_coordinates, dist, rand, region, mod)                      # Call the function to create the cloud.
-            
-            # Store the generated cloud of points.
-            all_points.append(cloud)                                                                    # Append to the list of generated clouds.
-
-            # If only one cloud is needed, stop after the first generation.
-            if gen == 0:
-                break
+            return CreateCloud(xb, yb, hole_coordinates, dist, rand, region, mod)                       # Call the function to create the cloud.
 
         except Exception as e:
             print(f"Error generating cloud for region {region}: {e}")                                   # Print error message if cloud generation fails.
-            continue
+            return np.array([])
+
+    # Process regions in parallel using ThreadPoolExecutor
+    with ThreadPoolExecutor() as executor:
+        # Map the processing function to all regions
+        results = list(executor.map(process_region, polygons_by_region.items()))
+        
+        # If only one cloud is needed, take just the first result
+        if gen == 0 and results:
+            results = [results[0]]
+    
+    # Combine all results efficiently using numpy
+    all_points = [r for r in results if r.size > 0]
 
     # Combine all generated clouds of points into a single array.
     if all_points:
@@ -393,7 +459,7 @@ def generate_clouds_for_all_regions(polygons_by_region, containment_results, num
 
 '''
 ======================================
-5. VISUALIZATION AND EXPORTING
+4. VISUALIZATION AND EXPORTING
 ======================================
 '''
 
@@ -414,25 +480,53 @@ def GraphCloud(all_clouds, folder, image_name, eps_name):
     
     # Create a figure for visualization.
     plt.figure(figsize = (12, 8))                                                                       # Set figure size for better visualization.
+    ax = plt.gca()                                                                                      # Get the current axis.
 
     # Identify unique region flags in the cloud of points.
-    unique_flags = np.unique(all_clouds[:, 2])                                                          # Extract unique region identifiers.
-    colors = plt.cm.get_cmap('tab20', len(unique_flags))                                                # Generate a colormap for different regions.
+    unique_flags = np.unique(all_clouds[:, 2].astype(int))                                              # Extract unique region identifiers.
+    cmap = plt.colormaps.get_cmap('viridis')                                                            # Create a cmap with 20 different colors.
+    norm = plt.Normalize(vmin = min(unique_flags), vmax = max(unique_flags))                            # Generate a colormap for different regions.
+
+    color_map = {}
+    for flag in unique_flags:
+        if flag == 1:
+            color_map[flag] = 'blue'
+        else:
+            rgba = cmap(norm(flag))
+            color_map[flag] = to_rgb(rgba)
 
     # Scatter points by region.
-    for i, flag in enumerate(unique_flags):                                                             # Loop through each unique region.
+    for flag in unique_flags:                                                                           # Loop through each unique region.
         cloud = all_clouds[all_clouds[:, 2] == flag]                                                    # Filter points belonging to the current region.
-        plt.scatter(cloud[:, 0], cloud[:, 1], s = 5, c = [colors(i)], label = f'Región {int(flag)}')    # Plot points for this region.
+        color = color_map[flag]                                                                         # Get the color for the current region.
+        plt.scatter(cloud[:, 0], cloud[:, 1], s=5, c=[color], alpha=1.0, label=f'Region {int(flag)}')   # Plot points for this region.
 
         # Plot boundary of the region.
-        bound = cloud[cloud[:,3] == 1]                                                                  # Extract boundary points (type_flag == 1).
-        bound = np.vstack([bound, bound[0]])                                                            # Close the boundary loop by repeating the first point.
-        plt.plot(bound[:, 0], bound[:, 1], color = colors(i), linestyle = 'solid')                      # Plot the boundary outline.
+        boundary = cloud[cloud[:, 3] == 1]                                                              # Extract boundary points (type_flag == 1).
+        boundary = np.vstack([boundary, boundary[0]])                                                   # Close the boundary loop by repeating the first point.
+        plt.plot(boundary[:, 0], boundary[:, 1], color=color, linestyle='solid')                        # Plot the boundary outline.
 
     # Configure plot properties.
-    plt.legend()                                                                                        # Add a legend to distinguish regions.
     plt.grid(True)                                                                                      # Enable grid for better readability.
+    plt.axis('equal')                                                                                   # Fix the axes for visualization.
     plt.title("Generated Cloud of Points")                                                              # Set plot title.
+
+    # Add watermark
+    try:
+        # Load the logo image (assuming it's in the project's assets folder)
+        logo = mpimg.imread('static/images/logo_b.png')                                                 # Load the logo image.
+        
+        # Create an OffsetImage with reduced opacity
+        imagebox = OffsetImage(logo, zoom = 0.08, alpha = 0.3)                                          # Create an OffsetImage with reduced opacity.
+        
+        # Position the watermark in the bottom right corner
+        ab = AnnotationBbox(imagebox, (0.95, 0.05),
+                           xycoords = 'axes fraction',
+                           box_alignment = (1, 0),
+                           frameon = False)                                                             # Create an AnnotationBbox for the watermark.
+        ax.add_artist(ab)
+    except Exception as e:
+        print(f"Warning: Could not add watermark: {e}")
 
     # Save the figure in PNG format.
     plt.savefig(os.path.join(folder, image_name), format = 'png')                                       # Save the plot as a PNG file.
