@@ -161,9 +161,64 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# macOS
 */.DS_Store
 .DS_Store
-.vscode
-tmp
-prueba
-Examples
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project specific
+tmp/
+prueba/
+Examples/
+
+# Flask application specific
+uploads/*
+!uploads/.gitkeep
+output/*
+!output/.gitkeep
+logs/*
+!logs/.gitkeep
+instance/
+
+# Image processing temporary files
+*.tmp
+*.temp
+temp_*
+processed_*
+
+# CSV processing files
+*.csv.bak
+*.csv.tmp
+reduced_*
+
+# GMSH files
+*.msh
+*.geo
+*.pos
+
+# Scientific computing
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# Configuration files with sensitive data
+config.py
+secrets.py
+.secrets
+
+# Runtime files
+*.pid
+*.sock
+celerybeat-schedule.*
+
+# Backup files
+*.bak
+*.backup
+*~

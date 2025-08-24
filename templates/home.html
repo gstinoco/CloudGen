@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>mGFD: CloudGenerator 2.0 - Advanced Cloud of Points Generation & Contour Creation</title>
+    <meta name="description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research, engineering, and data visualization.">
+    <meta name="keywords" content="cloud of points, contour creation, image processing, scientific visualization, cloud generation, data analysis, engineering tools, research software">
+    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="mGFD: CloudGenerator 2.0 - Advanced Cloud of Points Generation">
+    <meta property="og:description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research and engineering.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    <meta property="og:site_name" content="mGFD CloudGenerator">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="mGFD: CloudGenerator 2.0 - Advanced Cloud of Points Generation">
+    <meta property="twitter:description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research and engineering.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
+                <div class="logo-text">
+                    <span class="logo-title">mGFD: CloudGenerator</span>
+                    <span class="logo-subtitle">2.0</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#features" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Features</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Workflow</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
+                            <i class="fas fa-draw-polygon"></i>
+                            ContourCreator
+                        </a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about') }}" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-main">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                    </div>
+                    <h1 class="hero-title">mGFD: CloudGenerator 2.0</h1>
+                    <p class="hero-subtitle">Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method</p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-bullseye"></i>
+                            <span>High Precision</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-bolt"></i>
+                            <span>Fast Processing</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure & Private</span>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('contour_creator') }}" class="btn btn-primary btn-large">
+                            <i class="fas fa-draw-polygon"></i>
+                            ContourCreator
+                        </a>
+                        <a href="{{ url_for('cloud_generator') }}" class="btn btn-secondary btn-large">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        
+    <!-- Features Section -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Tools for Scientific Computing</h2>
+                <p class="section-subtitle">Everything you need to generate high-quality clouds of points</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3 class="feature-title">ContourCreator</h3>
+                    <p class="feature-description">Create geometric contours interactively from images. Uses advanced segmentation algorithms to automatically detect regions.</p>
+                    <div class="feature-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-magic"></i>
+                            <span>Auto Detection</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>Interactive</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('contour_creator') }}" class="feature-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Try ContourCreator
+                    </a>
+                </div>
+                
+                <div class="feature-card featured">
+                    <div class="feature-badge">Most Popular</div>
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">CloudGenerator</h3>
+                    <p class="feature-description">Generate unstructured clouds of points from CSV files. Automatically optimizes point distribution according to geometry for mGFD simulations.</p>
+                    <div class="feature-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>High Performance</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-cogs"></i>
+                            <span>Optimized</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('cloud_generator') }}" class="feature-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Try CloudGenerator
+                    </a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">About the Project</h3>
+                    <p class="feature-description">Learn more about the development team, methodology used, and research objectives of the project.</p>
+                    <div class="feature-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Research</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-code"></i>
+                            <span>Open Source</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('about') }}" class="feature-btn">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+        
+    <!-- Workflow Section -->
+    <section class="section-light" id="workflow">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Complete process from image to unstructured cloud of points</p>
+            </div>
+            
+            <div class="workflow-timeline">
+                <div class="workflow-step">
+                    <div class="step-connector"></div>
+                    <div class="step-circle">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title"><i class="fas fa-image"></i> Upload Image</h4>
+                        <p class="step-description">Start by uploading your image containing regions of interest. Our system supports multiple formats and provides instant preview with quality validation.</p>
+                        <div class="step-features">
+                            <span class="feature-tag">PNG/JPG</span>
+                            <span class="feature-tag">Drag & Drop</span>
+                            <span class="feature-tag">Quality Check</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-connector"></div>
+                    <div class="step-circle">
+                        <i class="fas fa-vector-square"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title"><i class="fas fa-magic"></i> Detect Contours</h4>
+                        <p class="step-description">Advanced computer vision algorithms automatically identify and extract geometric contours with sub-pixel precision, ensuring accurate boundary detection.</p>
+                        <div class="step-features">
+                            <span class="feature-tag">AI-Powered</span>
+                            <span class="feature-tag">Sub-pixel Accuracy</span>
+                            <span class="feature-tag">Real-time Preview</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-connector"></div>
+                    <div class="step-circle">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title"><i class="fas fa-download"></i> Export Coordinates</h4>
+                        <p class="step-description">Extract and export contour coordinates in industry-standard CSV format, ready for integration with your computational workflow and analysis tools.</p>
+                        <div class="step-features">
+                            <span class="feature-tag">CSV Format</span>
+                            <span class="feature-tag">Structured Data</span>
+                            <span class="feature-tag">Instant Download</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-connector"></div>
+                    <div class="step-circle">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title"><i class="fas fa-cogs"></i> Generate Cloud of Points</h4>
+                        <p class="step-description">Transform contours into optimized unstructured clouds of points using advanced algorithms specifically designed for mGFD computational efficiency.</p>
+                        <div class="step-features">
+                            <span class="feature-tag">mGFD Optimized</span>
+                            <span class="feature-tag">Adaptive Density</span>
+                            <span class="feature-tag">Quality Metrics</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-circle">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="step-title"><i class="fas fa-eye"></i> Visualize & Analyze</h4>
+                        <p class="step-description">Interactive visualization of generated clouds of points with comprehensive analysis tools, quality metrics, and multiple export formats for your research needs.</p>
+                        <div class="step-features">
+                            <span class="feature-tag">3D Visualization</span>
+                            <span class="feature-tag">Quality Analysis</span>
+                            <span class="feature-tag">Multiple Exports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Key Features -->
+    <section class="section-dark" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">Advanced capabilities that set our platform apart</p>
+            </div>
+            
+            <div class="key-features-grid">
+                <div class="key-feature-card">
+                    <div class="key-feature-visual">
+                        <div class="key-feature-icon">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <div class="key-feature-pattern"></div>
+                    </div>
+                    <div class="key-feature-content">
+                        <div class="key-feature-header">
+                            <h4 class="key-feature-title">Interactive Contour Detection</h4>
+                            <div class="key-feature-badge">Click-Based</div>
+                        </div>
+                        <p class="key-feature-description">Advanced flood fill and edge detection algorithms automatically identify geometric regions from images with simple click interaction, providing precise boundary extraction for complex shapes.</p>
+                        <div class="key-feature-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value">Auto</span>
+                                <span class="metric-label">Detection</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">Multi</span>
+                                <span class="metric-label">Region</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-feature-card">
+                    <div class="key-feature-visual">
+                        <div class="key-feature-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="key-feature-pattern"></div>
+                    </div>
+                    <div class="key-feature-content">
+                        <div class="key-feature-badge">Optimized</div>
+                        <div class="key-feature-header">
+                            <h4 class="key-feature-title">Adaptive Cloud of Points Generation</h4>
+                        </div>
+                        <p class="key-feature-description">Generates optimized clouds of points with adaptive density based on geometric complexity. Preserves original contour points and automatically classifies boundary nodes for mGFD applications.</p>
+                        <div class="key-feature-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value">Adaptive</span>
+                                <span class="metric-label">Sizing</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">Auto</span>
+                                <span class="metric-label">Classification</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-feature-card">
+                    <div class="key-feature-visual">
+                        <div class="key-feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="key-feature-pattern"></div>
+                    </div>
+                    <div class="key-feature-content">
+                        <div class="key-feature-badge">Publication-Ready</div>
+                        <div class="key-feature-header">
+                            <h4 class="key-feature-title">High-Quality Visualization</h4>
+                        </div>
+                        <p class="key-feature-description">Generates detailed 2D visualizations with node classification, boundary highlighting, and quality analysis. Exports high-resolution images and SVG graphics suitable for scientific publications.</p>
+                        <div class="key-feature-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value">500</span>
+                                <span class="metric-label">DPI</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">SVG</span>
+                                <span class="metric-label">Export</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-feature-card">
+                    <div class="key-feature-visual">
+                        <div class="key-feature-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <div class="key-feature-pattern"></div>
+                    </div>
+                    <div class="key-feature-content">
+                        <div class="key-feature-badge">CSV Format</div>
+                        <div class="key-feature-header">
+                            <h4 class="key-feature-title">Flexible Data Export</h4>
+                        </div>
+                        <p class="key-feature-description">Exports cloud of points data in CSV format with comprehensive node classification including boundary, interface, and interior node types. Compatible with scientific computing workflows and mGFD solvers.</p>
+                        <div class="key-feature-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value">CSV</span>
+                                <span class="metric-label">Format</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">mGFD</span>
+                                <span class="metric-label">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
+                    </div>
+                    <p class="footer-description">
+                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                     </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
+                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Research Areas</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
+                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
+                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
+                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Sponsored by</h3>
+                    <div class="sponsor-logos">
+                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <span class="sponsor-name">SIIIA MATH</span>
+                        </a>
+                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <span class="sponsor-name">UMSNH</span>
+                        </a>
+                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <span class="sponsor-name">SECIHTI</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <!-- <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+</body>
+</html>

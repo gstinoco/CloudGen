@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>CloudGenerator - Generate Clouds of Points from Images | mGFD CloudGenerator 2.0</title>
+    <meta name="description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data for scientific research and engineering applications.">
+    <meta name="keywords" content="cloud of points generation, image to cloud of points, coordinate extraction, cloud generation, scientific visualization, image processing, data export, CSV coordinates">
+    <meta name="author" content="mGFD Research Team">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="CloudGenerator - Generate Clouds of Points from Images">
+    <meta property="og:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    <meta property="og:site_name" content="Gerardo Tinoco-Guerrero, PhD.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="CloudGenerator - Generate Clouds of Points from Images">
+    <meta property="twitter:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
+                <div class="logo-text">
+                    <span class="logo-title">mGFD: CloudGenerator</span>
+                    <span class="logo-subtitle">2.0</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#features" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Features</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Workflow</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
+                        <i class="fas fa-draw-polygon"></i>
+                        ContourCreator
+                    </a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about') }}" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-main">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                    </div>
+                    <h1 class="hero-title">CloudGenerator</h1>
+                    <p class="hero-subtitle">
+                        Generate unstructured clouds of points from CSV files with contour coordinates for mGFD applications. 
+                        Transform your geometric data into computational clouds of points ready for scientific simulations.
+                    </p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-file-csv"></i>
+                            <span>CSV Import</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-cloud"></i>
+                            <span>Cloud of Points Generation</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-download"></i>
+                            <span>Multiple Formats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application Section -->
+    <section class="section-dark">
+        <div class="container">
+        
+            <!-- CSV Format Information -->
+            <div id="formatInfoCard" class="app-card format-info-card">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon">
+                        <i class="fas fa-file-csv"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Required CSV File Format</h3>
+                        <p>Understand the expected data structure for cloud of points generation</p>
+                    </div>
+                </div>
+                <div class="format-content">
+                    <div class="format-requirements">
+                        <h4 class="format-subtitle">
+                            <i class="fas fa-table"></i>
+                            Required Columns
+                        </h4>
+                        <div class="columns-grid">
+                            <div class="column-item">
+                                <div class="column-header">
+                                    <span class="column-name">x</span>
+                                    <span class="column-type">float</span>
+                                </div>
+                                <p class="column-description">Normalized X coordinate (0.0 - 1.0)</p>
+                            </div>
+                            <div class="column-item">
+                                <div class="column-header">
+                                    <span class="column-name">y</span>
+                                    <span class="column-type">float</span>
+                                </div>
+                                <p class="column-description">Normalized Y coordinate (0.0 - 1.0)</p>
+                            </div>
+                            <div class="column-item">
+                                <div class="column-header">
+                                    <span class="column-name">region</span>
+                                    <span class="column-type">int</span>
+                                </div>
+                                <p class="column-description">Region number (1, 2, 3, ...)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="format-example">
+                        <div class="example-header">
+                            <h4 class="example-title">
+                                <i class="fas fa-code"></i>
+                                Example Format
+                            </h4>
+                            <p class="example-description">Here's how your CSV file should be structured</p>
+                        </div>
+                        
+                        <div class="code-preview-container">
+                            <div class="code-preview">
+                                <div class="code-header">
+                                    <div class="file-info">
+                                        <i class="fas fa-file-csv"></i>
+                                        <span class="file-name">example.csv</span>
+                                    </div>
+                                    <button class="copy-btn" onclick="copyToClipboard('x,y,region\n0.4571,0.8178,1\n0.4559,0.8166,1\n0.4547,0.8166,1')" title="Copy to clipboard">
+                                        <i class="fas fa-copy"></i>
+                                        <span class="copy-text">Copy</span>
+                                    </button>
+                                </div>
+                                <div class="code-content">
+                                    <div class="line-numbers">
+                                        <span>1</span>
+                                        <span>2</span>
+                                        <span>3</span>
+                                        <span>4</span>
+                                    </div>
+                                    <div class="code-text">
+                                        <pre><code><span class="csv-header">x,y,region</span>
+<span class="csv-data">0.4571,0.8178,1</span>
+<span class="csv-data">0.4559,0.8166,1</span>
+<span class="csv-data">0.4547,0.8166,1</span></code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="format-tips">
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="tip-text">
+                                <strong>Perfect Compatibility:</strong> Use files generated by ContourCreator for seamless integration
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="tip-text">
+                                <strong>Sample File:</strong> Download our 
+                                <a href="{{ url_for('static', filename='examples/example_1.csv') }}" download="example_1.csv" class="download-link">
+                                    <i class="fas fa-file-csv"></i>
+                                    example_1.csv
+                                </a> 
+                                reference example
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- File Upload Section -->
+            <div class="app-card upload-card" id="uploadSection">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Upload CSV File</h3>
+                        <p>Drag and drop your CSV file or click to browse</p>
+                    </div>
+                </div>
+                <div class="upload-zone-container">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-content" id="uploadContent">
+                            <div class="upload-icon-container">
+                                <i class="fas fa-file-csv upload-icon" id="uploadIcon"></i>
+                                <div class="upload-animation">
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                </div>
+                            </div>
+                            <h4 class="upload-title" id="uploadTitle">Drop your CSV file here</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <div class="upload-formats">
+                                <span class="format-badge">CSV</span>
+                            </div>
+                            <div class="upload-size-limit">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Maximum file size: 10MB</span>
+                            </div>
+                            <div class="upload-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Browse Files</span>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-circle">
+                                <svg class="progress-ring" width="60" height="60">
+                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                </svg>
+                                <span class="progress-text" id="progressText">0%</span>
+                            </div>
+                            <p class="progress-message" id="progressMessage">Uploading CSV...</p>
+                        </div>
+                        <div class="upload-success" id="uploadSuccess" style="display: none;">
+                            <div class="success-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4>Upload Successful!</h4>
+                            <p id="uploadedFileName">CSV uploaded successfully</p>
+                        </div>
+                        <div class="upload-error" id="uploadError" style="display: none;">
+                            <div class="error-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4>Upload Error</h4>
+                            <p id="errorMessage">Please try again</p>
+                            <button class="btn btn-secondary btn-small" onclick="resetUpload()">
+                                <i class="fas fa-redo"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                </div>
+            </div>
+        
+            <!-- File Information -->
+            <div id="fileInfoSection" class="app-card file-info-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>File Information</h3>
+                        <p>Preview and analyze your uploaded CSV data</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="control-btn secondary" id="clearButton" onclick="clearUpload()">
+                            <i class="fas fa-redo"></i>
+                            <span>Start Over</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="file-info-content">
+                    <div class="file-stats-section">
+                        <h4 class="section-subtitle">
+                            <i class="fas fa-database"></i>
+                            Data Statistics
+                        </h4>
+                        <div id="fileDetails" class="stats-grid"></div>
+                    </div>
+                    
+                    <div class="visualization-section">
+                        <h4 class="section-subtitle">
+                            <i class="fas fa-eye"></i>
+                            Data Visualization
+                        </h4>
+                        <div class="chart-container">
+                            <div class="chart-controls">
+                                <div class="chart-title">
+                                    <i class="fas fa-chart-scatter"></i>
+                                    Data Points Visualization
+                                </div>
+                                <div class="chart-actions">
+                                    <button class="chart-btn" onclick="downloadChart()" title="Download Chart">
+                                        <i class="fas fa-download"></i>
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="csvChart" width="800" height="800"></canvas>
+                                <div id="chartFallback" class="chart-fallback hidden">
+                                    <div class="fallback-content">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <p>Could not load chart visualization</p>
+                                        <small>Please check your CSV file format</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Generation Options -->
+            <div id="cloudOptionsSection" class="app-card options-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Generation Options</h3>
+                        <p>Configure cloud of points generation parameters</p>
+                    </div>
+                </div>
+                
+                <div class="options-content">
+                    <div class="options-grid">
+                        <div class="option-card">
+                            <div class="option-header">
+                                <div class="option-icon">
+                                    <i class="fas fa-circle-notch"></i>
+                                </div>
+                                <div class="option-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="regionesInsideOption" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="option-content">
+                                <h4 class="option-title">Interior Clouds of Points</h4>
+                                <p class="option-description">Generate clouds of points inside internal regions (holes). Recommended for complex geometries with internal boundaries.</p>
+                                <div class="option-benefits">
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Better accuracy
+                                    </span>
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Complex geometries
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-card">
+                            <div class="option-header">
+                                <div class="option-icon">
+                                    <i class="fas fa-compress-alt"></i>
+                                </div>
+                                <div class="option-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="reducePointsOption">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="option-content">
+                                <h4 class="option-title">Reduce Contour Points</h4>
+                                <p class="option-description">Reduces approximately half the number of contour points before generation. Useful for files with many points to improve performance.</p>
+                                <div class="option-benefits">
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Faster processing
+                                    </span>
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Large datasets
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="generation-action">
+                        <button onclick="generateCloud()" id="generateBtn" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket"></i>
+                            <span>Generate Cloud of Points</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                        <p class="action-note">
+                            <i class="fas fa-info-circle"></i>
+                            Generation time depends on data complexity and selected options
+                        </p>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Generation Progress -->
+            <div id="progressSection" class="app-card progress-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon processing">
+                        <i class="fas fa-cog fa-spin"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Generating Cloud of Points</h3>
+                        <p>Please wait while we process your data...</p>
+                    </div>
+                </div>
+                
+                <div class="progress-content">
+                    <div class="progress-wrapper">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <div class="progress-glow"></div>
+                        </div>
+                        <div class="progress-percentage" id="progressPercentage">0%</div>
+                    </div>
+                    <div class="progress-text" id="progressText"></div>
+                    <div class="progress-steps">
+                        <div class="step-item active" id="step1">
+                            <div class="step-icon"><i class="fas fa-upload"></i></div>
+                            <span>Processing Data</span>
+                        </div>
+                        <div class="step-item" id="step2">
+                            <div class="step-icon"><i class="fas fa-cogs"></i></div>
+                            <span>Generating Points</span>
+                        </div>
+                        <div class="step-item" id="step3">
+                            <div class="step-icon"><i class="fas fa-check"></i></div>
+                            <span>Finalizing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results -->
+            <div id="resultsSection" class="app-card results-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Generation Complete</h3>
+                        <p>Cloud of points generated successfully</p>
+                    </div>
+                </div>
+                
+                <div class="results-content">
+                    <div class="results-summary">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="summary-info">
+                                    <span class="summary-label">Processing Time</span>
+                                    <span class="summary-value" id="processingTime">--</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fas fa-dot-circle"></i>
+                                </div>
+                                <div class="summary-info">
+                                    <span class="summary-label">Points Generated</span>
+                                    <span class="summary-value" id="pointsGenerated">--</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="summary-info">
+                                    <span class="summary-label">Output Files</span>
+                                    <span class="summary-value" id="outputFiles">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="resultsContent" class="results-visualization">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- File Download Section -->
+            <div id="fileDownloadSection" class="app-card download-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon download">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Download Generated Files</h3>
+                        <p>Download the generated files in various formats</p>
+                    </div>
+                </div>
+                
+                <div class="download-content">
+                    <div class="download-grid" id="downloadLinks">
+                        <!-- Download links will be populated here -->
+                    </div>
+                    <div class="download-info">
+                        <div class="info-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Files are available for download for 24 hours</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>All files are automatically deleted after download period</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
+                    </div>
+                    <p class="footer-description">
+                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                     </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
+                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Research Areas</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
+                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
+                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
+                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Sponsored by</h3>
+                    <div class="sponsor-logos">
+                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <span class="sponsor-name">SIIIA MATH</span>
+                        </a>
+                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <span class="sponsor-name">UMSNH</span>
+                        </a>
+                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <span class="sponsor-name">SECIHTI</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <!-- <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+     <script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
+</body>
+</html>

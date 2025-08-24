@@ -1,125 +1,654 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>CloudGen: A Simple Cloud of Points Generator</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta name="description" content="CloudGen: A simple, web-based cloud of points generator designed by SIIIA MATH for UMSNH and CONAHCYT.">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" >
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
-	</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>About mGFD CloudGenerator 2.0 - Advanced Research Tools for Scientific Computing</title>
+    <meta name="description" content="Learn about mGFD CloudGenerator 2.0, a cutting-edge research platform for cloud of points generation and contour creation. Developed by leading researchers for scientific and engineering applications.">
+    <meta name="keywords" content="mGFD research, scientific computing, computational tools, research software, academic research, engineering software, cloud of points research, image processing research">
+    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="About mGFD CloudGenerator 2.0 - Advanced Research Tools">
+    <meta property="og:description" content="Learn about mGFD CloudGenerator 2.0, a cutting-edge research platform for cloud of points generation and contour creation. Developed by leading researchers.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    <meta property="og:site_name" content="mGFD CloudGenerator">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="About mGFD CloudGenerator 2.0 - Advanced Research Tools">
+    <meta property="twitter:description" content="Learn about mGFD CloudGenerator 2.0, a cutting-edge research platform for cloud of points generation and contour creation. Developed by leading researchers.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
+                <div class="logo-text">
+                    <span class="logo-title">mGFD: CloudGenerator</span>
+                    <span class="logo-subtitle">2.0</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#features" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Features</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Workflow</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
+                        <i class="fas fa-draw-polygon"></i>
+                        ContourCreator
+                    </a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about') }}" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-main">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                    </div>
+                    <h1 class="hero-title">About the Project</h1>
+                    <p class="hero-subtitle">
+                        Meet the team behind mGFD CloudGenerator 2.0 - A complete platform for generating unstructured clouds of points from images and geometric contours, designed for meshless Generalized Finite Difference Method (mGFD) applications and numerical simulations.
+                    </p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-users"></i>
+                            <span>Expert Team</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-code"></i>
+                            <span>Open Source</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Research-Based</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-	<body>
-		<!-- Header -->
-		<header class="navbar navbar-expand-lg">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('index') }}">
-					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD" height="40">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto">
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('index') }}">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('upload_image') }}">ContourCreator</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('upload_files') }}">CloudGenerator</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('modify') }}">CloudMod</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('about') }}">About</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{{ url_for('howto') }}"><i class='fas fa-question-circle'></i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</header>
+    <!-- Project Overview Section -->
+    <section class="section-dark features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Project Overview</h2>
+            </div>
+            
+            <!-- Project Summary Dashboard -->
+            <div class="project-dashboard">
+                <div class="dashboard-header">
+                    <div class="project-logo">
+                        <div class="logo-circle">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <div class="project-info">
+                            <h3 class="project-name">mGFD CloudGenerator 2.0</h3>
+                            <p class="project-tagline">Advanced Cloud of Points Generation for Meshless Methods</p>
+                        </div>
+                    </div>
+                    <div class="project-status">
+                        <div class="status-badge active">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Production Ready</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card primary">
+                        <div class="metric-icon">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">2</div>
+                            <div class="metric-label">Core Modules</div>
+                            <div class="metric-description">Integrated tools for complete workflow</div>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card success">
+                        <div class="metric-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">100%</div>
+                            <div class="metric-label">Open Source</div>
+                            <div class="metric-description">MIT licensed for collaboration</div>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card info">
+                        <div class="metric-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">v2.0</div>
+                            <div class="metric-label">Latest Version</div>
+                            <div class="metric-description">Enhanced performance & features</div>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature Highlights -->
+                <div class="feature-highlights">
+                    <div class="highlight-item">
+                        <div class="highlight-icon">
+                            <i class="fas fa-draw-polygon"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>ContourCreator</h4>
+                            <p>Interactive contour generation with real-time visualization</p>
+                        </div>
+                    </div>
+                    
+                    <div class="highlight-item">
+                        <div class="highlight-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>CloudGenerator</h4>
+                            <p>Optimized cloud of points generation for mGFD applications</p>
+                        </div>
+                    </div>
+                    
+                    <div class="highlight-item">
+                        <div class="highlight-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Advanced Analytics</h4>
+                            <p>Comprehensive visualization and analysis tools</p>
+                        </div>
+                    </div>
+                    
+                    <div class="highlight-item">
+                        <div class="highlight-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="highlight-content">
+                            <h4>Multiple Formats</h4>
+                            <p>Export in CSV, PNG, SVG and other standard formats</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Research Team Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Research Team</h2>
+            </div>
+            
+            <!-- Researchers Category -->
+            <div class="team-category">
+                <h3 class="category-title">Researchers</h3>
+                <div class="team-grid">
+                    <!-- Researcher 1 -->
+                    <div class="team-member researcher">
+                        <div class="member-avatar">GT</div>
+                        <div class="member-name">Gerardo Tinoco-Guerrero</div>
+                        <div class="member-role">Ph.D. in Physical Engineering Sciences</div>
+                        <div class="member-contact">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Researcher 2 -->
+                    <div class="team-member researcher">
+                        <div class="member-avatar">JG</div>
+                        <div class="member-name">J. Alberto Guzmán-Torres</div>
+                        <div class="member-role">Ph.D. in Physical Engineering Sciences</div>
+                        <div class="member-contact">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:jose.alberto.guzman@umich.mx">jose.alberto.guzman@umich.mx</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Researcher 3 -->
+                    <div class="team-member researcher">
+                        <div class="member-avatar">FD</div>
+                        <div class="member-name">Francisco J. Domínguez-Mota</div>
+                        <div class="member-role">Ph.D. in Mathematical Sciences</div>
+                        <div class="member-contact">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:francisco.mota@umich.mx">francisco.mota@umich.mx</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Students Category -->
+            <div class="team-category">
+                <h3 class="category-title">Students</h3>
+                <div class="team-grid">
+                    <!-- Student 1 -->
+                    <div class="team-member student">
+                        <div class="member-avatar">GP</div>
+                        <div class="member-name">Gabriela Pedraza-Jimenez</div>
+                        <div class="member-role">Ph.D. candidate</div>
+                    </div>
+                    
+                    <!-- Student 2 -->
+                    <div class="team-member student">
+                        <div class="member-avatar">EC</div>
+                        <div class="member-name">Eli Chagolla-Inzunza</div>
+                        <div class="member-role">Ph.D. candidate</div>
+                    </div>
+                    
+                    <!-- Student 3 -->
+                      <div class="team-member student">
+                        <div class="member-avatar">AC</div>
+                        <div class="member-name">Ángel E. Calvillo-Vázquez</div>
+                        <div class="member-role">M.Sc. student</div>
+                    </div>
+                    
+                    <!-- Student 4 -->
+                    <div class="team-member student">
+                        <div class="member-avatar">JG</div>
+                        <div class="member-name">Jorge L. González-Figueroa</div>
+                        <div class="member-role">M.Sc. student</div>
+                    </div>
 
-		<!-- Main Contenedor -->
-		<main class="container-fluid bg-image" style="background-image: url({{ url_for('static', filename='images/bg.webp') }})">
-			<div class="hero-content">
-				<div class="hero-logo">
-					<img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo mGFD">
-				</div>
-				<p class="text-justify">
-					mGFD: Cloud Generator was designed by the Malla group at the Universidad Michoacana de San Nicolás de Hidalgo to
-					bring an easy way to create clouds for irregular domains to compare  different methods to numerically solve partial
-					differential equations without a structured mesh.
-				</p>
-				<div id="main-researchers-students" class="container-about">
-					<div class="row2">
-						<div class="col-left">
-							<h13>Researchers</h13>
-							<br /><br />
-							<ul class="small-image-list">
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/GTG.png') }}" alt="" class="left" /></a>
-									<h14><strong>Gerardo Tinoco-Guerrero</strong></h14><br><p1>Ph.D. in Physical Engineering Sciences<br>
-									<a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a></p>
-								</li>
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/JAGT.png') }}" alt="" class="left" /></a>
-									<h14><strong>J. Alberto Guzmán-Torres</strong></h14><br><p>Ph.D. in Physical Engineering Sciences<br>
-									<a href="mailto:jose.alberto.guzman@umich.mx">jose.alberto.guzman@umich.mx</a></p>
-								</li>
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/FJDM.png') }}" alt="" class="left" /></a>
-									<h14><strong>Francisco J. Domínguez-Mota</strong></h14><br><p>Ph.D. in Mathematical Sciences<br>
-									<a href="mailto:francisco.mota@umich.mx">francisco.mota@umich.mx</a></p>
-								</li>
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/JGTR.png') }}" alt="" class="left" /></a>
-									<h14><strong>J. Gerardo Tinoco-Ruiz</strong></h14><br><p>Ph.D. in Applied Mathematics<br>
-									<a href="mailto:jose.gerardo.tinoco@umich.mx">jose.gerardo.tinoco@umich.mx</a></p>
-								</li>
-							</ul>
-						</div>
-						<div class="col-right">
-							<h13>Students</h13>
-							<br /><br />
-							<ul class="small-image-list">
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/GPJ.png') }}" alt="" class="left" /></a>
-									<h14><strong>Gabriela Pedraza-Jiménez</strong></h14>
-								</li>
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/RRG.png') }}" alt="" class="left" /></a>
-									<h14><strong>Ricardo Román-Gutiérrez</strong></h14>
-								</li>
-								<li>
-									<a href="#"><img src="{{ url_for('static', filename='photos/NSSJ.png') }}" alt="" class="left" /></a>
-									<h14><strong>Nancy Saray Saucedo-León</strong></h14>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
+                    <!-- Student 5 -->
+                    <div class="team-member student">
+                        <div class="member-avatar">CM</div>
+                        <div class="member-name">C. Nolan Magaña-Barocio</div>
+                        <div class="member-role">M.Sc. student</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technology Stack Section -->
+    <section class="section-dark tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Technology Stack</h2>
+            </div>
+            
+            <div class="tech-grid">
+                <div class="tech-category backend-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h4>Backend</h4>
+                    </div>
+                    <div class="tech-badges">
+                        <div class="tech-badge primary">
+                            <i class="fab fa-python"></i>
+                            <span>Python 3.8+</span>
+                        </div>
+                        <div class="tech-badge primary">
+                            <i class="fas fa-flask"></i>
+                            <span>Flask</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-calculator"></i>
+                            <span>NumPy</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-table"></i>
+                            <span>Pandas</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-eye"></i>
+                            <span>OpenCV</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-category frontend-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h4>Frontend</h4>
+                    </div>
+                    <div class="tech-badges">
+                        <div class="tech-badge primary">
+                            <i class="fab fa-html5"></i>
+                            <span>HTML5 & CSS3</span>
+                        </div>
+                        <div class="tech-badge primary">
+                            <i class="fab fa-js-square"></i>
+                            <span>JavaScript ES6+</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-draw-polygon"></i>
+                            <span>Canvas API</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Responsive Design</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-magic"></i>
+                            <span>Modern UI/UX</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-category scientific-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h4>Scientific</h4>
+                    </div>
+                    <div class="tech-badges">
+                        <div class="tech-badge primary">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Matplotlib</span>
+                        </div>
+                        <div class="tech-badge primary">
+                            <i class="fas fa-square-root-alt"></i>
+                            <span>SciPy</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-brain"></i>
+                            <span>Adaptive Algorithms</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-shapes"></i>
+                            <span>Computational Geometry</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-category tools-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h4>Tools</h4>
+                    </div>
+                    <div class="tech-badges">
+                        <div class="tech-badge primary">
+                            <i class="fab fa-git-alt"></i>
+                            <span>Git</span>
+                        </div>
+                        <div class="tech-badge primary">
+                            <i class="fas fa-laptop"></i>
+                            <span>Cross-platform</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-file-csv"></i>
+                            <span>CSV/JSON</span>
+                        </div>
+                        <div class="tech-badge">
+                            <i class="fas fa-image"></i>
+                            <span>PNG/SVG</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact and Collaboration Section -->
+    <section class="section-light contact-collaboration">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact and Collaboration</h2>
+                <p class="section-subtitle">Connect with our research team and contribute to the advancement of meshless computational methods</p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-item research-contact">
+                    <div class="contact-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h4>Research Collaboration</h4>
+                    <p class="contact-description">Partner with us on academic research, algorithm development, and scientific applications.</p>
+                    <div class="contact-details">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span>gerardo.tinoco@umich.mx</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-university"></i>
+                            <span>Academic Partnerships</span>
+                        </div>
+                    </div>
+                    <div class="contact-tags">
+                        <span class="contact-tag">CFD Research</span>
+                        <span class="contact-tag">Algorithm Development</span>
+                        <span class="contact-tag">Publications</span>
+                    </div>
+                </div>
+                
+                <div class="contact-item development-contact">
+                    <div class="contact-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h4>Development & Contributions</h4>
+                    <p class="contact-description">Join our open-source community. Contribute code, report bugs, suggest features, or help improve the platform.</p>
+                    <div class="contact-details">
+                        <div class="contact-method">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub Repository</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-bug"></i>
+                            <span>Issue Tracking</span>
+                        </div>
+                    </div>
+                    <div class="contact-tags">
+                        <span class="contact-tag">Open Source</span>
+                        <span class="contact-tag">Bug Reports</span>
+                        <span class="contact-tag">Feature Requests</span>
+                    </div>
+                </div>
+                
+                <div class="contact-item documentation-contact">
+                    <div class="contact-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4>Documentation & Support</h4>
+                    <p class="contact-description">Help us improve documentation, create tutorials, share use cases, or get technical support for your projects.</p>
+                    <div class="contact-details">
+                        <div class="contact-method">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Technical Support</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-edit"></i>
+                            <span>Documentation</span>
+                        </div>
+                    </div>
+                    <div class="contact-tags">
+                        <span class="contact-tag">Tutorials</span>
+                        <span class="contact-tag">Use Cases</span>
+                        <span class="contact-tag">Support</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="collaboration-cta">
+                <div class="cta-content">
+                    <div class="cta-text">
+                        <h3>Ready to Collaborate?</h3>
+                        <p>Join our growing community of researchers, developers, and computational scientists working together to advance meshless methods.</p>
+                    </div>
+                    <div class="cta-actions">
+                        <a href="mailto:gerardo.tinoco@umich.mx" class="btn btn-primary">
+                            <i class="fas fa-envelope"></i>
+                            Get in Touch
+                        </a>
+                        <a href="https://github.com/gstinoco/CloudGen" class="btn btn-secondary" target="_blank">
+                            <i class="fab fa-github"></i>
+                            View on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="license-info">
+                <div class="license-content">
+                    <div class="license-icon">
+                        <i class="fab fa-osi"></i>
+                    </div>
+                    <div class="license-text">
+                        <h4>Open Source License</h4>
+                        <p>This project is released under the <strong>MIT License</strong>, ensuring freedom to use, modify, and distribute. We welcome contributions from the global research community.</p>
+                    </div>
+                    <div class="license-badge">
+                        <span class="badge">MIT Licensed</span>
+                        <span class="badge">Open Source</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<!-- Footer -->
-		<footer class="text-center py-3">
-			<div class="container">
-				<div class="logos mb-3">
-					<a href="https://www.umich.mx/"><img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="UMSNH Logo" class="footer-image" /></a>
-					<a href="https://conahcyt.mx/"><img src="{{ url_for('static', filename='images/conahcyt.webp') }}" alt="CONAHCYT Logo" class="footer-image" /></a>
-					<a href="https://siiia.com.mx/"><img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH Logo" class="footer-image" /></a>
-				</div>
-				<p class="mt-3">&copy; CloudGen. All rights reserved.</p>
-			</div>
-		</footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
+                    </div>
+                    <p class="footer-description">
+                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                     </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
+                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>How it Works</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Research Areas</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
+                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
+                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
+                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Sponsored by</h3>
+                    <div class="sponsor-logos">
+                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <span class="sponsor-name">SIIIA MATH</span>
+                        </a>
+                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <span class="sponsor-name">UMSNH</span>
+                        </a>
+                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <span class="sponsor-name">SECIHTI</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <!-- <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </footer>
 
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+</body>
 </html>

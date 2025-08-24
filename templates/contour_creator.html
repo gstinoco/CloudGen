@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>ContourCreator - Create Precise Contours from Images | mGFD CloudGenerator 2.0</title>
+    <meta name="description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis, engineering design, and clouds of points generation workflows.">
+    <meta name="keywords" content="contour creation, image contours, boundary detection, image processing, scientific analysis, engineering design, shape extraction, computer vision, clouds of points">
+    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="ContourCreator - Create Precise Contours from Images">
+    <meta property="og:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and clouds of points generation workflows.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    <meta property="og:site_name" content="mGFD CloudGenerator">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="ContourCreator - Create Precise Contours from Images">
+    <meta property="twitter:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and clouds of points generation workflows.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
+                <div class="logo-text">
+                    <span class="logo-title">mGFD: CloudGenerator</span>
+                    <span class="logo-subtitle">2.0</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#features" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Features</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Workflow</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
+                        <i class="fas fa-draw-polygon"></i>
+                        ContourCreator
+                    </a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about') }}" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-main">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                    </div>
+                    <h1 class="hero-title">ContourCreator</h1>
+                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic segmentation algorithms. Perfect for computational modeling and cloud of points generation workflows.</p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-magic"></i>
+                            <span>Automatic Segmentation</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-vector-square"></i>
+                            <span>Precise Contours</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-download"></i>
+                            <span>Export Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Application Section -->
+    <section class="section-dark">
+        <div class="container">
+            <!-- Upload Section -->
+            <div class="app-card upload-card" id="uploadSection">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Upload Image</h3>
+                        <p>Drag and drop your image or click to browse</p>
+                    </div>
+                </div>
+                <div class="upload-zone-container">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-content" id="uploadContent">
+                            <div class="upload-icon-container">
+                                <i class="fas fa-cloud-upload-alt upload-icon" id="uploadIcon"></i>
+                                <div class="upload-animation">
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                </div>
+                            </div>
+                            <h4 class="upload-title" id="uploadTitle">Drop your image here</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <div class="upload-formats">
+                                <span class="format-badge">JPG</span>
+                                <span class="format-badge">PNG</span>
+                            </div>
+                            <div class="upload-size-limit">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Maximum file size: 10MB</span>
+                            </div>
+                            <div class="upload-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Browse Files</span>
+                            </div>
+                        </div>
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-circle">
+                                <svg class="progress-ring" width="60" height="60">
+                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                </svg>
+                                <span class="progress-text" id="progressText">0%</span>
+                            </div>
+                            <p class="progress-message" id="progressMessage">Uploading image...</p>
+                        </div>
+                        <div class="upload-success" id="uploadSuccess" style="display: none;">
+                            <div class="success-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4>Upload Successful!</h4>
+                            <p id="uploadedFileName">Image uploaded successfully</p>
+                        </div>
+                        <div class="upload-error" id="uploadError" style="display: none;">
+                            <div class="error-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4>Upload Error</h4>
+                            <p id="errorMessage">Please try again</p>
+                            <button class="btn btn-secondary btn-small" onclick="resetUpload()">
+                                <i class="fas fa-redo"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp" style="display: none;">
+                </div>
+                <div class="upload-actions">
+                    <button class="btn btn-secondary" id="clearButton" onclick="clearUpload()" style="display: none;">
+                        <i class="fas fa-times"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Processing Section -->
+            <div id="imageSection" class="hidden">
+                <!-- Full Width Workspace Layout -->
+                <div class="workspace-fullwidth">
+                    <!-- Unified Workspace Container -->
+                    <div class="app-card workspace-unified">
+                        <!-- Horizontal Controls Bar -->
+                        <div class="controls-bar">
+                            <div class="controls-group">
+                                <button class="control-btn primary" onclick="addRegion()" id="addRegionBtn" disabled>
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Add Region</span>
+                                </button>
+                                <button class="control-btn secondary" onclick="clearAllRegions()">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Clear All</span>
+                                </button>
+                                <button class="control-btn success" onclick="saveAllCoordinates()" id="saveBtn" disabled>
+                                    <i class="fas fa-download"></i>
+                                    <span>Export All Regions</span>
+                                </button>
+                            </div>
+                            
+                            <div class="zoom-controls">
+                                <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">
+                                    <i class="fas fa-search-minus"></i>
+                                </button>
+                                <span id="zoomLevel" class="zoom-level">100%</span>
+                                <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                                <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Canvas Area -->
+                        <div class="canvas-container">
+                            <canvas id="imageCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detected Regions Section -->
+                <div id="regionsDisplay" class="app-card regions-card hidden">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Detected Regions</h3>
+                            <p>Review and manage your contours</p>
+                        </div>
+                    </div>
+                    <div id="regionsList" class="regions-list-enhanced"></div>
+                </div>
+
+            </div>
+            
+            <!-- Floating Notifications Container -->
+            <div id="floatingNotifications" class="floating-notifications"></div>
+            
+            <div id="alertContainer" class="alert-container"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
+                    </div>
+                    <p class="footer-description">
+                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                     </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
+                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Research Areas</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
+                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
+                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
+                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Sponsored by</h3>
+                    <div class="sponsor-logos">
+                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <span class="sponsor-name">SIIIA MATH</span>
+                        </a>
+                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <span class="sponsor-name">UMSNH</span>
+                        </a>
+                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <span class="sponsor-name">SECIHTI</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <!-- <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact</a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contour_creator.js') }}"></script>
+</body>
+</html>
