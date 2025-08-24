@@ -363,38 +363,85 @@ git checkout -b feature/your-feature-name
 
 ---
 
-## :scientist: Research Team
+## :busts_in_silhouette: Research Team
 
-### Researchers
-**Dr. Gerardo Tinoco-Guerrero**  
-*Ph.D. in Physical Engineering Sciences*  
-Universidad Michoacana de San Nicolás de Hidalgo  
-📧 gerardo.tinoco@umich.mx  
-🔬 Principal Researcher
+### :microscope: **Principal Researchers**
 
-**Dr. Jose Alberto Guzmán-Torres**  
-*Ph.D. in Physical Engineering Sciences*  
-Universidad Michoacana de San Nicolás de Hidalgo  
-📧 jose.alberto.guzman@umich.mx  
-🔬 Co-Researcher
+#### :man_office_worker: **Dr. Gerardo Tinoco-Guerrero** - *Principal Researcher*
+> :mortar_board: **Ph.D. in Physical Engineering Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
 
-**Dr. Francisco Javier Domínguez-Mota**  
-*Ph.D. in Mathematical Sciences*  
-Universidad Michoacana de San Nicolás de Hidalgo  
-📧 francisco.mota@umich.mx  
-🔬 Co-Researcher
+- :bar_chart: **Leadership**: Project coordination and scientific direction
+- :email: **Contact**: [gerardo.tinoco@umich.mx](mailto:gerardo.tinoco@umich.mx)
 
-### Students
-- **Gabriela Pedraza-Jimenez** - Ph.D. candidate
-- **Eli Chagolla-Inzunza** - Ph.D. candidate
-- **Ángel Emeterio Calvillo-Vázquez** - M.Sc. student
-- **Jorge Luis González-Figueroa** - M.Sc. student
-- **Christopher Nolan Magaña-Barocio** - M.Sc. student
+#### :man_scientist: **Dr. José Alberto Guzmán-Torres** - *Co-Researcher*
+> :mortar_board: **Ph.D. in Physical Engineering Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
 
-### Sponsors
-- **[SIIIA MATH: Soluciones de Ingeniería](http://siiia.com.mx/)**
-- **[Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)](https://umich.mx/)**
-- **[Secretaría de Ciencia, Humanidades, Tecnología e Innovación (SECIHTI)](https://secihti.mx/)**
+- :bulb: **Contribution**: Technical implementation and validation
+- :email: **Contact**: [jose.alberto.guzman@umich.mx](mailto:jose.alberto.guzman@umich.mx)
+
+#### :man_scientist: **Dr. Francisco Javier Domínguez-Mota** - *Co-Researcher*
+> :mortar_board: **Ph.D. in Mathematical Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
+
+- :abacus: **Contribution**: Mathematical rigor and theoretical analysis
+- :email: **Contact**: [francisco.mota@umich.mx](mailto:francisco.mota@umich.mx)
+
+---
+
+### :mortar_board: **Graduate Students**
+
+<div align="center">
+
+| :woman_student::man_student: **Student** | :chart_with_upwards_trend: **Status** |
+|:---|:---:|
+| **Gabriela Pedraza-Jiménez** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
+| **Eli Chagolla-Inzunza** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
+| **Ángel E. Calvillo-Vázquez** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
+| **Jorge L. González-Figueroa** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
+| **Christopher N. Magaña-Barocio** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
+
+</div>
+
+### :star2: **Team Contributions**
+
+- :microscope: **Ph.D. Candidates**: Advanced research in computational methods and numerical analysis
+- :man_technologist: **M.Sc. Students**: Software development, algorithm implementation, and data processing
+- :handshake: **Collaborative Approach**: Interdisciplinary team combining mathematics, engineering, and computer science
+- :books: **Academic Excellence**: All members affiliated with Universidad Michoacana de San Nicolás de Hidalgo
+
+### :handshake: Sponsors
+
+<div align="center">
+
+| :office: **Organization** | :globe_with_meridians: **Type** | :round_pushpin: **Location** | :link: **Website** |
+|:---:|:---:|:---:|:---:|
+| **SIIIA MATH** | R&D Company | Morelia, México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-blue)](http://siiia.com.mx/) |
+| **UMSNH** | Public University | Morelia, México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-green)](https://umich.mx/) |
+| **SECIHTI** | Government Agency | México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-orange)](https://secihti.mx/) |
+
+</div>
+
+---
+
+#### :factory: **[SIIIA MATH: Soluciones de Ingeniería](http://siiia.com.mx/)**
+> *Transforming complex challenges into innovative solutions through advanced mathematical models and cutting-edge technology*
+
+- :dart: **Specialization**: Artificial Intelligence & Engineering Solutions
+- :trophy: **Experience**: 12+ years in mathematical modeling
+- :rocket: **Projects**: 15+ completed projects with satisfied clients
+
+#### :mortar_board: **[Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)](https://umich.mx/)**
+> *Leading public university fostering scientific research and academic excellence*
+
+- :books: **Founded**: 1917 - Over 100 years of academic tradition
+- :microscope: **Research**: Advanced computational mathematics and engineering
+- :busts_in_silhouette: **Community**: Home to our research team and scientific development
+
+#### :classical_building: **[Secretaría de Ciencia, Humanidades, Tecnología e Innovación (SECIHTI)](https://secihti.mx/)**
+> *Mexican government agency promoting science, technology and innovation for national development*
+
+- :mexico: **Mission**: Advancing Mexico's scientific and technological capabilities
+- :bulb: **Focus**: Supporting research projects and innovation initiatives
+- :star2: **Impact**: Fostering collaboration between academia and industry
 
 ### Publications
 *No related publications yet. Research is ongoing and publications are in preparation.*
