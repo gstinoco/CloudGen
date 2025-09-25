@@ -87,10 +87,9 @@ Dependencies:
 - SciPy >= 1.8.0
 """
 
-import cv2
 import numpy as np
-from scipy import ndimage
 import logging
+import cv2
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -75,23 +75,23 @@ Dependencies:
 """
 
 from flask import Flask, render_template, request, jsonify, send_from_directory
-import cv2
-import numpy as np
-import os
-from werkzeug.utils import secure_filename
-import pandas as pd
-from datetime import datetime
-import threading
-import time
-import logging
 from logging.handlers import RotatingFileHandler
-import re
+from werkzeug.utils import secure_filename
+from datetime import datetime
+import pandas as pd
+import numpy as np
+import threading
 import tempfile
+import logging
+import time
+import cv2
+import os
+import re
 
 # Import project-specific modules
-import contour_detection
 from cloud_generation import generate_cloud_regular, generate_cloud_natural
 from reduce_points import reduce_points_by_region
+import contour_detection
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'

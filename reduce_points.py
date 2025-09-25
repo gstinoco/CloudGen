@@ -70,13 +70,11 @@ Dependencies:
     - scipy >= 1.7.0 (convex hull computation and spatial algorithms)
 """
 
+from shapely.geometry import Point, Polygon
 import pandas as pd
-import numpy as np
+import tempfile
 import logging
 import os
-import tempfile
-from shapely.geometry import Point, Polygon
-from scipy.spatial import ConvexHull
 
 def reduce_points_by_region_single(input_csv, output_csv):
     """

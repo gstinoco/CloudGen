@@ -73,18 +73,18 @@ Dependencies:
 - Scipy >= 1.8.0
 """
 
-import os
-import logging
-import numpy as np
-import pandas as pd
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
-import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon
-import tempfile
+import matplotlib.pyplot as plt
 import reduce_points
+import pandas as pd
+import numpy as np
+import tempfile
+import logging
 import random
-from scipy.spatial.distance import cdist
+import os
+
+import matplotlib
+matplotlib.use('Agg')
 
 # Configure logging
 logging.basicConfig(
