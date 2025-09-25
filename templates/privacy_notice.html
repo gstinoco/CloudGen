@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Privacy Notice - mGFD CloudGenerator 2.0 | Data Protection & Privacy Policy</title>
+    <meta name="description" content="Privacy Notice for mGFD CloudGenerator 2.0. Learn how we protect your data, what information we collect, and your rights regarding personal data protection.">
+    <meta name="keywords" content="privacy policy, data protection, personal data, privacy notice, GDPR compliance, data security, mGFD CloudGenerator">
+    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Privacy Notice - mGFD CloudGenerator 2.0">
+    <meta property="og:description" content="Privacy Notice for mGFD CloudGenerator 2.0. Learn how we protect your data and your rights regarding personal data protection.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    <meta property="og:site_name" content="mGFD CloudGenerator">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="Privacy Notice - mGFD CloudGenerator 2.0">
+    <meta property="twitter:description" content="Privacy Notice for mGFD CloudGenerator 2.0. Learn how we protect your data and your rights regarding personal data protection.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
+                <div class="logo-text">
+                    <span class="logo-title">mGFD: CloudGenerator</span>
+                    <span class="logo-subtitle">2.0</span>
+                </div>
+            </a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#features" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Features</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Workflow</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
+                        <i class="fas fa-draw-polygon"></i>
+                        ContourCreator
+                    </a></li>
+                    <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-cloud"></i>
+                            CloudGenerator
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('about') }}" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-main">
+                    <div class="hero-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                    </div>
+                    <h1 class="hero-title">Privacy Notice</h1>
+                    <p class="hero-subtitle">
+                        Your privacy is important to us. This notice explains how mGFD CloudGenerator 2.0 collects, uses, and protects your personal information in compliance with applicable data protection laws.
+                    </p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Data Protection</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-lock"></i>
+                            <span>Secure Processing</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-user-check"></i>
+                            <span>Your Rights</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Controller Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Data Controller Information</h2>
+                <p class="section-subtitle">Who is responsible for your personal data</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>Institution</h3>
+                    <p>Universidad Michoacana de San Nicolás de Hidalgo (UMSNH), Faculty of Physical-Mathematical Sciences</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Responsible Person</h3>
+                    <p>Dr. Gerardo Tinoco-Guerrero, Principal Researcher and Project Lead</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Contact Information</h3>
+                    <p>Email: <a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a><br>
+                    Address: Morelia, Michoacán, México</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Collection Section -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Data We Collect</h2>
+                <p class="section-subtitle">Information collected when you use our platform</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>1. Technical Data</h3>
+                    <p>We collect IP address, browser type, device information, and usage patterns for system optimization and security purposes. This information helps us maintain the stability and security of our services.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>2. Uploaded Files</h3>
+                    <p>Images and data files you upload for processing are temporarily stored on our servers. These files are automatically deleted after processing is complete to protect your privacy.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>3. Usage Analytics</h3>
+                    <p>We collect anonymous usage statistics to improve our services and understand user behavior patterns. This data is aggregated and cannot be used to identify individual users.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Purposes Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How We Use Your Data</h2>
+                <p class="section-subtitle">Legitimate purposes for data processing</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>Service Provision</h3>
+                    <p>We use your data to provide cloud generation and contour creation services as requested by users. This includes processing uploaded files and generating the requested outputs.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Service Improvement</h3>
+                    <p>We analyze usage patterns to improve the performance and functionality of our tools. This helps us identify areas for enhancement and optimize user experience.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Security & Compliance</h3>
+                    <p>We process data to ensure system security, prevent abuse, and comply with legal obligations. This includes monitoring for suspicious activities and maintaining audit logs.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Research Purposes</h3>
+                    <p>With explicit consent, we may use anonymous data for academic research and scientific publications. Individual users cannot be identified from this research data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Your Rights Section -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Your Privacy Rights</h2>
+                <p class="section-subtitle">Rights you have regarding your personal data</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>Right of Access</h3>
+                    <p>You have the right to know what personal data we have about you and how it's being used. You can request a copy of your personal data at any time.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Right of Rectification</h3>
+                    <p>You have the right to correct or update any inaccurate or incomplete personal data we hold about you.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Right of Cancellation</h3>
+                    <p>You have the right to request deletion of your personal data when it's no longer necessary for the purposes for which it was collected.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Right of Opposition</h3>
+                    <p>You have the right to object to certain types of data processing for legitimate reasons, particularly for direct marketing purposes.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Exercising Your Rights</h3>
+                    <p>To exercise any of these rights, please contact us at <a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a>. We will respond to your request within 30 days.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Security Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Data Security & Retention</h2>
+                <p class="section-subtitle">How we protect and manage your information</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>Encryption and Security</h3>
+                    <p>All data transmissions are encrypted using industry-standard SSL/TLS protocols to ensure secure communication. Our servers are protected by firewalls and regular security updates.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Data Retention</h3>
+                    <p>Uploaded files are automatically deleted after processing. Technical logs are retained for 90 days for security purposes. Anonymous usage statistics may be retained indefinitely for research purposes.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Access Control</h3>
+                    <p>Access to personal data is restricted to authorized personnel only and is granted on a need-to-know basis for legitimate business purposes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contact & Updates</h2>
+                <p class="section-subtitle">How to reach us and stay informed</p>
+            </div>
+            
+            <div class="privacy-content">
+                <div class="privacy-section">
+                    <h3>Contact Information</h3>
+                    <p>If you have any questions about this Privacy Notice or our data practices, please contact us:</p>
+                    <ul>
+                        <li>Email: <a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a></li>
+                        <li>Institution: Universidad Michoacana de San Nicolás de Hidalgo</li>
+                        <li>Faculty: Physical-Mathematical Sciences</li>
+                        <li>Location: Morelia, Michoacán, México</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Updates to This Notice</h3>
+                    <p>We may update this Privacy Notice from time to time to reflect changes in our practices or legal requirements. The effective date at the top of this page indicates when the notice was last updated.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Effective Date</h3>
+                    <p>This Privacy Notice is effective as of May 2025 and applies to all data collected from that date forward.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
+                        <div class="logo-text">
+                            <span class="logo-title">mGFD: CloudGenerator</span>
+                            <span class="logo-subtitle">2.0</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Advanced cloud of points generation for meshless Generalized Finite Difference Method (mGFD) applications.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('contour_creator') }}">ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}">CloudGenerator</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Research Areas</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Meshless Methods</a></li>
+                        <li><a href="#">Numerical Analysis</a></li>
+                        <li><a href="#">Computational Mathematics</a></li>
+                        <li><a href="#">Scientific Computing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Contact</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> gerardo.tinoco@umich.mx</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Morelia, Michoacán, México</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-sponsors">
+                <div class="sponsors-content">
+                    <h4 class="sponsors-title">Supported by</h4>
+                    <div class="sponsors-logos">
+                        <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="UMSNH" class="sponsor-logo">
+                        <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA" class="sponsor-logo">
+                        <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="SECIHTI" class="sponsor-logo">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <div class="footer-links">
+                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
+                        <a href="mailto:gerardo.tinoco@umich.mx">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+</body>
+</html>

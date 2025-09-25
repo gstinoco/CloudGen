@@ -2,14 +2,14 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/gstinoco/CloudGen) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/) [![Flask](https://img.shields.io/badge/Flask-2.3+-green.svg)](https://flask.palletsprojects.com/) [![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-red.svg)](https://opencv.org/) [![GMSH](https://img.shields.io/badge/GMSH-4.11+-orange.svg)](https://gmsh.info/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/gstinoco/CloudGen) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/) [![Flask](https://img.shields.io/badge/Flask-2.3+-green.svg)](https://flask.palletsprojects.com/) [![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-red.svg)](https://opencv.org/) [![NumPy](https://img.shields.io/badge/NumPy-1.24+-blue.svg)](https://numpy.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Advanced Web Platform for Generating Unstructured Clouds of Points**
 
 *Complete solution for meshless Generalized Finite Difference Method (mGFD) applications*
 
 ### :link: Quick Links
-[![:rocket: Quick Start](https://img.shields.io/badge/🚀-Quick%20Start-green)](#rocket-quick-start) [![:computer: Features](https://img.shields.io/badge/💻-Features-blue)](#sparkles-features) [![:busts_in_silhouette: Team](https://img.shields.io/badge/👥-Research%20Team-blue)](#scientist-research-team)
+[![:globe_with_meridians: Live Demo](https://img.shields.io/badge/🌐-Live%20Demo-brightgreen)](https://malla.umich.mx/CloudGenerator/) [![:rocket: Quick Start](https://img.shields.io/badge/🚀-Quick%20Start-green)](#rocket-quick-start) [![:computer: Features](https://img.shields.io/badge/💻-Features-blue)](#sparkles-features) [![:busts_in_silhouette: Team](https://img.shields.io/badge/👥-Research%20Team-blue)](#scientist-research-team)
 
 </div>
 
@@ -37,12 +37,14 @@
 
 The **mGFD CloudGenerator 2.0** is a comprehensive web-based platform designed for generating optimized unstructured clouds of points specifically tailored for the meshless Generalized Finite Difference Method (mGFD). This advanced tool combines interactive image processing capabilities with sophisticated cloud generation algorithms to provide researchers and engineers with a complete solution for numerical simulations.
 
+> :globe_with_meridians: **Try it now!** A stable live demo is available at: **[https://malla.umich.mx/CloudGenerator/](https://malla.umich.mx/CloudGenerator/)** <mcreference link="https://malla.umich.mx/CloudGenerator/" index="0">0</mcreference>
+
 ### :gear: Key Capabilities
-- **:art: Interactive Contour Creation**: Advanced image segmentation with click-based region detection
-- **:cloud: Optimized Cloud Generation**: High-quality point cloud generation using GMSH integration
-- **:chart_with_upwards_trend: Real-time Visualization**: Interactive canvas with zoom, pan, and multi-region support
-- **:floppy_disk: Multiple Export Formats**: CSV data export with PNG/SVG visualizations
-- **:globe_with_meridians: Web-based Interface**: Modern, responsive design accessible from any browser
+- **:art: Interactive Contour Creation**: Advanced image segmentation with multiple algorithms (Watershed, GrabCut, Interactive, Region Growing)
+- **:cloud: Optimized Cloud Generation**: High-quality point cloud generation with Regular and Natural Distribution algorithms
+- **:chart_with_upwards_trend: Real-time Visualization**: Interactive canvas with zoom, pan, brush-based refinement, and multi-region support
+- **:floppy_disk: Multiple Export Formats**: CSV data export with PNG/SVG visualizations and statistical analysis
+- **:globe_with_meridians: Web-based Interface**: Modern, responsive design with asynchronous processing and Web Workers
 
 ### :microscope: Applications
 
@@ -59,25 +61,47 @@ The **mGFD CloudGenerator 2.0** is a comprehensive web-based platform designed f
 ## :sparkles: Features
 
 ### :art: ContourCreator Module
-- **Interactive Image Processing**: Upload and process images (PNG, JPG, JPEG, GIF, BMP)
-- **Advanced Segmentation**: OpenCV-based region detection with customizable tolerance
-- **Multi-region Support**: Detect and manage multiple regions with color-coded visualization
-- **Canvas Manipulation**: Zoom, pan, and precise click-based region selection
-- **Real-time Preview**: Instant visualization of detected contours and regions
+- **Interactive Image Processing**: Upload and process images (PNG, JPG, JPEG, GIF, BMP, TIFF)
+- **Advanced Segmentation Algorithms**: Watershed, GrabCut, Interactive Segmentation, and Region Growing
+- **Brush-based Refinement**: Manual editing tools for precise contour adjustment
+- **Multi-region Management**: Detect, add, remove, and modify multiple regions with color-coded visualization
+- **Canvas Operations**: Zoom, pan, precise click-based region selection with coordinate tracking
+- **Real-time Preview**: Instant visualization of detected contours with interactive feedback
 
 ### :cloud: CloudGenerator Module
-- **GMSH Integration**: Professional mesh generation with adaptive sizing algorithms
-- **Node Classification**: Automatic classification (interior, boundary, interface nodes)
-- **Memory Optimization**: Efficient processing for large datasets with garbage collection
-- **Asynchronous Processing**: Background cloud generation with real-time status updates
-- **Quality Visualization**: High-resolution PNG and scalable SVG output formats
+- **Advanced Distribution Algorithms**: Regular and Natural Distributions
+- **Multi-region Processing**: Intelligent node classification (interior, boundary, interface nodes)
+- **CSV File Processing**: Upload validation, data parsing, and coordinate optimization
+- **Real-time Visualization**: Interactive scatter plots with statistical analysis and progress tracking
+- **Asynchronous Processing**: Background cloud generation with Web Workers and real-time status updates
+- **Multiple Export Formats**: CSV data files with high-resolution PNG and scalable SVG visualizations
 
 ### :globe_with_meridians: Web Interface
 - **Modern Design**: Responsive interface with glassmorphism effects and smooth animations
-- **Drag & Drop**: Intuitive file upload with progress indicators
-- **Real-time Feedback**: Live status updates and error handling
-- **Professional Logging**: Comprehensive logging system with file rotation
-- **Cross-platform**: Compatible with all modern web browsers
+- **Drag & Drop**: Intuitive file upload with progress indicators and validation
+- **Real-time Feedback**: Live status updates, error handling, and progress tracking
+- **Professional Logging**: Comprehensive logging system with file rotation and debugging
+- **Cross-platform**: Compatible with all modern web browsers and operating systems
+
+### :gear: Advanced Technical Features
+
+#### Image Processing & Segmentation
+- **Multiple Algorithms**: Watershed, GrabCut, Interactive Segmentation, Region Growing
+- **Brush Tools**: Manual refinement with customizable brush sizes and opacity
+- **Format Support**: PNG, JPG, JPEG, GIF, BMP, TIFF with automatic format detection
+- **Canvas Operations**: Zoom, pan, coordinate tracking, and real-time preview
+
+#### Cloud Generation Algorithms
+- **Regular Distribution**: Uniform point spacing with customizable density
+- **Natural Distribution**: Poisson Disk Sampling for organic point placement
+- **Multi-region Processing**: Intelligent handling of complex geometries
+- **Statistical Analysis**: Point distribution metrics and quality assessment
+
+#### Data Processing & Export
+- **CSV Processing**: Advanced parsing, validation, and optimization
+- **Multiple Formats**: CSV data files, PNG visualizations, SVG vector graphics
+- **Point Reduction**: Uniform, Multiple, and Filtered reduction algorithms
+- **Quality Preservation**: Maintains geometric integrity during processing
 
 ---
 
@@ -99,24 +123,25 @@ The project uses the following main dependencies:
 
 ```python
 # Core web framework
-Flask >= 2.3.0              # Web application framework
-Werkzeug >= 2.3.0           # WSGI utilities
+Flask >= 2.3.0               # Web application framework
+Werkzeug >= 2.3.0            # WSGI utilities
 
 # Computer vision and image processing
-opencv-python >= 4.8.0      # Image processing and segmentation
-Pillow >= 10.0.0             # Image manipulation
+opencv-python >= 4.8.0       # Image processing and segmentation algorithms
+Pillow >= 10.0.0             # Image manipulation and format support
 
 # Scientific computing
-numpy >= 1.24.0             # Numerical computations
-pandas >= 2.0.0              # Data manipulation
-scipy >= 1.10.0              # Scientific algorithms
+numpy >= 1.24.0              # Numerical computations and array operations
+pandas >= 2.0.0              # Data manipulation and CSV processing
+scipy >= 1.10.0              # Scientific algorithms and spatial operations
+shapely >= 2.0.0             # Geometric operations and computational geometry
 
-# Mesh generation
-gmsh >= 4.11.0               # Geometric modeling and mesh generation
+# Visualization and plotting
+matplotlib >= 3.7.0          # Scientific plotting and visualization
 
-# Visualization
-matplotlib >= 3.7.0         # Scientific plotting
-seaborn >= 0.12.0            # Statistical visualization
+# Additional utilities
+threading                    # Asynchronous processing support
+logging                      # Comprehensive logging system
 ```
 
 ### :wrench: Installation Steps
@@ -267,22 +292,22 @@ mGFD-CloudGenerator/
 ├── 📄 cloud_generation.py       # Cloud generation algorithms
 ├── 📄 reduce_points.py          # Point reduction utilities
 ├── 📄 requirements.txt          # Python dependencies
-├── 📁 templates/               # HTML templates
-│   ├── 🏠 home.html            # Landing page
-│   ├── 🎨 contour_creator.html # ContourCreator interface
+├── 📁 templates/                # HTML templates
+│   ├── 🏠 home.html             # Landing page
+│   ├── 🎨 contour_creator.html  # ContourCreator interface
 │   ├── ☁️ cloud_generator.html  # CloudGenerator interface
 │   └── ℹ️ about.html            # About page
-├── 📁 static/                  # Static assets
-│   ├── 🎨 css/styles.css       # Main stylesheet (6000+ lines)
-│   ├── 📜 js/                  # JavaScript modules
-│   │   ├── contour_creator.js  # ContourCreator functionality
-│   │   ├── cloud_generator.js  # CloudGenerator functionality
-│   │   └── navbar.js           # Navigation components
-│   ├── 🖼️ images/              # Logos and assets
-│   └── 📊 examples/            # Sample data files
-├── 📁 uploads/                 # Temporary file storage
-├── 📁 output/                  # Generated results
-└── 📁 logs/                    # Application logs
+├── 📁 static/                   # Static assets
+│   ├── 🎨 css/styles.css        # Main stylesheet (6000+ lines)
+│   ├── 📜 js/                   # JavaScript modules
+│   │   ├── contour_creator.js   # ContourCreator functionality
+│   │   ├── cloud_generator.js   # CloudGenerator functionality
+│   │   └── navbar.js            # Navigation components
+│   ├── 🖼️ images/               # Logos and assets
+│   └── 📊 examples/             # Sample data files
+├── 📁 uploads/                  # Temporary file storage
+├── 📁 output/                   # Generated results
+└── 📁 logs/                     # Application logs
 ```
 
 ### Core Modules
@@ -295,11 +320,23 @@ mGFD-CloudGenerator/
 - **Logging System**: Professional logging with rotation
 
 #### Cloud Generation (`cloud_generation.py`)
-- **GMSH Integration**: Geometric modeling and mesh generation
-- **Adaptive Algorithms**: Point density optimization
-- **Node Classification**: Interior/boundary/interface detection
-- **Memory Management**: Efficient processing for large datasets
-- **Visualization**: High-quality PNG/SVG output
+- **Advanced Distribution Algorithms**: Regular and Natural Distributions
+- **Multi-region Processing**: Intelligent boundary data processing for mGFD method
+- **Node Classification**: Interior/boundary/interface detection with automatic classification
+- **Memory Management**: Efficient processing for large datasets with optimization
+- **Visualization**: High-quality PNG/SVG output with statistical analysis
+
+#### Point Reduction (`reduce_points.py`)
+- **Multiple Reduction Algorithms**: Uniform, Multiple, and Filtered reduction methods
+- **CSV Processing**: Advanced point reduction functionality for cloud data optimization
+- **Quality Preservation**: Maintains geometric integrity while reducing point density
+- **Flexible Configuration**: Customizable reduction parameters for different use cases
+
+#### Contour Detection (`contour_detection.py`)
+- **Advanced Segmentation**: Watershed, GrabCut, Interactive, and Region Growing algorithms
+- **Brush-based Refinement**: Manual editing tools for precise boundary adjustment
+- **Multi-format Support**: Comprehensive image format compatibility (PNG, JPG, TIFF, etc.)
+- **Real-time Processing**: Interactive segmentation with immediate visual feedback
 
 #### Frontend (`static/`)
 - **Modern UI**: Responsive design with CSS Grid/Flexbox
@@ -395,7 +432,7 @@ git checkout -b feature/your-feature-name
 |:---|:---:|
 | **Gabriela Pedraza-Jiménez** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
 | **Eli Chagolla-Inzunza** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
-| **Ángel E. Calvillo-Vázquez** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
+| **Ángel E. Calvillo-Vázquez** | ![MSc](https://img.shields.io/badge/M.Sc.-Candidate-green) |
 | **Jorge L. González-Figueroa** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
 | **Christopher N. Magaña-Barocio** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
 
@@ -422,7 +459,7 @@ git checkout -b feature/your-feature-name
 
 ---
 
-#### :factory: **[SIIIA MATH: Soluciones de Ingeniería](http://siiia.com.mx/)**
+#### :factory: **[SIIIA MATH: Soluciones de Ingeniería](https://siiia.com.mx/)**
 > *Transforming complex challenges into innovative solutions through advanced mathematical models and cutting-edge technology*
 
 - :dart: **Specialization**: Artificial Intelligence & Engineering Solutions
@@ -457,7 +494,7 @@ If you use mGFD CloudGenerator in your research, please cite:
 ```bibtex
 @software{tinoco2025mGFD,
   title={mGFD CloudGenerator 2.0: Advanced Web Platform for Generating Unstructured Clouds of Points},
-  author={Tinoco-Guerrero, Gerardo},
+  author={Tinoco-Guerrero, Gerardo and Dom\'{i}nguez-Mota, Francisco Javier and Guzm\'{a}n-Torres, Jos\'{e} Alberto},
   year={2025},
   url={https://github.com/gstinoco/CloudGen},
   version={2.0}
@@ -494,11 +531,12 @@ SOFTWARE.
 
 ### Acknowledgments
 
-- **GMSH Development Team**: For the excellent mesh generation library
 - **OpenCV Community**: For computer vision and image processing tools
-- **Flask Development Team**: For the lightweight web framework
-- **Scientific Python Community**: For NumPy, SciPy, and Matplotlib
-- **Research Community**: For feedback and contributions
+- **Flask Development Team**: For the lightweight and powerful web framework
+- **Scientific Python Community**: For NumPy, SciPy, Matplotlib, and Pandas
+- **Shapely Development Team**: For computational geometry capabilities
+- **Research Community**: For feedback, contributions, and collaborative spirit
+- **Universidad Michoacana de San Nicolás de Hidalgo**: For institutional support
 
 ---
 
@@ -510,13 +548,6 @@ SOFTWARE.
 - **Email**: gerardo.tinoco@umich.mx
 - **Institution**: Universidad Michoacana de San Nicolás de Hidalgo
 - **Topics**: Meshless methods, numerical analysis, scientific computing
-
-### :computer: Technical Support
-
-**Bug Reports & Feature Requests**
-- **GitHub Issues**: [Create an issue](https://github.com/gstinoco/CloudGen/issues)
-- **Documentation**: Check the [Wiki](https://github.com/gstinoco/CloudGen/wiki)
-- **Discussions**: Join [GitHub Discussions](https://github.com/gstinoco/CloudGen/discussions)
 
 ### :handshake: Community
 
@@ -547,8 +578,6 @@ A: Absolutely! We welcome contributions. Please see the Contributing section.
 ---
 
 <div align="center">
-
-**Made with :heart: for the Scientific Computing Community**
 
 *Advancing meshless methods through open-source collaboration*
 

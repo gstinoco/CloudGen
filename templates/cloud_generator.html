@@ -240,7 +240,7 @@
                             </div>
                             <div class="tip-text">
                                 <strong>Sample File:</strong> Download our 
-                                <a href="{{ url_for('static', filename='examples/example_1.csv') }}" download="example_1.csv" class="download-link">
+                                <a href="{{ url_for('static', filename='examples/example_1_contour.csv') }}" download="example_1_contour.csv" class="download-link">
                                     <i class="fas fa-file-csv"></i>
                                     example_1.csv
                                 </a> 
@@ -427,15 +427,17 @@
                                     <i class="fas fa-compress-alt"></i>
                                 </div>
                                 <div class="option-toggle">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="reducePointsOption">
-                                        <span class="toggle-slider"></span>
-                                    </label>
+                                    <select id="reducePointsOption" class="form-select">
+                                        <option value="0">No reduction</option>
+                                        <option value="2">Reduce 2x</option>
+                                        <option value="3">Reduce 3x</option>
+                                        <option value="4">Reduce 4x</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="option-content">
                                 <h4 class="option-title">Reduce Contour Points</h4>
-                                <p class="option-description">Reduces approximately half the number of contour points before generation. Useful for files with many points to improve performance.</p>
+                                <p class="option-description">Reduces contour points by applying the reduction algorithm multiple times. Higher values provide more aggressive reduction for very dense datasets.</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
@@ -444,6 +446,42 @@
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
                                         Large datasets
+                                    </span>
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Configurable reduction
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-card">
+                            <div class="option-header">
+                                <div class="option-icon">
+                                    <i class="fas fa-random"></i>
+                                </div>
+                                <div class="option-toggle">
+                                    <select id="generationMethodOption" class="form-select">
+                                        <option value="natural">Natural Distribution</option>
+                                        <option value="regular">Regular Distribution</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="option-content">
+                                <h4 class="option-title">Generation Method</h4>
+                                <p class="option-description">Choose how points are distributed in your cloud. Regular distribution creates uniform, grid-like patterns, while Natural distribution creates more organic, randomly spaced patterns.</p>
+                                <div class="option-benefits">
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Natural distribution
+                                    </span>
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Organic patterns
+                                    </span>
+                                    <span class="benefit-tag">
+                                        <i class="fas fa-check"></i>
+                                        Better adaptation
                                     </span>
                                 </div>
                             </div>
@@ -639,11 +677,9 @@
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
                     <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
-                    <!-- <div class="footer-links">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                        <a href="#">Contact</a>
-                    </div>-->
+                    <div class="footer-links">
+                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
+                    </div>
                 </div>
             </div>
         </div>

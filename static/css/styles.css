@@ -516,6 +516,17 @@ body {
     transform: translateY(-2px);
 }
 
+.btn-accent {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+}
+
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
@@ -2389,6 +2400,13 @@ section {
     font-weight: 500;
 }
 
+.project-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
 .project-status .status-badge {
     display: flex;
     align-items: center;
@@ -2399,6 +2417,19 @@ section {
     border-radius: 25px;
     font-weight: 600;
     box-shadow: 0 5px 15px rgba(72, 187, 120, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.project-status .status-badge.live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
     animation: pulse 2s infinite;
 }
 
@@ -3894,6 +3925,192 @@ section {
 
 .control-btn:hover i {
     transform: scale(1.1);
+}
+
+.control-btn.interactive {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.control-btn.interactive:hover {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
+}
+
+.control-btn.interactive.active {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+/* ===== REFINE MODE CONTROLS ===== */
+.refine-controls-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.refine-instructions {
+    text-align: center;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.refine-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #1e40af;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.refine-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.brush-size-control {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.brush-size-control label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.brush-size-control input[type="range"] {
+    width: 100px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.brush-size-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s ease;
+}
+
+.brush-size-control input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.brush-size-control span {
+    min-width: 35px;
+    text-align: center;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.refine-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.refine-btn.undo {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.refine-btn.undo:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.refine-btn.clear {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.refine-btn.clear:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.refine-btn.apply {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.refine-btn.apply:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.refine-btn.cancel {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+}
+
+.refine-btn.cancel:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+
+.refine-btn:disabled {
+    background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+    color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Refine mode button style */
+.control-btn.refine {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.control-btn.refine:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.control-btn.refine.active {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 6px 20px rgba(29, 78, 216, 0.5);
 }
 
 /* ===== ENHANCED ZOOM CONTROLS ===== */
@@ -6007,5 +6224,143 @@ input:checked + .toggle-slider:before {
     
     .progress-steps::before {
         display: none;
+    }
+}
+
+/* Dropdown styles for reduce points option */
+.form-select {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    min-width: 140px;
+}
+
+.form-select:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.form-select option {
+    background: #2d3748;
+    color: white;
+    padding: 8px;
+}
+
+/* ===== PRIVACY NOTICE STYLES ===== */
+.privacy-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.privacy-section {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.privacy-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.section-dark .privacy-section {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.privacy-section h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.section-dark .privacy-section h3 {
+    color: #1e293b;
+}
+
+.privacy-section p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4b5563;
+    margin-bottom: 1rem;
+}
+
+.section-dark .privacy-section p {
+    color: #374151;
+}
+
+.privacy-section p:last-child {
+    margin-bottom: 0;
+}
+
+.privacy-section ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.privacy-section li {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.section-dark .privacy-section li {
+    color: #374151;
+}
+
+.privacy-section a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.privacy-section a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.section-dark .privacy-section a {
+    color: #2563eb;
+}
+
+.section-dark .privacy-section a:hover {
+    color: #1d4ed8;
+}
+
+/* Responsive adjustments for privacy content */
+@media (max-width: 768px) {
+    .privacy-content {
+        max-width: 100%;
+    }
+    
+    .privacy-section {
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .privacy-section h3 {
+        font-size: 1.2rem;
+    }
+    
+    .privacy-section p,
+    .privacy-section li {
+        font-size: 0.95rem;
     }
 }

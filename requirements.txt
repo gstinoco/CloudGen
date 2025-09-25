@@ -1,26 +1,27 @@
 # mGFD CloudGenerator - Python Dependencies
+# Versiones basadas en el ambiente CloudGenerator de anaconda
+
 # Core web framework
-Flask>=2.3.0
-Werkzeug>=2.3.0
+Flask==3.1.1
+Werkzeug==3.1.3
 
 # Computer vision and image processing
-opencv-python>=4.8.0
+opencv-python==4.12.0.88
 
 # Scientific computing and data manipulation
-numpy>=1.24.0
-pandas>=2.0.0
-scipy>=1.10.0
+numpy==2.2.6
+pandas==2.3.1
+scipy==1.16.0
 
-# Mesh generation and geometric modeling
-gmsh>=4.11.0
+# Geometric operations
+shapely==2.1.1
 
 # Visualization and plotting
-matplotlib>=3.7.0
-seaborn>=0.12.0
+matplotlib==3.10.3
 
 # File handling and utilities
-Pillow>=10.0.0
+Pillow==11.2.1
 
 # Additional utilities
-tqdm>=4.65.0
-requests>=2.31.0
+tqdm==4.67.1
+requests==2.32.5

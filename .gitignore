@@ -191,16 +191,22 @@ instance/
 *.temp
 temp_*
 processed_*
+contour_*_temp.*
+cloud_*_temp.*
+segmented_*
+mask_*
+*.tiff
+*.tif
 
 # CSV processing files
 *.csv.bak
 *.csv.tmp
 reduced_*
-
-# GMSH files
-*.msh
-*.geo
-*.pos
+*_contour.csv.bak
+*_cloud.csv.bak
+points_*.csv
+contour_points_*
+cloud_points_*
 
 # Scientific computing
 *.npy
@@ -212,6 +218,10 @@ reduced_*
 config.py
 secrets.py
 .secrets
+local_config.py
+.env.local
+.env.development
+.env.production
 
 # Runtime files
 *.pid
@@ -222,3 +232,16 @@ celerybeat-schedule.*
 *.bak
 *.backup
 *~
+
+# Development and debugging files
+debug_*
+test_*
+*.debug
+*.test
+profile_*
+benchmark_*
+
+# Flask development
+flask_session/
+.flask_session
+*.session

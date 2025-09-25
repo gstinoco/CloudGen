@@ -225,6 +225,10 @@
                                     <i class="fas fa-plus-circle"></i>
                                     <span>Add Region</span>
                                 </button>
+                                <button class="control-btn refine" onclick="toggleRefineMode()" id="refineModeToggle" disabled>
+                            <i class="fas fa-edit"></i>
+                            <span>Refine Selection</span>
+                        </button>
                                 <button class="control-btn secondary" onclick="clearAllRegions()">
                                     <i class="fas fa-trash-alt"></i>
                                     <span>Clear All</span>
@@ -245,6 +249,46 @@
                                 </button>
                                 <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">
                                     <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Refine Controls -->
+                        <div class="refine-controls-bar" id="refineControls" style="display: none;">
+                            <div class="refine-instructions">
+                                <span class="refine-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Haz clic para agregar áreas (+) o mantén Shift para quitar (-)
+                                </span>
+                            </div>
+                            
+                            <div class="refine-tools">
+                                <div class="brush-size-control">
+                                    <label>
+                                        <i class="fas fa-paint-brush"></i>
+                                        <input type="range" id="refineBrushSize" min="5" max="50" value="20" onchange="updateBrushSize(this.value)">
+                                        <span id="brushSizeValue">20px</span>
+                                    </label>
+                                </div>
+                                
+                                <button class="refine-btn undo" onclick="undoLastStroke()" id="undoLastBtn" disabled>
+                    <i class="fas fa-undo-alt"></i>
+                    <span>Undo Last</span>
+                </button>
+                
+                <button class="refine-btn clear" onclick="clearAllRefinements()">
+                    <i class="fas fa-undo"></i>
+                    <span>Clear All</span>
+                </button>
+                
+                <button class="refine-btn apply" onclick="applyRefinements()" id="applyRefineBtn" disabled>
+                    <i class="fas fa-check"></i>
+                    <span>Apply</span>
+                </button>
+                                
+                                <button class="refine-btn cancel" onclick="exitRefineMode()">
+                                    <i class="fas fa-times"></i>
+                                    <span>Exit</span>
                                 </button>
                             </div>
                         </div>
@@ -331,11 +375,9 @@
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
                     <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
-                    <!-- <div class="footer-links">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                        <a href="#">Contact</a>
-                    </div>-->
+                    <div class="footer-links">
+                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
+                    </div>
                 </div>
             </div>
         </div>

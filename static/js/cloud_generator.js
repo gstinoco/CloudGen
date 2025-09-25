@@ -1,9 +1,125 @@
-// CloudGenerator JavaScript Module
-// Functionality for cloud of points generation
+/**
+ * Cloud Generator Module - Advanced Cloud of Points Generation and Visualization Interface
+ * 
+ * This module provides comprehensive functionality for generating and visualizing cloud of points
+ * from CSV coordinate data. It implements multiple point generation algorithms with real-time
+ * visualization, statistical analysis, and export capabilities for scientific and engineering
+ * applications requiring precise geometric point distribution.
+ * 
+ * Core Functionality:
+ * 1. CSV file upload with drag & drop support and format validation
+ * 2. Advanced cloud of points generation with multiple distribution algorithms
+ * 3. Real-time visualization with interactive charts and statistical analysis
+ * 4. Export capabilities with multiple format support (CSV, PNG, SVG)
+ * 5. Progress tracking for long-running generation processes
+ * 6. Statistical analysis with area calculation and point density metrics
+ * 7. Responsive design with mobile and desktop optimization
+ * 
+ * Point Generation Algorithms:
+ * - Regular Distribution: Uniform grid-based point placement
+ *   * Systematic point arrangement with configurable spacing
+ *   * Optimal for structured analysis and regular sampling
+ *   * Predictable point density and geometric consistency
+ *   * Efficient memory usage and fast generation
+ * 
+ * - Natural Distribution: Organic point placement with controlled randomness
+ *   * Pseudo-random point distribution within region boundaries
+ *   * Maintains natural appearance while ensuring coverage
+ *   * Configurable density parameters for different applications
+ *   * Advanced boundary detection and constraint handling
+ * 
+ * CSV Processing Features:
+ * - Multi-format CSV support with automatic delimiter detection
+ * - Header row detection and column mapping
+ * - Data validation with error reporting and suggestions
+ * - Large file handling with progress indication
+ * - Memory-efficient processing for datasets up to 10MB
+ * - Real-time preview with data visualization
+ * 
+ * Visualization System:
+ * - Interactive scatter plots with zoom and pan capabilities
+ * - Multi-region support with automatic color assignment
+ * - Statistical overlays with area and density information
+ * - Export functionality for charts and data
+ * - Responsive design with automatic scaling
+ * - High-resolution rendering for publication quality
+ * 
+ * File Upload System:
+ * - Enhanced drag & drop interface with visual feedback
+ * - CSV format validation with detailed error messages
+ * - File size validation (10MB limit) with progress tracking
+ * - Automatic file processing with real-time feedback
+ * - Error handling with user-friendly notifications
+ * - Secure file handling with format verification
+ * 
+ * Progress Tracking:
+ * - Real-time progress indicators with percentage completion
+ * - Step-by-step process visualization with status updates
+ * - Estimated time remaining with dynamic calculations
+ * - Error detection and recovery mechanisms
+ * - User-friendly status messages and notifications
+ * - Cancellation support for long-running operations
+ * 
+ * Statistical Analysis:
+ * - Automatic area calculation for each region
+ * - Point density analysis with distribution metrics
+ * - Boundary detection and geometric validation
+ * - Statistical summaries with exportable reports
+ * - Real-time updates during generation process
+ * - Comparative analysis between regions
+ * 
+ * Export Capabilities:
+ * - CSV export with customizable formatting
+ * - High-resolution PNG export for presentations
+ * - Scalable SVG export for vector graphics
+ * - Clipboard integration for quick data sharing
+ * - Batch export for multiple regions
+ * - Metadata inclusion with generation parameters
+ * 
+ * Technical Implementation:
+ * - Asynchronous processing with Web Workers for performance
+ * - Memory-efficient algorithms for large datasets
+ * - Canvas-based rendering with hardware acceleration
+ * - RESTful API integration with Flask backend
+ * - Event-driven architecture with optimized event handling
+ * - Cross-browser compatibility with fallback mechanisms
+ * 
+ * User Experience Features:
+ * - Intuitive drag & drop interface with visual feedback
+ * - Real-time notifications with auto-dismiss functionality
+ * - Keyboard shortcuts for common operations
+ * - Accessibility support with ARIA labels
+ * - Mobile-responsive design with touch optimization
+ * - Context-sensitive help and tooltips
+ * 
+ * Performance Optimizations:
+ * - Lazy loading for large datasets
+ * - Efficient memory management with garbage collection
+ * - Optimized rendering with selective updates
+ * - Caching mechanisms for repeated operations
+ * - Asynchronous processing to maintain UI responsiveness
+ * - Progressive enhancement for better user experience
+ * 
+ * @fileoverview Cloud Generator JavaScript Module - Cloud of points generation and visualization
+ * @author Gerardo Tinoco-Guerrero
+ * @author Universidad Michoacana de San Nicolás de Hidalgo
+ * @author SIIIA - Sistema de Investigación e Innovación en Inteligencia Artificial
+ * @author SECIHTI - Secretaría de Ciencia, Humanidades, Tecnología e Innovación
+ * @version 2.0
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * 
+ * @requires Chart.js for data visualization
+ * @requires Fetch API for backend communication
+ * @requires ES6+ JavaScript features
+ * @requires HTML5 Canvas API for rendering
+ * 
+ * @see {@link https://www.chartjs.org/} Chart.js Documentation
+ * @see {@link app.py} Flask backend implementation
+ * @see {@link cloud_generation.py} Python point generation algorithms
+ */
 
 let currentFilename = null;
-let currentTaskId = null;
-let statusCheckInterval = null;
 
 // Global variables for optimized drag and drop
 let uploadZone = null;
@@ -24,7 +140,55 @@ const SUPPORTED_FORMATS = {
 // Maximum file size (10MB)
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-// Configure optimized drag and drop
+/**
+ * Configure Enhanced Drag and Drop CSV Upload System
+ * 
+ * Sets up a comprehensive drag-and-drop interface specifically for CSV file uploads
+ * with visual feedback, progress tracking, and error handling. Configures all DOM
+ * elements and event listeners required for the CSV file upload workflow.
+ * 
+ * Features Configured:
+ * - CSV-specific drag and drop zone with visual feedback
+ * - File input integration with click-to-browse functionality
+ * - Progress indicators with real-time upload status
+ * - Error handling with detailed CSV validation messages
+ * - File format validation for CSV files only
+ * - Clear/reset functionality for uploaded files
+ * 
+ * DOM Elements Initialized:
+ * - Upload zone container with CSV-specific drag event handlers
+ * - CSV file input element with change event listener
+ * - Progress display elements for upload feedback
+ * - Icon and text elements for dynamic content updates
+ * - Clear button for resetting the upload state
+ * 
+ * Event Handlers Registered:
+ * - dragenter: Visual feedback when CSV file enters drop zone
+ * - dragover: Continuous feedback during CSV file hover
+ * - dragleave: Reset visual state when CSV file leaves zone
+ * - drop: Process dropped CSV files and initiate upload
+ * - change: Handle CSV files selected via file browser
+ * - click: Trigger file browser when upload zone is clicked
+ * 
+ * Error Handling:
+ * - Validates presence of required DOM elements
+ * - Logs errors for missing elements to console
+ * - Graceful degradation if elements are not found
+ * - Prevents event registration on missing elements
+ * 
+ * @function setupDragAndDrop
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link handleDragEnter} CSV drag enter event handler
+ * @see {@link handleDragOver} CSV drag over event handler
+ * @see {@link handleDragLeave} CSV drag leave event handler
+ * @see {@link handleDrop} CSV file drop event handler
+ * @see {@link handleFileSelect} CSV file selection handler
+ * 
+ * // Supported file formats: CSV only
+ * // Maximum file size: 10MB
+ * // Required DOM elements: uploadZone, csvFileInput, uploadContent, etc.
+ */
 function setupDragAndDrop() {
     // Get DOM elements
     uploadZone = document.getElementById('uploadZone');
@@ -61,7 +225,21 @@ function setupDragAndDrop() {
     document.addEventListener('drop', (e) => e.preventDefault());
 }
 
-// Manejar entrada de drag
+/**
+ * Handle CSV File Drag Enter Event
+ * 
+ * Manages the visual feedback when a CSV file is dragged into the upload zone.
+ * Uses a counter system to handle nested drag events and prevents flickering
+ * when dragging over child elements within the upload zone.
+ * 
+ * @function handleDragEnter
+ * @param {DragEvent} e - The drag enter event object
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link updateUploadContent} Updates visual state of upload zone
+ * @see {@link setupDragAndDrop} Event registration function
+ * 
+ */
 function handleDragEnter(e) {
     e.preventDefault();
     dragCounter++;
@@ -72,13 +250,41 @@ function handleDragEnter(e) {
     }
 }
 
-// Manejar drag over
+/**
+ * Handle CSV File Drag Over Event
+ * 
+ * Maintains the drag state while a CSV file is being dragged over the upload zone.
+ * Sets the drop effect to 'copy' to provide visual feedback to the user about
+ * the intended action when the file is dropped.
+ * 
+ * @function handleDragOver
+ * @param {DragEvent} e - The drag over event object
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link handleDragEnter} Initial drag enter handler
+ * @see {@link handleDrop} Final drop handler
+ * 
+ */
 function handleDragOver(e) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
 }
 
-// Manejar salida de drag
+/**
+ * Handle CSV File Drag Leave Event
+ * 
+ * Manages the visual feedback when a CSV file is dragged out of the upload zone.
+ * Uses a counter system to properly handle nested elements and only resets
+ * the visual state when the file completely leaves the upload area.
+ * 
+ * @function handleDragLeave
+ * @param {DragEvent} e - The drag leave event object
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link updateUploadContent} Resets visual state of upload zone
+ * @see {@link handleDragEnter} Corresponding drag enter handler
+ * 
+ */
 function handleDragLeave(e) {
     e.preventDefault();
     dragCounter--;
@@ -89,7 +295,21 @@ function handleDragLeave(e) {
     }
 }
 
-// Handle file drop
+/**
+ * Handle CSV File Drop Event
+ * 
+ * Processes CSV files dropped onto the upload zone. Resets the drag state,
+ * extracts the first file from the drop event, and initiates file processing
+ * with validation and upload procedures.
+ * 
+ * @function handleDrop
+ * @param {DragEvent} e - The drop event object containing file data
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link processFile} Validates and processes the dropped CSV file
+ * @see {@link updateUploadContent} Resets visual state after drop
+ * 
+ */
 function handleDrop(e) {
     e.preventDefault();
     dragCounter = 0;
@@ -101,7 +321,21 @@ function handleDrop(e) {
     }
 }
 
-// Handle file selection
+/**
+ * Handle CSV File Selection via File Browser
+ * 
+ * Processes CSV files selected through the traditional file input browser dialog.
+ * Extracts the first selected file and initiates the same processing workflow
+ * as drag-and-drop files for consistent handling.
+ * 
+ * @function handleFileSelect
+ * @param {Event} e - The file input change event object
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link processFile} Validates and processes the selected CSV file
+ * @see {@link setupDragAndDrop} Event registration function
+ * 
+ */
 function handleFileSelect(e) {
     const files = e.target.files;
     if (files.length > 0) {
@@ -109,7 +343,36 @@ function handleFileSelect(e) {
     }
 }
 
-// Process selected file
+/**
+ * Process and Validate Selected CSV File
+ * 
+ * Comprehensive CSV file processing function that validates file type, size,
+ * and initiates the upload workflow. Performs client-side validation before
+ * sending the file to the server for cloud of points generation processing.
+ * 
+ * Validation Checks:
+ * - File extension validation (must be .csv)
+ * - File size validation (maximum 10MB)
+ * - File format validation for CSV structure
+ * - Error handling with user-friendly messages
+ * 
+ * Workflow Process:
+ * 1. Validates file extension (.csv required)
+ * 2. Checks file size against maximum limit
+ * 3. Displays upload progress interface
+ * 4. Initiates simulated upload progress
+ * 5. Triggers server upload and processing
+ * 
+ * @function processFile
+ * @param {File} file - The CSV file object to process and validate
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link showUploadError} Displays validation error messages
+ * @see {@link showUploadProgress} Shows upload progress interface
+ * @see {@link simulateUploadProgress} Manages upload progress simulation
+ * @see {@link formatFileSize} Formats file size for error messages
+ * 
+ */
 function processFile(file) {
     // Validate file type
     if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -129,6 +392,26 @@ function processFile(file) {
 }
 
 // Simulate loading progress and auto-upload
+/**
+ * Simulates CSV file upload progress with visual feedback and automatic processing.
+ * Creates a realistic progress animation that gradually increases from 0 to 100%,
+ * then automatically triggers the CSV upload and processing workflow.
+ * 
+ * @function simulateUploadProgress
+ * @param {File} file - The CSV file object to be uploaded and processed
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This function provides a smooth user experience by:
+ * - Animating progress from 0% to 100% with random increments
+ * - Updating the progress display in real-time
+ * - Automatically triggering CSV upload upon completion
+ * - Showing success notification and file information
+ * - Assigning the file to the input element for compatibility
+ * 
+ */
 function simulateUploadProgress(file) {
     let progress = 0;
     const progressInterval = setInterval(() => {
@@ -325,6 +608,26 @@ function clearUpload() {
 }
 
 // Format file size
+/**
+ * Formats a file size in bytes to a human-readable string with appropriate units.
+ * Converts bytes to the most appropriate unit (Bytes, KB, MB, GB) and formats
+ * the result with proper decimal precision for optimal readability.
+ * 
+ * @function formatFileSize
+ * @param {number} bytes - The file size in bytes to be formatted
+ * @returns {string} The formatted file size string with appropriate unit
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This utility function:
+ * - Handles zero bytes as a special case
+ * - Uses binary (1024) conversion for accurate file size representation
+ * - Automatically selects the most appropriate unit (Bytes, KB, MB, GB)
+ * - Formats numbers to 2 decimal places for precision
+ * 
+ */
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     
@@ -335,7 +638,26 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Upload CSV file
+/**
+ * Uploads a CSV file to the server for processing and visualization.
+ * Validates the file format, sends it to the server endpoint, and handles
+ * the response to update the UI accordingly with success or error states.
+ * 
+ * @function uploadCSV
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This function:
+ * - Validates that a file is selected and has .csv extension
+ * - Creates FormData and sends file to /upload_csv endpoint
+ * - Updates upload zone visual states (uploading, success, error)
+ * - Displays file information and options on successful upload
+ * - Shows appropriate alerts and error messages
+ * - Sets the global currentFilename variable for further processing
+ * 
+ */
 function uploadCSV() {
     const fileInput = document.getElementById('csvFileInput');
     const file = fileInput.files[0];
@@ -458,8 +780,10 @@ function createCSVVisualization(csvText, regionList) {
                         data: [],
                         backgroundColor: colors[colorIndex],
                         borderColor: colors[colorIndex],
-                        pointRadius: 2,
-                        pointHoverRadius: 4
+                        pointRadius: 1,
+                        pointHoverRadius: 2,
+                        pointStyle: 'circle',
+                        borderWidth: 0
                     };
                 }
                 datasets[region].data.push({x: x, y: y});
@@ -580,7 +904,49 @@ function showFileOptions() {
     document.getElementById('cloudOptionsSection').classList.remove('hidden');
 }
 
-// Generate cloud of points
+/**
+ * Generate Cloud of Points from Uploaded CSV Data
+ * 
+ * Main function that orchestrates the cloud generation process using the
+ * uploaded CSV data and user-selected parameters. Supports multiple generation
+ * algorithms and provides real-time progress feedback during processing.
+ * 
+ * Generation Methods:
+ * - Regular Distribution: Uniform point distribution algorithm
+ * - Natural Distribution: Organic, natural-looking point distribution
+ * 
+ * Configuration Options:
+ * - Region filtering (inside/outside regions)
+ * - Point reduction with configurable multiplier
+ * - Generation method selection (regular/natural)
+ * - Progress tracking with visual feedback
+ * 
+ * Workflow Process:
+ * 1. Validates uploaded CSV file availability
+ * 2. Extracts user configuration from form inputs
+ * 3. Initializes progress tracking and UI updates
+ * 4. Determines appropriate API endpoint based on method
+ * 5. Sends POST request with configuration parameters
+ * 6. Handles server response and displays results
+ * 7. Manages error states and user feedback
+ * 8. Restores UI state after completion
+ * 
+ * API Endpoints:
+ * - /generate_cloud: Regular distribution algorithm
+ * - /generate_cloud_natural: Natural distribution algorithm
+ * 
+ * @function generateCloud
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @see {@link updateProgress} Progress tracking and visual feedback
+ * @see {@link displayResults} Results visualization and statistics
+ * @see {@link showAlert} Error message display
+ * @see {@link hideProgress} Progress section management
+ * 
+ * @throws {Error} Shows alert if no CSV file is uploaded
+ * @throws {Error} Shows alert if server request fails
+ * @throws {Error} Shows alert if generation process encounters errors
+ */
 function generateCloud() {
     if (!currentFilename) {
         showAlert('You must first upload a CSV file', 'error');
@@ -588,7 +954,9 @@ function generateCloud() {
     }
     
     const regionesInside = document.getElementById('regionesInsideOption').checked;
-    const reducePoints = document.getElementById('reducePointsOption').checked;
+    const reducePointsValue = parseInt(document.getElementById('reducePointsOption').value);
+    const reducePoints = reducePointsValue > 0;
+    const generationMethod = document.getElementById('generationMethodOption').value;
     
     // Reset and initialize progress tracking
     progressStartTime = Date.now();
@@ -604,111 +972,57 @@ function generateCloud() {
     document.getElementById('generateBtn').disabled = true;
     document.getElementById('generateBtn').textContent = 'Generating...';
     
-    fetch('/generate_cloud', {
+    // Determine endpoint and progress messages based on method
+    let endpoint = '/generate_cloud';
+    let methodName = 'Regular Distribution';
+    
+    if (generationMethod === 'natural') {
+        endpoint = '/generate_cloud_natural';
+        methodName = 'Natural Distribution';
+    }
+    
+    // Simulate progress updates during processing
+    updateProgress(25, 'Processing input data...');
+    setTimeout(() => updateProgress(50, 'Analyzing regions...'), 500);
+    setTimeout(() => updateProgress(75, `Generating cloud with ${methodName}...`), 1000);
+    
+    fetch(endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            filename: currentFilename,
+            csv_filename: currentFilename,
             regiones_inside: regionesInside,
-            reduce_points: reducePoints
+            reduce_points: reducePoints,
+            reduce_points_multiplier: reducePointsValue
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            currentTaskId = data.task_id;
-            updateProgress(25, 'Processing input data...');
-            startStatusCheck();
+            updateProgress(100, `${methodName} generation completed successfully!`);
+            displayResults(data);
         } else {
-            showAlert(data.error, 'error');
+            showAlert(data.error || `Error generating cloud with ${methodName}`, 'error');
             hideProgress();
         }
     })
     .catch(error => {
-        showAlert('Error generating cloud of points: ' + error.message, 'error');
+        showAlert(`Error generating cloud with ${methodName}: ` + error.message, 'error');
         hideProgress();
+    })
+    .finally(() => {
+        // Re-enable button
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('generateBtn').textContent = 'Generate Cloud of Points';
     });
 }
 
-// Start status check
-function startStatusCheck() {
-    if (statusCheckInterval) {
-        clearInterval(statusCheckInterval);
-    }
-    
-    statusCheckInterval = setInterval(checkCloudStatus, 2000); // Check every 2 seconds
-}
 
-// Check cloud of points status
-function checkCloudStatus() {
-    if (!currentTaskId) return;
-    
-    fetch(`/cloud_status/${currentTaskId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'running') {
-                // Provide more granular progress based on time elapsed
-                const currentProgress = Math.min(75, Math.max(25, getCurrentProgress()));
-                const message = data.message || getProgressMessage(currentProgress);
-                updateProgress(currentProgress, message);
-            } else if (data.status === 'completed') {
-                updateProgress(100, 'Generation completed successfully!');
-                displayResults(data);
-                stopStatusCheck();
-            } else if (data.status === 'failed' || data.status === 'error') {
-                showAlert(data.message, 'error');
-                hideProgress();
-                stopStatusCheck();
-            }
-        })
-        .catch(error => {
-            console.error('Error checking status:', error);
-        });
-}
 
-// Get current progress based on elapsed time
+// Progress tracking
 let progressStartTime = null;
-
-function getCurrentProgress() {
-    if (!progressStartTime) {
-        progressStartTime = Date.now();
-        return 25;
-    }
-    
-    const elapsed = Date.now() - progressStartTime;
-    const seconds = elapsed / 1000;
-    
-    // Simulate progress based on time (adjust as needed)
-    if (seconds < 5) return 25;
-    if (seconds < 10) return 35;
-    if (seconds < 15) return 45;
-    if (seconds < 20) return 55;
-    if (seconds < 25) return 65;
-    return 75;
-}
-
-// Get progress message based on percentage
-function getProgressMessage(percentage) {
-    if (percentage < 30) return 'Processing input data...';
-    if (percentage < 50) return 'Analyzing regions...';
-    if (percentage < 70) return 'Generating cloud of points...';
-    if (percentage < 90) return 'Creating visualization...';
-    return 'Finalizing results...';
-}
-
-// Stop status check
-function stopStatusCheck() {
-    if (statusCheckInterval) {
-        clearInterval(statusCheckInterval);
-        statusCheckInterval = null;
-    }
-    
-    // Re-enable button
-    document.getElementById('generateBtn').disabled = false;
-    document.getElementById('generateBtn').textContent = '🚀 Generate Cloud of Points';
-}
 
 // Update progress
 function updateProgress(percentage, message) {
@@ -964,7 +1278,27 @@ function removeNotification(notification) {
 }
 
 // Initialize when page loads
-// Function to copy text to clipboard
+/**
+ * Copies the specified text to the system clipboard with fallback support.
+ * Uses a temporary textarea element for compatibility with older browsers
+ * and falls back to the modern Clipboard API when available.
+ * 
+ * @function copyToClipboard
+ * @param {string} text - The text content to copy to the clipboard
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This utility function:
+ * - Creates a temporary textarea element for text selection
+ * - Uses document.execCommand('copy') as primary method
+ * - Falls back to navigator.clipboard.writeText() for modern browsers
+ * - Provides visual feedback through showCopyFeedback()
+ * - Handles errors gracefully with console logging
+ * - Ensures cleanup of temporary DOM elements
+ * 
+ */
 function copyToClipboard(text) {
     // Create temporary element to copy text
     const tempTextArea = document.createElement('textarea');
@@ -999,6 +1333,25 @@ function copyToClipboard(text) {
 }
 
 // Function to show visual feedback when copying
+/**
+ * Provides visual feedback when text is successfully copied to clipboard.
+ * Temporarily changes the copy button's icon and styling to indicate
+ * successful copy operation, then restores original appearance.
+ * 
+ * @function showCopyFeedback
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This feedback function:
+ * - Finds the closest copy button element from the event target
+ * - Changes the icon from copy to checkmark (fas fa-check)
+ * - Updates button styling to green background with white text
+ * - Automatically restores original styling after 2 seconds
+ * - Provides immediate visual confirmation of successful copy operation
+ * 
+ */
 function showCopyFeedback() {
     const copyBtn = event.target.closest('.copy-btn');
     if (copyBtn) {
@@ -1019,7 +1372,27 @@ function showCopyFeedback() {
     }
 }
 
-// Function to download chart as PNG
+/**
+ * Downloads the current data visualization chart as a PNG image file.
+ * Converts the canvas element to a data URL and triggers an automatic
+ * download with a timestamped filename for easy organization.
+ * 
+ * @function downloadChart
+ * @since 2025-05-01
+ * @lastModified 2025-09-25
+ * @author Gerardo Tinoco-Guerrero
+ * 
+ * @description
+ * This download function:
+ * - Validates that a chart exists (window.csvChart) before proceeding
+ * - Locates the canvas element containing the visualization
+ * - Generates a timestamped filename in format: data_points_visualization_YYYYMMDD_HHMMSS.png
+ * - Converts canvas to PNG data URL using toDataURL()
+ * - Creates temporary download link and triggers automatic download
+ * - Provides user feedback through success/error alerts
+ * - Handles errors gracefully with console logging
+ * 
+ */
 function downloadChart() {
     if (!window.csvChart) {
         console.error('No chart available for download');
