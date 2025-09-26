@@ -726,7 +726,7 @@ function uploadFile() {
     const formData = new FormData();
     formData.append('file', file);
     
-    fetch('/upload', {
+    fetch(`${BASE_URL}/upload`, {
         method: 'POST',
         body: formData
     })
@@ -784,7 +784,7 @@ function loadImage(filename) {
         document.getElementById('imageSection').classList.remove('hidden');
     };
     
-    img.src = `/uploads/${filename}`;
+    img.src = `${BASE_URL}/uploads/${filename}`;
 }
 
 // ===== ZOOM AND PAN FUNCTIONALITY =====
@@ -1133,7 +1133,7 @@ function detectRegion(x, y) {
     // Show loading indicator
     showFloatingNotification('Detecting regions...', 'info', 3000);
     
-    fetch('/detect_region', {
+    fetch(`${BASE_URL}/detect_region`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -1362,7 +1362,7 @@ function exportSingleRegion(index) {
     // Show loading notification
     showFloatingNotification('Exporting region...', 'info', 2000);
     
-    fetch('/export_single_region', {
+    fetch(`${BASE_URL}/export_single_region`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -1374,7 +1374,7 @@ function exportSingleRegion(index) {
         if (data.success) {
             // Create download link
             const link = document.createElement('a');
-            link.href = data.download_url;
+            link.href = `${BASE_URL}/download/${data.filename}`;
             link.download = data.filename;
             document.body.appendChild(link);
             link.click();
@@ -1410,7 +1410,7 @@ function saveAllCoordinates() {
     // Show loading notification
     showFloatingNotification('Saving all regions...', 'info', 2000);
     
-    fetch('/save_all_coordinates', {
+    fetch(`${BASE_URL}/save_all_coordinates`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -1422,7 +1422,7 @@ function saveAllCoordinates() {
         if (data.success) {
             // Create download link
             const link = document.createElement('a');
-            link.href = data.download_url;
+            link.href = `${BASE_URL}/download/${data.filename}`;
             link.download = data.filename;
             document.body.appendChild(link);
             link.click();
@@ -1745,7 +1745,7 @@ async function applyRefinements() {
             tolerance: parseInt(document.getElementById('tolerance')?.value || 30)
         };
         
-        const response = await fetch('/refine_with_brush', {
+        const response = await fetch(`${BASE_URL}/refine_with_brush`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

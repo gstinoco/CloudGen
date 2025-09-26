@@ -95,26 +95,36 @@ import contour_detection
 
 app = Flask(__name__, static_url_path='/static')
 
+# Absolute routes for uploads and outputs
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
 app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'output')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 'mGFD_CloudGenerator_2025'
 
-# Crear directorios necesarios
+# Create directories
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
-os.makedirs('logs', exist_ok=True)
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configurar logging
 if not app.debug:
-    file_handler = RotatingFileHandler('logs/mGFD_CloudGenerator.log', maxBytes=10240000, backupCount=10)
+    file_handler = RotatingFileHandler(
+        os.path.join(LOG_DIR, 'mGFD_CloudGenerator.log'),
+        maxBytes=10240000,
+        backupCount=10
+    )
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
 else:
-    file_handler = RotatingFileHandler('logs/mGFD_CloudGenerator_debug.log', maxBytes=10240000, backupCount=5)
+    file_handler = RotatingFileHandler(
+        os.path.join(LOG_DIR, 'mGFD_CloudGenerator_debug.log'),
+        maxBytes=10240000,
+        backupCount=5
+    )
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.DEBUG)
     app.logger.addHandler(file_handler)
@@ -756,7 +766,7 @@ def export_single_region():
             'success': False,
             'error': 'Error exporting region'
         })
-
+ 
 @app.route('/save_all_coordinates', methods=['POST'])
 def save_all_coordinates():
     """

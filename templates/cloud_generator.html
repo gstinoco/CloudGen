@@ -686,7 +686,10 @@
     </footer>
 
     <!-- JavaScript Files -->
-     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-     <script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
+     <script>
+        const BASE_URL = window.location.origin;
+    </script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
 </body>
 </html>

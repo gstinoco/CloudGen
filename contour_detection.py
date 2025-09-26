@@ -338,10 +338,16 @@ def refine_mask_with_brush(current_mask, brush_strokes):
         stroke_mask = np.zeros_like(refined_mask)
         
         # Draw stroke
-        for i in range(len(points) - 1):
-            pt1 = (int(points[i]['x']), int(points[i]['y']))
-            pt2 = (int(points[i + 1]['x']), int(points[i + 1]['y']))
-            cv2.line(stroke_mask, pt1, pt2, 255, size)
+        if len(points) == 1:
+            # Single point - draw circle
+            pt = (int(points[0][0]), int(points[0][1]))
+            cv2.circle(stroke_mask, pt, size // 2, 255, -1)
+        else:
+            # Multiple points - draw lines
+            for i in range(len(points) - 1):
+                pt1 = (int(points[i][0]), int(points[i][1]))
+                pt2 = (int(points[i + 1][0]), int(points[i + 1][1]))
+                cv2.line(stroke_mask, pt1, pt2, 255, size)
         
         # Apply stroke based on mode
         if mode == 'add':

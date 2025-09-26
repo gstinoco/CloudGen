@@ -681,7 +681,7 @@ function uploadCSV() {
         updateUploadContent('uploading');
     }
     
-    fetch('/upload_csv', {
+    fetch(`${BASE_URL}/upload_csv`, {
         method: 'POST',
         body: formData
     })
@@ -721,7 +721,7 @@ function displayFileInfo(data) {
     `;
     
     // Create CSV graphical visualization
-    fetch(`/uploads/${data.filename}`)
+    fetch(`${BASE_URL}/uploads/${data.filename}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -733,7 +733,7 @@ function displayFileInfo(data) {
         })
         .catch(error => {
             console.error('Could not load CSV file for visualization:', error);
-        console.error('Attempted URL:', `/uploads/${data.filename}`);
+        console.error('Attempted URL:', `${BASE_URL}/uploads/${data.filename}`);
         });
     
     // Hide upload section and format info after successful file load
@@ -973,11 +973,11 @@ function generateCloud() {
     document.getElementById('generateBtn').textContent = 'Generating...';
     
     // Determine endpoint and progress messages based on method
-    let endpoint = '/generate_cloud';
+    let endpoint = `${BASE_URL}/generate_cloud`;
     let methodName = 'Regular Distribution';
     
     if (generationMethod === 'natural') {
-        endpoint = '/generate_cloud_natural';
+        endpoint = `${BASE_URL}/generate_cloud_natural`;
         methodName = 'Natural Distribution';
     }
     
@@ -1107,7 +1107,7 @@ function displayResults(data) {
             html += '<div class="visualization-preview">';
             html += '<h4 class="preview-title"><i class="fas fa-image"></i> Generated Visualization</h4>';
             html += `<div class="result-image">`;
-            html += `<img src="/download/${pngFiles[0]}" alt="Generated Cloud of Points" class="preview-img">`;
+            html += `<img src="${BASE_URL}/download/${pngFiles[0]}" alt="Generated Cloud of Points" class="preview-img">`;
             html += `</div>`;
             html += '</div>';
         }
@@ -1119,7 +1119,7 @@ function displayResults(data) {
         
         csvFiles.forEach(file => {
             const fileName = file.split('_').pop();
-            html += `<a href="/download/${file}" class="download-btn csv-btn">`;
+            html += `<a href="${BASE_URL}/download/${file}" class="download-btn csv-btn">`;
             html += `<div class="btn-icon"><i class="fas fa-file-csv"></i></div>`;
             html += `<div class="btn-content">`;
             html += `<span class="btn-title">CSV Data</span>`;
@@ -1131,7 +1131,7 @@ function displayResults(data) {
         
         pngFiles.forEach(file => {
             const fileName = file.split('_').pop();
-            html += `<a href="/download/${file}" class="download-btn png-btn">`;
+            html += `<a href="${BASE_URL}/download/${file}" class="download-btn png-btn">`;
             html += `<div class="btn-icon"><i class="fas fa-image"></i></div>`;
             html += `<div class="btn-content">`;
             html += `<span class="btn-title">PNG Image</span>`;
@@ -1143,7 +1143,7 @@ function displayResults(data) {
         
         svgFiles.forEach(file => {
             const fileName = file.split('_').pop();
-            html += `<a href="/download/${file}" class="download-btn svg-btn">`;
+            html += `<a href="${BASE_URL}/download/${file}" class="download-btn svg-btn">`;
             html += `<div class="btn-icon"><i class="fas fa-vector-square"></i></div>`;
             html += `<div class="btn-content">`;
             html += `<span class="btn-title">SVG Vector</span>`;
@@ -1183,7 +1183,7 @@ function updateResultsStatistics(data) {
         
         if (csvFiles.length > 0) {
             // Fetch the CSV file to count actual rows
-            fetch(`/download/${csvFiles[0]}`)
+            fetch(`${BASE_URL}/download/${csvFiles[0]}`)
                 .then(response => response.text())
                 .then(csvText => {
                     const lines = csvText.trim().split('\n');
