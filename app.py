@@ -93,9 +93,11 @@ from cloud_generation import generate_cloud_regular, generate_cloud_natural
 from reduce_points import reduce_points_by_region
 import contour_detection
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['OUTPUT_FOLDER'] = 'output'
+app = Flask(__name__, static_url_path='/static')
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
+app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'output')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 'mGFD_CloudGenerator_2025'
 
@@ -1296,4 +1298,4 @@ def download_file(filename):
 
 if __name__ == '__main__':
     start_cleanup_scheduler()
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True)
