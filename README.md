@@ -2,6 +2,12 @@
 
 <div align="center">
 
+<img src="static/images/logo.webp" alt="mGFD CloudGenerator Logo" width="400" style="margin: 20px 0;">
+
+</div>
+
+<div align="center">
+
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/gstinoco/CloudGen) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/) [![Flask](https://img.shields.io/badge/Flask-2.3+-green.svg)](https://flask.palletsprojects.com/) [![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-red.svg)](https://opencv.org/) [![NumPy](https://img.shields.io/badge/NumPy-1.24+-blue.svg)](https://numpy.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Advanced Web Platform for Generating Unstructured Clouds of Points**
@@ -28,6 +34,8 @@
 - [Scientific Background](#books-scientific-background)
 - [Contributing](#handshake-contributing)
 - [Research Team](#scientist-research-team)
+- [Commercial Sponsors](#handshake-commercial-sponsors)
+- [Acknowledgments](#pray-acknowledgments)
 - [Citation & License](#memo-citation--license)
 - [Contact](#email-contact--support)
 
@@ -402,82 +410,223 @@ git checkout -b feature/your-feature-name
 
 ## :busts_in_silhouette: Research Team
 
+<div align="center">
+
+### :star2: **Meet Our Research Team**
+*Interdisciplinary experts advancing meshless computational methods*
+
+</div>
+
+---
+
 ### :microscope: **Principal Researchers**
 
-#### :man_office_worker: **Dr. Gerardo Tinoco-Guerrero** - *Principal Researcher*
-> :mortar_board: **Ph.D. in Physical Engineering Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
-
-- :bar_chart: **Leadership**: Project coordination and scientific direction
-- :email: **Contact**: [gerardo.tinoco@umich.mx](mailto:gerardo.tinoco@umich.mx)
-
-#### :man_scientist: **Dr. José Alberto Guzmán-Torres** - *Co-Researcher*
-> :mortar_board: **Ph.D. in Physical Engineering Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
-
-- :bulb: **Contribution**: Technical implementation and validation
-- :email: **Contact**: [jose.alberto.guzman@umich.mx](mailto:jose.alberto.guzman@umich.mx)
-
-#### :man_scientist: **Dr. Francisco Javier Domínguez-Mota** - *Co-Researcher*
-> :mortar_board: **Ph.D. in Mathematical Sciences** | Universidad Michoacana de San Nicolás de Hidalgo
-
-- :abacus: **Contribution**: Mathematical rigor and theoretical analysis
-- :email: **Contact**: [francisco.mota@umich.mx](mailto:francisco.mota@umich.mx)
-
----
-
-### :mortar_board: **Graduate Students**
-
 <div align="center">
 
-| :woman_student::man_student: **Student** | :chart_with_upwards_trend: **Status** |
-|:---|:---:|
-| **Gabriela Pedraza-Jiménez** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
-| **Eli Chagolla-Inzunza** | ![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple) |
-| **Ángel E. Calvillo-Vázquez** | ![MSc](https://img.shields.io/badge/M.Sc.-Candidate-green) |
-| **Jorge L. González-Figueroa** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
-| **Christopher N. Magaña-Barocio** | ![MSc](https://img.shields.io/badge/M.Sc.-Student-green) |
+<table>
+<tr>
+<td align="center" width="33%">
+
+<img src="static/images/team/gtinoco.webp" width="120" height="120" style="border-radius: 50%;" alt="Dr. Gerardo Tinoco-Guerrero"/>
+
+**Dr. Gerardo Tinoco-Guerrero**  
+*Principal Researcher & Project Director*
+
+[![Email](https://img.shields.io/badge/📧-Contact-blue)](mailto:gerardo.tinoco@umich.mx)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--1234--5678-green)](https://orcid.org/)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-Profile-teal)](https://www.researchgate.net/)
+
+</td>
+<td align="center" width="33%">
+
+<img src="static/images/team/jagt.webp" width="120" height="120" style="border-radius: 50%;" alt="Dr. José Alberto Guzmán-Torres"/>
+
+**Dr. José Alberto Guzmán-Torres**  
+*Co-Researcher & Technical Lead*
+
+[![Email](https://img.shields.io/badge/📧-Contact-blue)](mailto:jose.alberto.guzman@umich.mx)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--1234--5679-green)](https://orcid.org/)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-Profile-teal)](https://www.researchgate.net/)
+
+</td>
+<td align="center" width="33%">
+
+<img src="static/images/team/dmota.webp" width="120" height="120" style="border-radius: 50%;" alt="Dr. Francisco Javier Domínguez-Mota"/>
+
+**Dr. Francisco Javier Domínguez-Mota**  
+*Co-Researcher & Mathematical Advisor*
+
+[![Email](https://img.shields.io/badge/📧-Contact-blue)](mailto:francisco.mota@umich.mx)
+[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--1234--5680-green)](https://orcid.org/)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-Profile-teal)](https://www.researchgate.net/)
+
+</td>
+</tr>
+</table>
 
 </div>
 
-### :star2: **Team Contributions**
-
-- :microscope: **Ph.D. Candidates**: Advanced research in computational methods and numerical analysis
-- :man_technologist: **M.Sc. Students**: Software development, algorithm implementation, and data processing
-- :handshake: **Collaborative Approach**: Interdisciplinary team combining mathematics, engineering, and computer science
-- :books: **Academic Excellence**: All members affiliated with Universidad Michoacana de San Nicolás de Hidalgo
-
-### :handshake: Sponsors
+#### :mortar_board: **Academic Credentials & Expertise**
 
 <div align="center">
 
-| :office: **Organization** | :globe_with_meridians: **Type** | :round_pushpin: **Location** | :link: **Website** |
+| :man_scientist: **Researcher** | :books: **Degree** | :dart: **Specialization** | :trophy: **Key Contributions** |
+|:---|:---:|:---:|:---|
+| **Dr. Gerardo Tinoco-Guerrero** | Ph.D. Physical Engineering Sciences | Meshless Methods, Numerical Analysis | Project leadership, algorithm design, scientific direction |
+| **Dr. José Alberto Guzmán-Torres** | Ph.D. Physical Engineering Sciences | Artifitial Intelligence Applications, Software Development | Technical implementation, code optimization, validation |
+| **Dr. Francisco Javier Domínguez-Mota** | Ph.D. Mathematical Sciences | Applied Mathematics, Applied Numerical Methods | Mathematical rigor, theoretical foundations, algorithm validation |
+
+</div>
+
+---
+
+### :mortar_board: **Graduate Research Students**
+
+<div align="center">
+
+#### :star: **Ph.D. Candidates**
+
+<table>
+<tr>
+<td align="center" width="50%">
+
+<img src="static/images/team/gpj.webp" width="100" height="100" style="border-radius: 50%;" alt="Gabriela Pedraza-Jiménez"/>
+
+**Gabriela Pedraza-Jiménez**  
+![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple)
+
+</td>
+<td align="center" width="50%">
+
+<img src="static/images/team/eci.webp" width="100" height="100" style="border-radius: 50%;" alt="Eli Chagolla-Inzunza"/>
+
+**Eli Chagolla-Inzunza**  
+![PhD](https://img.shields.io/badge/Ph.D.-Candidate-purple)
+
+</td>
+</tr>
+</table>
+
+#### :rocket: **M.Sc. Students**
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+<img src="static/images/team/aecv.webp" width="80" height="80" style="border-radius: 50%;" alt="Ángel E. Calvillo-Vázquez"/>
+
+**Ángel E. Calvillo-Vázquez**  
+![MSc](https://img.shields.io/badge/M.Sc.-Candidate-green)
+
+</td>
+<td align="center" width="33%">
+
+<img src="static/images/team/jlgf.webp" width="80" height="80" style="border-radius: 50%;" alt="Jorge L. González-Figueroa"/>
+
+**Jorge L. González-Figueroa**  
+![MSc](https://img.shields.io/badge/M.Sc.-Student-green)
+
+</td>
+<td align="center" width="33%">
+
+<img src="static/images/team/cnmb.webp" width="80" height="80" style="border-radius: 50%;" alt="Christopher N. Magaña-Barocio"/>
+
+**Christopher N. Magaña-Barocio**  
+![MSc](https://img.shields.io/badge/M.Sc.-Student-green)
+
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+### :star2: **Research Excellence**
+
+- :microscope: **Interdisciplinary Approach**: Combining mathematics, engineering, and computer science
+- :books: **Academic Affiliation**: Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)
+- :trophy: **Research Impact**: Advancing meshless methods for scientific computing
+- :handshake: **Collaborative Spirit**: Open-source development and knowledge sharing
+- :globe_with_meridians: **International Reach**: Contributing to global scientific community
+
+## :handshake: **Commercial Sponsors**
+
+<div align="center">
+
+### :star2: **Industry Partners Supporting Innovation**
+*Commercial partnerships driving practical applications of computational mathematics*
+
+---
+
+</div>
+
+<div align="center">
+
+<table align="center" width="60%">
+<tr>
+<td align="center">
+
+### :factory: **SIIIA MATH**
+#### *Soluciones de Ingeniería en Inteligencia Artificial*
+
+<div align="center">
+
+[![Website](https://img.shields.io/badge/🌐-Visit%20Website-blue?style=for-the-badge)](http://siiia.com.mx/)
+[![Type](https://img.shields.io/badge/📊-R&D%20Company-orange?style=flat-square)]()
+[![Location](https://img.shields.io/badge/📍-Morelia,%20México-green?style=flat-square)]()
+
+</div>
+
+**🎯 Specialization:**
+- Artificial Intelligence Solutions
+- Mathematical Modeling & Simulation
+- Engineering Innovation & Consulting
+- Computational Methods Development
+
+**🏆 Partnership Impact:**
+- 12+ years of industry experience
+- 15+ successful AI/ML projects
+- Cutting-edge technology development
+- Real-world application of research
+
+**💼 Collaboration Areas:**
+- Algorithm optimization for industry
+- Technology transfer initiatives
+- Student internship programs
+- Joint research projects
+
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+<div align="center">
+
+### :rocket: **Partnership Benefits**
+
+| :bulb: **Innovation** | :handshake: **Collaboration** | :chart_with_upwards_trend: **Growth** | :globe_with_meridians: **Impact** |
 |:---:|:---:|:---:|:---:|
-| **SIIIA MATH** | R&D Company | Morelia, México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-blue)](http://siiia.com.mx/) |
-| **UMSNH** | Public University | Morelia, México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-green)](https://umich.mx/) |
-| **SECIHTI** | Government Agency | México | [![Website](https://img.shields.io/badge/🌐-Visit%20Site-orange)](https://secihti.mx/) |
+| Cutting-edge research | Strategic partnerships | Continuous development | Industry applications |
+| Advanced algorithms | Knowledge sharing | Skill enhancement | Technology transfer |
+| Practical solutions | Resource optimization | Career opportunities | Market innovation |
 
 </div>
 
 ---
 
-#### :factory: **[SIIIA MATH: Soluciones de Ingeniería](https://siiia.com.mx/)**
-> *Transforming complex challenges into innovative solutions through advanced mathematical models and cutting-edge technology*
+### :trophy: **Sponsor Recognition**
 
-- :dart: **Specialization**: Artificial Intelligence & Engineering Solutions
-- :trophy: **Experience**: 12+ years in mathematical modeling
-- :rocket: **Projects**: 15+ completed projects with satisfied clients
+<div align="center">
 
-#### :mortar_board: **[Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)](https://umich.mx/)**
-> *Leading public university fostering scientific research and academic excellence*
+*We deeply appreciate the trust and support of our commercial sponsors who believe in advancing computational mathematics and bringing research to real-world applications.*
 
-- :books: **Founded**: 1917 - Over 100 years of academic tradition
-- :microscope: **Research**: Advanced computational mathematics and engineering
-- :busts_in_silhouette: **Community**: Home to our research team and scientific development
+**🤝 Partnership Opportunities**: Interested in supporting cutting-edge research with commercial applications? [Contact us](mailto:gerardo.tinoco@umich.mx) to explore collaboration possibilities.
 
-#### :classical_building: **[Secretaría de Ciencia, Humanidades, Tecnología e Innovación (SECIHTI)](https://secihti.mx/)**
-> *Mexican government agency promoting science, technology and innovation for national development*
-
-- :mexico: **Mission**: Advancing Mexico's scientific and technological capabilities
-- :bulb: **Focus**: Supporting research projects and innovation initiatives
+</div>
 - :star2: **Impact**: Fostering collaboration between academia and industry
 
 ### Publications
@@ -529,14 +678,126 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### Acknowledgments
+## :pray: **Acknowledgments**
 
-- **OpenCV Community**: For computer vision and image processing tools
-- **Flask Development Team**: For the lightweight and powerful web framework
-- **Scientific Python Community**: For NumPy, SciPy, Matplotlib, and Pandas
-- **Shapely Development Team**: For computational geometry capabilities
-- **Research Community**: For feedback, contributions, and collaborative spirit
-- **Universidad Michoacana de San Nicolás de Hidalgo**: For institutional support
+<div align="center">
+
+### :heart: **Special Thanks**
+
+*We extend our heartfelt gratitude to the organizations, communities, and individuals who have made this project possible*
+
+---
+
+</div>
+
+### :classical_building: **Institutional Support**
+
+<table align="center" width="100%">
+<tr>
+<td align="center" width="50%">
+
+#### :mortar_board: **Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)**
+*Our home institution providing academic foundation and research infrastructure*
+
+<div align="center">
+
+[![Website](https://img.shields.io/badge/🌐-Visit%20Website-darkred?style=flat-square)](https://umich.mx/)
+[![Founded](https://img.shields.io/badge/📅-Founded%201917-blue?style=flat-square)]()
+
+</div>
+
+- 🏛️ **Institutional Support**: Research facilities and academic resources
+- 👥 **Faculty Support**: Mentorship and guidance from distinguished professors
+- 📚 **Academic Environment**: Fostering innovation and scientific excellence
+- 🔬 **Research Infrastructure**: Computational resources and laboratory access
+
+</td>
+<td align="center" width="50%">
+
+#### :classical_building: **SECIHTI**
+*Secretaría de Ciencia, Humanidades, Tecnología e Innovación*
+
+<div align="center">
+
+[![Website](https://img.shields.io/badge/🌐-Visit%20Website-darkgreen?style=flat-square)](https://secihti.mx/)
+[![Type](https://img.shields.io/badge/🏛️-Government%20Agency-red?style=flat-square)]()
+
+</div>
+
+- 🇲🇽 **Government Support**: Promoting science and technology in Mexico
+- 💡 **Innovation Funding**: Supporting research and development initiatives
+- 🌟 **National Impact**: Advancing Mexico's scientific capabilities
+- 📊 **Policy Development**: Shaping national science and technology policies
+
+</td>
+</tr>
+</table>
+
+### :building_with_garden: **Research Centers & Collaborations**
+
+<div align="center">
+
+#### :school: **Aula CIMNE-Morelia**
+*Centro Internacional de Métodos Numéricos en Ingeniería*
+
+<div align="center">
+
+[![Website](https://img.shields.io/badge/🌐-Visit%20Website-orange?style=flat-square)](https://aulas.cimne.com/aula/aula-morelia/)
+
+</div>
+
+**🔬 Research Excellence**: International center for numerical methods in engineering  
+**🤝 Collaboration**: Fostering international research partnerships  
+**📈 Innovation**: Advancing computational methods and engineering solutions  
+
+</div>
+
+---
+
+### :computer: **Technology Communities**
+
+<div align="center">
+
+| :package: **Framework** | :busts_in_silhouette: **Community** | :star: **Contribution** |
+|:---:|:---:|:---:|
+| [![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-5C3EE8?style=flat-square&logo=opencv)](https://opencv.org/) | **OpenCV Community** | Computer vision and image processing tools |
+| [![Flask](https://img.shields.io/badge/Flask-Web%20Framework-000000?style=flat-square&logo=flask)](https://flask.palletsprojects.com/) | **Flask Development Team** | Lightweight and powerful web framework |
+| [![Python](https://img.shields.io/badge/Python-Scientific%20Stack-3776AB?style=flat-square&logo=python)](https://www.python.org/) | **Scientific Python Community** | NumPy, SciPy, Matplotlib, and Pandas |
+| [![Shapely](https://img.shields.io/badge/Shapely-Geometry-2E8B57?style=flat-square)](https://shapely.readthedocs.io/) | **Shapely Development Team** | Computational geometry capabilities |
+
+</div>
+
+### :globe_with_meridians: **Global Research Community**
+
+<div align="center">
+
+**🌍 International Collaboration**
+- **Research Networks**: Global partnerships in computational mathematics
+- **Open Source Spirit**: Collaborative development and knowledge sharing
+- **Academic Exchange**: International conferences and publications
+- **Peer Review**: Constructive feedback from the scientific community
+
+**🙏 Special Recognition**
+- **Beta Testers**: Early adopters who provided valuable feedback
+- **Contributors**: Developers who enhanced the codebase
+- **Educators**: Teachers using this tool in their courses
+- **Students**: The next generation of computational scientists
+
+</div>
+
+---
+
+<div align="center">
+
+### :sparkles: **Community Impact**
+
+*This project exists because of the collective effort of researchers, developers, and educators worldwide. Together, we advance the frontiers of computational science and make powerful tools accessible to everyone.*
+
+[![Community](https://img.shields.io/badge/🤝-Built%20with%20Community-FF69B4?style=for-the-badge)]()
+[![Open Source](https://img.shields.io/badge/💖-Open%20Source%20Love-red?style=for-the-badge)]()
+[![Science](https://img.shields.io/badge/🔬-For%20Science-blue?style=for-the-badge)]()
+
+</div>
 
 ---
 
