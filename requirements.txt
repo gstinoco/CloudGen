@@ -20,7 +20,7 @@ shapely==2.1.1
 matplotlib==3.10.3
 
 # File handling and utilities
-Pillow==11.2.1
+Pillow==11.3.0
 
 # Additional utilities
 tqdm==4.67.1
