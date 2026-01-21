@@ -633,7 +633,7 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
 
 def export_to_csv(points, classifications, regions_list, output_file):
     """
-    Export node data to CSV file.
+    Export node data to CSV file with validation and verification.
     
     Args:
         points (numpy.ndarray): Array of point coordinates
@@ -642,9 +642,18 @@ def export_to_csv(points, classifications, regions_list, output_file):
         output_file (str): Path to output CSV file
     
     Returns:
-        bool: True if export was successful, False otherwise
+        bool: True if export was successful and verified, False otherwise
     """
     try:
+        # Ensure output file has .csv extension
+        if not output_file.lower().endswith('.csv'):
+            output_file += '.csv'
+            
+        # Input Validation
+        if len(points) != len(classifications) or len(points) != len(regions_list):
+            logging.error(f"Export validation failed: Array length mismatch. Points: {len(points)}, Classifications: {len(classifications)}, Regions: {len(regions_list)}")
+            return False
+            
         data = {
             'x': points[:, 0],
             'y': points[:, 1],
@@ -653,9 +662,34 @@ def export_to_csv(points, classifications, regions_list, output_file):
         }
         
         df = pd.DataFrame(data)
+        
+        # Data Integrity Check
+        if df.isnull().values.any():
+            logging.warning("Export warning: DataFrame contains NaN values")
+            
+        # Write to file
         df.to_csv(output_file, index=False)
         
-        logging.info(f"Successfully exported {len(points)} nodes to {output_file}")
+        # Verification Step: Ensure all data was written correctly
+        # This addresses the user reported issue of missing points
+        try:
+            verify_df = pd.read_csv(output_file)
+            if len(verify_df) != len(points):
+                logging.error(f"Export verification failed: File has {len(verify_df)} rows, expected {len(points)}")
+                return False
+                
+            # Verify region counts match
+            input_regions = set(regions_list)
+            file_regions = set(verify_df['region'].unique())
+            if input_regions != file_regions:
+                 logging.error(f"Export verification failed: Regions mismatch. Expected {input_regions}, found {file_regions}")
+                 return False
+                 
+        except Exception as verify_error:
+            logging.error(f"Export verification error: {verify_error}")
+            return False
+        
+        logging.info(f"Successfully exported and verified {len(points)} nodes to {output_file}")
         return True
         
     except Exception as e:

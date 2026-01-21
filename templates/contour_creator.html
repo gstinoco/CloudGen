@@ -76,14 +76,20 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                        <i class="fas fa-draw-polygon"></i>
-                        ContourCreator
-                    </a></li>
-                    <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                            <i class="fas fa-draw-polygon"></i>
+                            ContourCreator
+                        </a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
                             <i class="fas fa-cloud"></i>
                             CloudGenerator
                         </a></li>
                     </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('examples') }}" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Examples</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('about') }}" class="nav-link">
@@ -345,6 +351,7 @@
                     <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
+                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
                         <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
                     </ul>
                 </div>

@@ -297,6 +297,123 @@ def contour_creator():
     """
     return render_template('contour_creator.html')
 
+@app.route('/examples')
+def examples():
+    """Render the Examples page with case studies."""
+    examples_list = [
+        {
+            'name': 'Balkhash',
+            'title': 'Lake Balkhash',
+            'description': 'One of the largest lakes in Asia, located in southeastern Kazakhstan. Uniquely, its western part is fresh water while the eastern part is saline.',
+            'image': 'Balkhash.png',
+            'cloud_image': 'Balkhash_cloud.png',
+            'cloud_svg': 'Balkhash_cloud.svg',
+            'contours_csv': 'Balkhash_contours.csv',
+            'cloud_csv': 'Balkhash_cloud.csv'
+        },
+        {
+            'name': 'Caspio',
+            'title': 'Caspian Sea',
+            'description': 'The world\'s largest inland body of water, often described as the world\'s largest lake or a full-fledged sea. It lies between Europe and Asia.',
+            'image': 'Caspio.png',
+            'cloud_image': 'Caspio_cloud.png',
+            'cloud_svg': 'Caspio_cloud.svg',
+            'contours_csv': 'Caspio_contours.csv',
+            'cloud_csv': 'Caspio_cloud.csv'
+        },
+        {
+            'name': 'Catemaco',
+            'title': 'Lake Catemaco',
+            'description': 'A freshwater lake located in south-central Veracruz, Mexico, formed by natural damming of volcanic origin.',
+            'image': 'Catemaco.png',
+            'cloud_image': 'Catemaco_cloud.png',
+            'cloud_svg': 'Catemaco_cloud.svg',
+            'contours_csv': 'Catemaco_contours.csv',
+            'cloud_csv': 'Catemaco_cloud.csv'
+        },
+        {
+            'name': 'Huron',
+            'title': 'Lake Huron',
+            'description': 'One of the five Great Lakes of North America, connecting to Lake Michigan by the Straits of Mackinac.',
+            'image': 'Huron.png',
+            'cloud_image': 'Huron_cloud.png',
+            'cloud_svg': 'Huron_cloud.svg',
+            'contours_csv': 'Huron_contours.csv',
+            'cloud_csv': 'Huron_cloud.csv'
+        },
+        {
+            'name': 'Malawi',
+            'title': 'Lake Malawi',
+            'description': 'An African Great Lake and the southernmost lake in the East African Rift system, located between Malawi, Mozambique and Tanzania.',
+            'image': 'Malawi.png',
+            'cloud_image': 'Malawi_cloud.png',
+            'cloud_svg': 'Malawi_cloud.svg',
+            'contours_csv': 'Malawi_contours.csv',
+            'cloud_csv': 'Malawi_cloud.csv'
+        },
+        {
+            'name': 'Patzcuaro',
+            'title': 'Lake Pátzcuaro',
+            'description': 'A lake in Michoacán, Mexico, famous for its cultural significance, islands, and traditional fishing.',
+            'image': 'Patzcuaro.png',
+            'cloud_image': 'Patzcuaro_cloud.png',
+            'cloud_svg': 'Patzcuaro_cloud.svg',
+            'contours_csv': 'Patzcuaro_contours.csv',
+            'cloud_csv': 'Patzcuaro_cloud.csv'
+        },
+        {
+            'name': 'Poopo',
+            'title': 'Lake Poopó',
+            'description': 'A large saline lake in a shallow depression in the Altiplano Mountains in Bolivia, known for its fluctuating water levels.',
+            'image': 'Poopo.png',
+            'cloud_image': 'Poopo_cloud.png',
+            'cloud_svg': 'Poopo_cloud.svg',
+            'contours_csv': 'Poopo_contours.csv',
+            'cloud_csv': 'Poopo_cloud.csv'
+        },
+        {
+            'name': 'Santa_Maria_del_Oro',
+            'title': 'Santa María del Oro',
+            'description': 'A crater lake located in the crater of a volcano in the state of Nayarit, Mexico.',
+            'image': 'Santa_Maria_del_Oro.png',
+            'cloud_image': 'Santa_Maria_del_Oro_cloud.png',
+            'cloud_svg': 'Santa_Maria_del_Oro_cloud.svg',
+            'contours_csv': 'Santa_Maria_del_Oro_contours.csv',
+            'cloud_csv': 'Santa_Maria_del_Oro_cloud.csv'
+        },
+        {
+            'name': 'Titicaca',
+            'title': 'Lake Titicaca',
+            'description': 'A large, deep, freshwater lake in the Andes on the border of Bolivia and Peru, often called the highest navigable lake in the world.',
+            'image': 'Titicaca.png',
+            'cloud_image': 'Titicaca_cloud.png',
+            'cloud_svg': 'Titicaca_cloud.svg',
+            'contours_csv': 'Titicaca_contours.csv',
+            'cloud_csv': 'Titicaca_cloud.csv'
+        },
+        {
+            'name': 'Yuriria',
+            'title': 'Lake Yuriria',
+            'description': 'A man-made lake in Guanajuato, Mexico, constructed in the 16th century, representing the first hydraulic work of the colonial period in America.',
+            'image': 'Yuriria.png',
+            'cloud_image': 'Yuriria_cloud.png',
+            'cloud_svg': 'Yuriria_cloud.svg',
+            'contours_csv': 'Yuriria_contours.csv',
+            'cloud_csv': 'Yuriria_cloud.csv'
+        },
+        {
+            'name': 'Zirahuen',
+            'title': 'Lake Zirahuén',
+            'description': 'A deep, endorheic basin lake in Michoacán, Mexico, known for its clear blue waters.',
+            'image': 'Zirahuen.png',
+            'cloud_image': 'Zirahuen_cloud.png',
+            'cloud_svg': 'Zirahuen_cloud.svg',
+            'contours_csv': 'Zirahuen_contours.csv',
+            'cloud_csv': 'Zirahuen_cloud.csv'
+        }
+    ]
+    return render_template('examples.html', examples=examples_list)
+
 @app.route('/cloud_generator')
 def cloud_generator():
     """
@@ -387,9 +504,9 @@ def uploaded_file(filename):
 @app.route('/detect_region', methods=['POST'])
 def detect_region():
     """
-    Detect region in image using combined segmentation algorithms.
+    Detect region in image using optimized single-region segmentation.
     
-    Applies watershed segmentation to detect regions based on user click coordinates.
+    Applies adaptive flood fill segmentation to detect regions based on user click coordinates.
     Processes the resulting mask to find contours and returns the largest contour
     as normalized coordinates for frontend display.
     
@@ -423,9 +540,9 @@ def detect_region():
         if image is None:
             return jsonify({'success': False, 'error': 'Error loading image'})
         
-        # Apply combined segmentation using the contour detection module
-        mask = contour_detection.apply_combined_segmentation(image, x, y, tolerance)
-        algorithm_used = 'watershed'
+        # Apply optimized single-region detection
+        mask = contour_detection.detect_region_at_point(image, x, y, tolerance)
+        algorithm_used = 'floodfill'
         
         if mask is not None:
             # Find contours in the mask

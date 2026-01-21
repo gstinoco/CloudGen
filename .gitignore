@@ -175,7 +175,6 @@ cython_debug/
 # Project specific
 tmp/
 prueba/
-Examples/
 
 # Flask application specific
 uploads/*
