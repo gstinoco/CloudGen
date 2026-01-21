@@ -513,14 +513,6 @@ git checkout -b feature/your-feature-name
 <tr>
 <td align="center" width="33%">
 
-<img src="static/images/team/aecv.webp" width="80" height="80" style="border-radius: 50%;" alt="Ángel E. Calvillo-Vázquez"/>
-
-**Ángel E. Calvillo-Vázquez**  
-![MSc](https://img.shields.io/badge/M.Sc.-Candidate-green)
-
-</td>
-<td align="center" width="33%">
-
 <img src="static/images/team/jlgf.webp" width="80" height="80" style="border-radius: 50%;" alt="Jorge L. González-Figueroa"/>
 
 **Jorge L. González-Figueroa**  
@@ -568,13 +560,13 @@ git checkout -b feature/your-feature-name
 <td align="center">
 
 ### :factory: **SIIIA MATH**
-#### *Soluciones de Ingeniería en Inteligencia Artificial*
+#### *Artificial Intelligence Engineering Solutions*
 
 <div align="center">
 
 [![Website](https://img.shields.io/badge/🌐-Visit%20Website-blue?style=for-the-badge)](http://siiia.com.mx/)
 [![Type](https://img.shields.io/badge/📊-R&D%20Company-orange?style=flat-square)]()
-[![Location](https://img.shields.io/badge/📍-Morelia,%20México-green?style=flat-square)]()
+[![Location](https://img.shields.io/badge/📍-Morelia,%20Mexico-green?style=flat-square)]()
 
 </div>
 
@@ -715,7 +707,7 @@ SOFTWARE.
 <td align="center" width="50%">
 
 #### :classical_building: **SECIHTI**
-*Secretaría de Ciencia, Humanidades, Tecnología e Innovación*
+*Secretariat of Science, Humanities, Technology and Innovation*
 
 <div align="center">
 
@@ -807,7 +799,7 @@ SOFTWARE.
 
 **Research Collaboration**
 - **Email**: gerardo.tinoco@umich.mx
-- **Institution**: Universidad Michoacana de San Nicolás de Hidalgo
+- **Institution**: Michoacan University of Saint Nicholas of Hidalgo
 - **Topics**: Meshless methods, numerical analysis, scientific computing
 
 ### :handshake: Community

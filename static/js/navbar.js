@@ -41,7 +41,7 @@
  * @author Gerardo Tinoco-Guerrero
  * @version 2.0.0
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * 
  * @requires DOM API for element manipulation and event handling
  * @requires CSS classes for visual state management
@@ -84,7 +84,7 @@
  * 
  * @function
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event} DOMContentLoaded Event
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/classList} Element.classList API
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Window/innerWidth} Window.innerWidth Property
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Visual feedback with CSS class toggles
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Maintains desktop navigation behavior unchanged
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     const navLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
     navLinks.forEach(link => {
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Touch-friendly interaction for mobile devices
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Mobile-specific behavior (≤768px width)
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     document.addEventListener('click', function(e) {
         if (window.innerWidth <= 768) {
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Prevents mobile menu artifacts on desktop
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
@@ -242,9 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Smooth visual transitions via CSS classes
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
-    let lastScrollTop = 0;
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
@@ -254,8 +253,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             navbar.classList.remove('scrolled');
         }
-        
-        lastScrollTop = scrollTop;
     });
     
     /**
@@ -272,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Cross-browser compatible smooth scrolling
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
     anchorLinks.forEach(link => {
@@ -313,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * - Non-intrusive visual enhancement
      * 
      * @since 2025-05-01
-     * @lastModified 2025-09-25
+     * @lastModified 2026-01-21
      */
     const ctaButtons = document.querySelectorAll('.nav-cta, .btn-primary');
     ctaButtons.forEach(button => {

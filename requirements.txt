@@ -1,5 +1,5 @@
 # mGFD CloudGenerator - Python Dependencies
-# Versiones basadas en el ambiente CloudGenerator de anaconda
+# Versions based on the CloudGenerator anaconda environment
 
 # Core web framework
 Flask==3.1.1
@@ -21,7 +21,3 @@ matplotlib==3.10.3
 
 # File handling and utilities
 Pillow==11.3.0
-
-# Additional utilities
-tqdm==4.67.1
-requests==2.32.5

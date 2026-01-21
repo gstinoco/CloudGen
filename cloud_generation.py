@@ -7,7 +7,7 @@ The module implements two advanced distribution algorithms with intelligent poin
 and multi-region support for complex geometries.
 
 Core Functionality:
-1. CSV boundary point processing with coordinate normalization
+1. CSV boundary point processing
 2. Optional contour point reduction for optimization
 3. Cloud of points generation for main region (Region 1) with consistent results
 4. Multi-region support for interior holes and complex geometries
@@ -28,7 +28,6 @@ Point Generation Algorithms:
   * Boundary-aware sampling with interior region filling
 
 Key Features:
-- Coordinate normalization to [0,1] range for numerical stability
 - Adaptive cloud size calculation based on region geometry
 - Dynamic boundary refinement using point density analysis
 - Multi-region processing with separate cloud generation
@@ -48,7 +47,7 @@ Technical Implementation:
 
 Workflow Process:
 1. Load and validate CSV boundary data with required columns (x, y, region)
-2. Normalize coordinates to [0,1] range for numerical stability
+2. Use coordinates as provided (assumed pre-scaled)
 3. Apply optional point reduction to optimize contour complexity
 4. Calculate adaptive cloud size based on region geometry characteristics
 5. Generate boundary points with uniform spacing along contours
@@ -63,7 +62,7 @@ interior regions to ensure consistency and reproducibility in cloud generation.
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: September 25th, 2025
+Last Modification: January 21st, 2026
 
 Dependencies:
 - NumPy >= 1.20.0
@@ -109,7 +108,7 @@ CLOUD_FACTORS = {
 }
 
 def load_regions(csv_file):
-    """Load region data from CSV file with coordinate normalization."""
+    """Load region data from CSV file."""
     try:
         df = pd.read_csv(csv_file)
         
@@ -118,15 +117,7 @@ def load_regions(csv_file):
         if not all(col in df.columns for col in required_columns):
             logging.error(f"CSV file must contain columns: {required_columns}")
             return []
-        
-        # Normalize coordinates to [0,1] range
-        x_min, x_max = df['x'].min(), df['x'].max()
-        y_min, y_max = df['y'].min(), df['y'].max()
-        
-        if x_max != x_min:
-            df['x'] = (df['x'] - x_min) / (x_max - x_min)
-        if y_max != y_min:
-            df['y'] = (df['y'] - y_min) / (y_max - y_min)
+
         
         regions = []
         
@@ -489,7 +480,7 @@ def generate_interior_regions_clouds(regions, main_cloud_size):
         region_id = i + 1
         
         try:
-            boundary_points, interior_points, cloud_size = generate_region_cloud_with_uniform_density(region_points, main_cloud_size)
+            boundary_points, interior_points, _ = generate_region_cloud_with_uniform_density(region_points, main_cloud_size)
             
             if boundary_points is not None and interior_points is not None:
                 interior_clouds.append((boundary_points, interior_points, region_id))
@@ -519,7 +510,6 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
         list: Node classifications ("boundary" or "interior")
     """
     from shapely.geometry import Point, LineString, Polygon
-    from shapely.ops import unary_union
     
     classifications = []
     
@@ -687,7 +677,7 @@ def create_visualization(points, regions_list, output_base, classifications=None
         bool: True if visualization was successful, False otherwise
     """
     try:
-        fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+        _, ax = plt.subplots(1, 1, figsize=(12, 10))
         
         # Interior colors: bright and saturated colors for main structure
         interior_colors = [
@@ -1040,7 +1030,7 @@ def generate_cloud_natural(csv_file, output_file, regiones_inside=False, reducir
             - 'visualization_created' (bool): Visualization generation status
     
     Algorithm Workflow:
-        1. Load and validate CSV boundary data with coordinate normalization
+        1. Load and validate CSV boundary data
         2. Apply optional contour point reduction for optimization
         3. Calculate adaptive cloud size based on region geometry
         4. Generate boundary points with uniform spacing along contours
@@ -1239,7 +1229,7 @@ def generate_cloud_regular(csv_file, output_file, regiones_inside=False, reducir
             - 'visualization_created' (bool): Visualization generation status
     
     Algorithm Workflow:
-        1. Load and validate CSV boundary data with coordinate normalization
+        1. Load and validate CSV boundary data
         2. Apply optional contour point reduction for optimization
         3. Calculate adaptive cloud size based on region geometry
         4. Generate boundary points with uniform spacing along contours

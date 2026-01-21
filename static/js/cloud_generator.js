@@ -107,7 +107,7 @@
  * @author SECIHTI - Secretaría de Ciencia, Humanidades, Tecnología e Innovación
  * @version 2.0
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * 
  * @requires Chart.js for data visualization
  * @requires Fetch API for backend communication
@@ -178,7 +178,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
  * 
  * @function setupDragAndDrop
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link handleDragEnter} CSV drag enter event handler
  * @see {@link handleDragOver} CSV drag over event handler
  * @see {@link handleDragLeave} CSV drag leave event handler
@@ -235,7 +235,7 @@ function setupDragAndDrop() {
  * @function handleDragEnter
  * @param {DragEvent} e - The drag enter event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link updateUploadContent} Updates visual state of upload zone
  * @see {@link setupDragAndDrop} Event registration function
  * 
@@ -260,7 +260,7 @@ function handleDragEnter(e) {
  * @function handleDragOver
  * @param {DragEvent} e - The drag over event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link handleDragEnter} Initial drag enter handler
  * @see {@link handleDrop} Final drop handler
  * 
@@ -280,7 +280,7 @@ function handleDragOver(e) {
  * @function handleDragLeave
  * @param {DragEvent} e - The drag leave event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link updateUploadContent} Resets visual state of upload zone
  * @see {@link handleDragEnter} Corresponding drag enter handler
  * 
@@ -305,7 +305,7 @@ function handleDragLeave(e) {
  * @function handleDrop
  * @param {DragEvent} e - The drop event object containing file data
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link processFile} Validates and processes the dropped CSV file
  * @see {@link updateUploadContent} Resets visual state after drop
  * 
@@ -331,7 +331,7 @@ function handleDrop(e) {
  * @function handleFileSelect
  * @param {Event} e - The file input change event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link processFile} Validates and processes the selected CSV file
  * @see {@link setupDragAndDrop} Event registration function
  * 
@@ -366,7 +366,7 @@ function handleFileSelect(e) {
  * @function processFile
  * @param {File} file - The CSV file object to process and validate
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link showUploadError} Displays validation error messages
  * @see {@link showUploadProgress} Shows upload progress interface
  * @see {@link simulateUploadProgress} Manages upload progress simulation
@@ -376,13 +376,14 @@ function handleFileSelect(e) {
 function processFile(file) {
     // Validate file type
     if (!file.name.toLowerCase().endsWith('.csv')) {
-        showUploadError('Invalid file type. Please select a CSV file.');
+        Utils.showUploadError(uploadZone, uploadContent, 'Upload Error', 'Invalid file type. Please select a CSV file.');
         return;
     }
     
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-        showUploadError(`File too large. Maximum size is ${formatFileSize(MAX_FILE_SIZE)}.`);
+        Utils.showUploadError(uploadZone, uploadContent, 'File too large', 
+            `File must be smaller than ${Utils.formatFileSize(MAX_FILE_SIZE)}.`);
         return;
     }
     
@@ -400,7 +401,7 @@ function processFile(file) {
  * @function simulateUploadProgress
  * @param {File} file - The CSV file object to be uploaded and processed
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -513,33 +514,13 @@ function showUploadSuccess(file) {
             <h4>Upload Successful!</h4>
             <p>${file.name}</p>
             <div class="file-details">
-                <span class="file-size">${formatFileSize(file.size)}</span>
+                <span class="file-size">${Utils.formatFileSize(file.size)}</span>
             </div>
         </div>
     `;
 }
 
-// Show upload error
-function showUploadError(message) {
-    uploadZone.classList.remove('uploading', 'success');
-    uploadZone.classList.add('error');
-    
-    uploadContent.innerHTML = `
-        <div class="upload-error">
-            <div class="error-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h4>Upload Error</h4>
-            <p>${message}</p>
-            <button class="btn btn-secondary btn-small" onclick="resetUpload()">
-                <i class="fas fa-redo"></i>
-                Try Again
-            </button>
-        </div>
-    `;
-}
-
-// Resetear upload
+// Reset upload
 function resetUpload() {
     uploadZone.classList.remove('uploading', 'success', 'error', 'drag-over');
     
@@ -607,36 +588,7 @@ function clearUpload() {
     currentFilename = null;
 }
 
-// Format file size
-/**
- * Formats a file size in bytes to a human-readable string with appropriate units.
- * Converts bytes to the most appropriate unit (Bytes, KB, MB, GB) and formats
- * the result with proper decimal precision for optimal readability.
- * 
- * @function formatFileSize
- * @param {number} bytes - The file size in bytes to be formatted
- * @returns {string} The formatted file size string with appropriate unit
- * @since 2025-05-01
- * @lastModified 2025-09-25
- * @author Gerardo Tinoco-Guerrero
- * 
- * @description
- * This utility function:
- * - Handles zero bytes as a special case
- * - Uses binary (1024) conversion for accurate file size representation
- * - Automatically selects the most appropriate unit (Bytes, KB, MB, GB)
- * - Formats numbers to 2 decimal places for precision
- * 
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+
 
 /**
  * Uploads a CSV file to the server for processing and visualization.
@@ -645,7 +597,7 @@ function formatFileSize(bytes) {
  * 
  * @function uploadCSV
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -701,12 +653,12 @@ function uploadCSV() {
             }
         } else {
             showAlert(data.error, 'error');
-            showUploadError(data.error);
+            Utils.showUploadError(uploadZone, uploadContent, 'Upload Error', data.error);
         }
     })
     .catch(error => {
         showAlert('Error uploading file: ' + error.message, 'error');
-        showUploadError('Error uploading file: ' + error.message);
+        Utils.showUploadError(uploadZone, uploadContent, 'Upload Error', 'Error uploading file: ' + error.message);
     });
 }
 
@@ -937,7 +889,7 @@ function showFileOptions() {
  * 
  * @function generateCloud
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link updateProgress} Progress tracking and visual feedback
  * @see {@link displayResults} Results visualization and statistics
  * @see {@link showAlert} Error message display
@@ -1286,7 +1238,7 @@ function removeNotification(notification) {
  * @function copyToClipboard
  * @param {string} text - The text content to copy to the clipboard
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -1340,7 +1292,7 @@ function copyToClipboard(text) {
  * 
  * @function showCopyFeedback
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -1379,7 +1331,7 @@ function showCopyFeedback() {
  * 
  * @function downloadChart
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description

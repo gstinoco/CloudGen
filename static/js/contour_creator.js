@@ -100,7 +100,7 @@
  * @author SECIHTI - Secretaría de Ciencia, Humanidades, Tecnología e Innovación
  * @version 2.0
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * 
  * @requires HTML5 Canvas API
  * @requires Fetch API for backend communication
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * 
  * @function initCanvas
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link handleCanvasClick} Click event handler
  * @see {@link handleWheel} Zoom event handler
  * @see {@link handleMouseDown} Pan start handler
@@ -257,7 +257,7 @@ function initCanvas() {
  * 
  * @function setupEnhancedDragAndDrop
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link handleDragEnter} Drag enter event handler
  * @see {@link handleDragOver} Drag over event handler
  * @see {@link handleDragLeave} Drag leave event handler
@@ -313,7 +313,7 @@ function setupEnhancedDragAndDrop() {
  * @function handleDragEnter
  * @param {DragEvent} e - The drag enter event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link updateUploadContent} Content update handler
  * 
  */
@@ -337,7 +337,7 @@ function handleDragEnter(e) {
  * @function handleDragOver
  * @param {DragEvent} e - The drag over event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * 
  */
 function handleDragOver(e) {
@@ -355,7 +355,7 @@ function handleDragOver(e) {
  * @function handleDragLeave
  * @param {DragEvent} e - The drag leave event object
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link updateUploadContent} Content update handler
  * 
  */
@@ -379,7 +379,7 @@ function handleDragLeave(e) {
  * @function handleDrop
  * @param {DragEvent} e - The drop event object containing file data
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link processFile} File processing handler
  * 
  */
@@ -404,7 +404,7 @@ function handleDrop(e) {
  * @function handleFileSelect
  * @param {Event} e - The change event object from file input
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link processFile} File processing handler
  * 
  */
@@ -437,7 +437,7 @@ function handleFileSelect(e) {
  * @function processFile
  * @param {File} file - The file object to process and validate
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @see {@link simulateUploadProgress} Upload progress handler
  * @see {@link showUploadError} Error display handler
  * @see {@link showUploadProgress} Progress display handler
@@ -447,15 +447,15 @@ function handleFileSelect(e) {
 function processFile(file) {
     // Validate file type
     if (!SUPPORTED_FORMATS[file.type]) {
-        showUploadError('Unsupported file format', 
+        Utils.showUploadError(uploadZone, uploadContent, 'Unsupported file format', 
             `Please select a file: ${Object.values(SUPPORTED_FORMATS).join(', ')}`);
         return;
     }
     
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-        showUploadError('File too large', 
-            `File must be smaller than ${formatFileSize(MAX_FILE_SIZE)}`);
+        Utils.showUploadError(uploadZone, uploadContent, 'File too large', 
+            `File must be smaller than ${Utils.formatFileSize(MAX_FILE_SIZE)}`);
         return;
     }
     
@@ -474,7 +474,7 @@ function processFile(file) {
  * @function simulateUploadProgress
  * @param {File} file - The file object to be uploaded and processed
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -530,7 +530,7 @@ function simulateUploadProgress(file) {
  * @function updateUploadContent
  * @param {string} state - The current upload state ('drag-over' or 'default')
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description
@@ -604,28 +604,12 @@ function showUploadSuccess(file) {
         <div class="upload-success">
             <i class="fas fa-check-circle success-icon"></i>
             <h4>File uploaded successfully!</h4>
-            <p>${file.name} (${formatFileSize(file.size)})</p>
+            <p>${file.name} (${Utils.formatFileSize(file.size)})</p>
         </div>
     `;
 }
 
-// Show upload error
-function showUploadError(title, message) {
-    uploadZone.classList.remove('uploading', 'success');
-    uploadZone.classList.add('error');
-    
-    uploadContent.innerHTML = `
-        <div class="upload-error">
-            <i class="fas fa-exclamation-triangle error-icon"></i>
-            <h4>${title}</h4>
-            <p>${message}</p>
-            <button class="btn btn-secondary btn-small" onclick="resetUpload()">
-                <i class="fas fa-redo"></i>
-                Try Again
-            </button>
-        </div>
-    `;
-}
+
 
 // Reset upload
 function resetUpload() {
@@ -682,36 +666,7 @@ function clearUpload() {
     resetUpload();
 }
 
-// Format file size
-/**
- * Formats a file size in bytes to a human-readable string with appropriate units.
- * Converts bytes to the most appropriate unit (Bytes, KB, MB, GB) and formats
- * the result with proper decimal precision for optimal readability.
- * 
- * @function formatFileSize
- * @param {number} bytes - The file size in bytes to be formatted
- * @returns {string} The formatted file size string with appropriate unit
- * @since 2025-05-01
- * @lastModified 2025-09-25
- * @author Gerardo Tinoco-Guerrero
- * 
- * @description
- * This utility function:
- * - Handles zero bytes as a special case
- * - Uses binary (1024) conversion for accurate file size representation
- * - Automatically selects the most appropriate unit (Bytes, KB, MB, GB)
- * - Formats numbers to 2 decimal places for precision
- * 
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+
 
 // Upload file
 function uploadFile() {
@@ -791,9 +746,9 @@ function loadImage(filename) {
 
 // Handle zoom with mouse wheel
 function handleWheel(event) {
-    // Requerir Ctrl+Rueda para zoom tanto en modo normal como en modo refinamiento
+    // Require Ctrl+Wheel for zoom in both normal and refine modes
     if (!event.ctrlKey) {
-        return; // Solo hacer zoom cuando Ctrl esté presionado
+        return; // Only zoom when Ctrl is pressed
     }
     
     event.preventDefault();
@@ -824,7 +779,7 @@ function handleWheel(event) {
 
 // Handle start of drag
 function handleMouseDown(event) {
-    // Permitir arrastre con Ctrl+Click tanto en modo normal como en modo refinamiento
+    // Allow drag with Ctrl+Click in both normal and refine modes
     if (event.button === 0 && event.ctrlKey) { // Only left button + Ctrl
         isDragging = true;
         hasDragged = false; // Reset drag flag
@@ -1310,7 +1265,7 @@ function clearAllRegions() {
  * @param {Array<Object>} region.contour_points - Array of points with x,y coordinates
  * @returns {number} The calculated area in square pixels, or 0 if invalid region
  * @since 2025-05-01
- * @lastModified 2025-09-25
+ * @lastModified 2026-01-21
  * @author Gerardo Tinoco-Guerrero
  * 
  * @description

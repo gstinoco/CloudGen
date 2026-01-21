@@ -61,7 +61,7 @@ Point Generation Algorithms:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: September 25th, 2025
+Last Modification: January 21st, 2026
 
 Dependencies:
 - Flask >= 2.0.0
@@ -108,7 +108,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
 
-# Configurar logging
+# Configure logging
 if not app.debug:
     file_handler = RotatingFileHandler(
         os.path.join(LOG_DIR, 'mGFD_CloudGenerator.log'),
@@ -130,7 +130,7 @@ else:
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.DEBUG)
 
-# Configuraciones
+# Configuration
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 ALLOWED_CSV_EXTENSIONS = {'csv'}
 
@@ -210,6 +210,71 @@ def allowed_csv_file(filename):
         bool: True if file extension is 'csv', False otherwise
     """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_CSV_EXTENSIONS
+
+def calculate_export_scale(w, h, config=None):
+    """
+    Calculate scaling factors based on image dimensions and configuration.
+    
+    Determines the appropriate scaling factors for X and Y axes based on the
+    provided configuration method (preserve aspect ratio, stretch, or custom).
+    
+    Args:
+        w (int): Image width
+        h (int): Image height
+        config (dict, optional): Scaling configuration. Defaults to None.
+            - method: 'preserve_aspect_ratio' (default), 'stretch', 'custom'
+            - custom_x: float (for custom method)
+            - custom_y: float (for custom method)
+            
+    Returns:
+        tuple: (scale_x, scale_y) floats
+    """
+    if config is None:
+        config = {}
+        
+    method = config.get('method', 'preserve_aspect_ratio')
+    
+    if method == 'custom':
+        # Use custom scaling factors provided in config
+        return float(config.get('custom_x', 1.0)), float(config.get('custom_y', 1.0))
+        
+    if method == 'stretch':
+        # Map [0,1] input directly to [0,1] output (stretch to fill square)
+        return 1.0, 1.0
+        
+    # Default: preserve_aspect_ratio
+    # Scales the largest dimension to 1.0 and the other proportionally
+    max_dim = max(w, h)
+    if max_dim > 0:
+        return w / max_dim, h / max_dim
+        
+    return 1.0, 1.0
+
+def transform_coordinate(point, scale_x, scale_y):
+    """
+    Transform a single coordinate point with scaling and safety clamping.
+    
+    Applies scaling factors, inverts Y-axis (image to Cartesian), and strictly
+    clamps result to [0,1] range to prevent out-of-bounds errors.
+    
+    Args:
+        point (dict): Point object with 'x' and 'y' keys (normalized [0,1])
+        scale_x (float): Scaling factor for X axis
+        scale_y (float): Scaling factor for Y axis
+        
+    Returns:
+        tuple: (final_x, inverted_y) floats in range [0,1]
+    """
+    # Apply scaling
+    final_x = point['x'] * scale_x
+    # Invert Y coordinate (image Y=0 is top, Cartesian Y=0 is bottom)
+    inverted_y = (1.0 - point['y']) * scale_y
+    
+    # Strictly clamp to [0,1] range
+    final_x = max(0.0, min(1.0, final_x))
+    inverted_y = max(0.0, min(1.0, inverted_y))
+    
+    return final_x, inverted_y
 
 # Main application routes
 @app.route('/')
@@ -349,7 +414,7 @@ def detect_region():
         y = int(data['y'])
         tolerance = int(data.get('tolerance', 30))
         
-        # Cargar imagen
+        # Load image
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if not os.path.exists(filepath):
             return jsonify({'success': False, 'error': 'File not found'})
@@ -358,24 +423,24 @@ def detect_region():
         if image is None:
             return jsonify({'success': False, 'error': 'Error loading image'})
         
-        # Aplicar segmentación combinada usando el módulo de detección de contornos
+        # Apply combined segmentation using the contour detection module
         mask = contour_detection.apply_combined_segmentation(image, x, y, tolerance)
         algorithm_used = 'watershed'
         
         if mask is not None:
-            # Encontrar contornos en la máscara
+            # Find contours in the mask
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             if contours:
-                # Seleccionar el mejor contorno (el más grande)
+                # Select the best contour (the largest one)
                 best_contour = max(contours, key=cv2.contourArea)
                 
-                # Convertir contorno a formato que espera el frontend
+                # Convert contour to format expected by frontend
                 contour_points = []
                 for point in best_contour:
                     contour_points.append({
-                        'x': int(point[0][0]) / image.shape[1],  # Normalizar por ancho
-                        'y': int(point[0][1]) / image.shape[0]   # Normalizar por alto
+                        'x': int(point[0][0]) / image.shape[1],  # Normalize by width
+                        'y': int(point[0][1]) / image.shape[0]   # Normalize by height
                     })
                 
                 return jsonify({
@@ -396,7 +461,7 @@ def detect_region():
             'error': 'Internal server error'
         })
 
-# Endpoints de segmentación interactiva
+# Interactive segmentation endpoints
 @app.route('/interactive_segmentation', methods=['POST'])
 def interactive_segmentation():
     """
@@ -436,25 +501,25 @@ def interactive_segmentation():
         if image is None:
             return jsonify({'success': False, 'error': 'Error loading image'})
         
-        # Convertir coordenadas normalizadas a píxeles
+        # Convert normalized coordinates to pixels
         h, w = image.shape[:2]
         pos_seeds_px = [(int(seed['x'] * w), int(seed['y'] * h)) for seed in positive_seeds]
         neg_seeds_px = [(int(seed['x'] * w), int(seed['y'] * h)) for seed in negative_seeds]
         
-        # Aplicar segmentación interactiva
+        # Apply interactive segmentation
         mask = contour_detection.interactive_segmentation_with_seeds(
             image, pos_seeds_px, neg_seeds_px, tolerance
         )
         
         if mask is not None:
-            # Encontrar contornos
+            # Find contours
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             if contours:
-                # Seleccionar el mejor contorno
+                # Select best contour
                 best_contour = max(contours, key=cv2.contourArea)
                 
-                # Convertir a formato normalizado
+                # Convert to normalized format
                 contour_points = []
                 for point in best_contour:
                     contour_points.append({
@@ -499,7 +564,7 @@ def grabcut_segmentation():
             return jsonify({'success': False, 'error': 'Incomplete data'})
         
         filename = data['filename']
-        rect = data.get('rect')  # {x, y, width, height} normalizado
+        rect = data.get('rect')  # {x, y, width, height} normalized
         iterations = int(data.get('iterations', 5))
         
         # Load image
@@ -511,7 +576,7 @@ def grabcut_segmentation():
         if image is None:
             return jsonify({'success': False, 'error': 'Error loading image'})
         
-        # Convertir rectángulo normalizado a píxeles
+        # Convert normalized rectangle to pixels
         rect_px = None
         if rect:
             h, w = image.shape[:2]
@@ -522,18 +587,18 @@ def grabcut_segmentation():
                 int(rect['height'] * h)
             )
         
-        # Aplicar GrabCut
+        # Apply GrabCut
         mask = contour_detection.grabcut_interactive(image, rect_px, iterations=iterations)
         
         if mask is not None:
-            # Encontrar contornos
+            # Find contours
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             if contours:
-                # Seleccionar el mejor contorno
+                # Select the best contour
                 best_contour = max(contours, key=cv2.contourArea)
                 
-                # Convertir a formato normalizado
+                # Convert to normalized format
                 h, w = image.shape[:2]
                 contour_points = []
                 for point in best_contour:
@@ -593,16 +658,16 @@ def refine_with_brush():
         
         h, w = image.shape[:2]
         
-        # Crear máscara actual desde el contorno
+        # Create current mask from contour
         current_mask = np.zeros((h, w), dtype=np.uint8)
         if current_contour:
-            # Convertir contorno normalizado a píxeles
+            # Convert normalized contour to pixels
             contour_px = np.array([
                 [[int(pt['x'] * w), int(pt['y'] * h)]] for pt in current_contour
             ], dtype=np.int32)
             cv2.fillPoly(current_mask, [contour_px], 255)
         
-        # Convertir trazos de pincel a píxeles
+        # Convert brush strokes to pixels
         brush_strokes_px = []
         for stroke in brush_strokes:
             stroke_px = {
@@ -612,18 +677,18 @@ def refine_with_brush():
             }
             brush_strokes_px.append(stroke_px)
         
-        # Aplicar refinamiento con pincel
+        # Apply brush refinement
         refined_mask = contour_detection.refine_mask_with_brush(current_mask, brush_strokes_px)
         
         if refined_mask is not None:
-            # Encontrar contornos
+            # Find contours
             contours, _ = cv2.findContours(refined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             if contours:
-                # Seleccionar el mejor contorno
+                # Select the best contour
                 best_contour = max(contours, key=cv2.contourArea)
                 
-                # Convertir a formato normalizado
+                # Convert to normalized format
                 contour_points = []
                 for point in best_contour:
                     contour_points.append({
@@ -643,7 +708,7 @@ def refine_with_brush():
         app.logger.error(f"Error in refine_with_brush: {e}")
         return jsonify({'success': False, 'error': 'Internal server error'})
 
-# Resto de rutas (save_coordinates, export_single_region, etc.)
+# Remaining routes (save_coordinates, export_single_region, etc.)
 @app.route('/save_coordinates', methods=['POST'])
 def save_coordinates():
     """
@@ -669,15 +734,15 @@ def save_coordinates():
         coordinates = data['coordinates']
         region_name = data.get('region_name', f'region_{datetime.now().strftime("%Y%m%d_%H%M%S")}')
         
-        # Crear DataFrame
+        # Create DataFrame
         df = pd.DataFrame(coordinates, columns=['x', 'y'])
         
-        # Generar nombre de archivo
+        # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{region_name}_{timestamp}.csv"
         filepath = os.path.join(app.config['OUTPUT_FOLDER'], filename)
         
-        # Guardar archivo
+        # Save file
         df.to_csv(filepath, index=False)
         
         return jsonify({
@@ -702,10 +767,19 @@ def export_single_region():
     to a CSV file with proper coordinate transformation (Y-axis inversion from
     image coordinates to Cartesian coordinates).
     
+    Adjustments:
+    - Scales coordinates to fit within [0,1]x[0,1] while preserving aspect ratio.
+    - Clamps values to strictly ensure no coordinate exceeds [0,1] range.
+    - Validates that max dimension is positive before scaling.
+    - Supports custom scaling configuration via 'scaling_config' parameter.
+    
     Expected JSON payload:
         contour_points (list): List of point objects with 'x' and 'y' coordinates
         region_name (str, optional): Name for the region (defaults to timestamped name)
         filename (str, optional): Original filename reference
+        scaling_config (dict, optional): Scaling configuration
+            - method: 'preserve_aspect_ratio', 'stretch', 'custom'
+            - custom_x, custom_y: float values for custom scaling
     
     Returns:
         JSON response with success status, output filename, and download URL,
@@ -720,9 +794,22 @@ def export_single_region():
         contour_points = data['contour_points']
         region_name = data.get('region_name', f'region_{datetime.now().strftime("%Y%m%d_%H%M%S")}')
         filename = data.get('filename', '')
+        scaling_config = data.get('scaling_config', {})
         
         if not contour_points or len(contour_points) == 0:
             return jsonify({'success': False, 'error': 'No contour points to export'})
+        
+        # Calculate scaling factors
+        scale_x = 1.0
+        scale_y = 1.0
+        
+        if filename:
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            if os.path.exists(filepath):
+                image = cv2.imread(filepath)
+                if image is not None:
+                    h, w = image.shape[:2]
+                    scale_x, scale_y = calculate_export_scale(w, h, scaling_config)
         
         # Convert contour points to coordinates list
         coordinates = []
@@ -738,20 +825,20 @@ def export_single_region():
                 region_number = 1
         
         for point in contour_points:
-            # Invert Y coordinate: convert from image coordinates (Y=0 at top) to cartesian (Y=0 at bottom)
-            inverted_y = 1.0 - point['y']
-            coordinates.append([point['x'], inverted_y, region_number])
+            # Transform coordinate with scaling and clamping
+            final_x, inverted_y = transform_coordinate(point, scale_x, scale_y)
+            coordinates.append([final_x, inverted_y, region_number])
         
-        # Crear DataFrame with correct column order: x, y, region
+        # Create DataFrame with correct column order: x, y, region
         df = pd.DataFrame(coordinates, columns=['x', 'y', 'region'])
         
-        # Generar nombre de archivo
+        # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         safe_region_name = secure_filename(region_name) if region_name else 'region'
         output_filename = f"{safe_region_name}_{timestamp}.csv"
         filepath = os.path.join(app.config['OUTPUT_FOLDER'], output_filename)
         
-        # Guardar archivo
+        # Save file
         df.to_csv(filepath, index=False)
         
         return jsonify({
@@ -776,11 +863,20 @@ def save_all_coordinates():
     into a single CSV file with proper coordinate transformation (Y-axis inversion
     from image coordinates to Cartesian coordinates) and region identification.
     
+    Adjustments:
+    - Scales coordinates to fit within [0,1]x[0,1] while preserving aspect ratio.
+    - Clamps values to strictly ensure no coordinate exceeds [0,1] range.
+    - Validates that max dimension is positive before scaling.
+    - Supports custom scaling configuration via 'scaling_config' parameter.
+    
     Expected JSON payload:
         regions (list): List of region objects, each containing:
             - contour_points (list): List of point objects with 'x' and 'y' coordinates
             - name (str, optional): Name for the region
         filename (str, optional): Base filename for the output file
+        scaling_config (dict, optional): Scaling configuration
+            - method: 'preserve_aspect_ratio', 'stretch', 'custom'
+            - custom_x, custom_y: float values for custom scaling
     
     Returns:
         JSON response with success status, output filename, and download URL,
@@ -794,9 +890,22 @@ def save_all_coordinates():
         
         regions = data['regions']
         filename = data.get('filename', 'regions')
+        scaling_config = data.get('scaling_config', {})
         
         if not regions or len(regions) == 0:
             return jsonify({'success': False, 'error': 'No regions to save'})
+        
+        # Calculate scaling factors
+        scale_x = 1.0
+        scale_y = 1.0
+        
+        if filename:
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            if os.path.exists(filepath):
+                image = cv2.imread(filepath)
+                if image is not None:
+                    h, w = image.shape[:2]
+                    scale_x, scale_y = calculate_export_scale(w, h, scaling_config)
         
         # Create a single CSV file with all regions
         all_coordinates = []
@@ -818,9 +927,9 @@ def save_all_coordinates():
                 
                 # Convert contour points to coordinates with region number
                 for point in region['contour_points']:
-                    # Invert Y coordinate: convert from image coordinates (Y=0 at top) to cartesian (Y=0 at bottom)
-                    inverted_y = 1.0 - point['y']
-                    all_coordinates.append([point['x'], inverted_y, region_number])
+                    # Transform coordinate with scaling and clamping
+                    final_x, inverted_y = transform_coordinate(point, scale_x, scale_y)
+                    all_coordinates.append([final_x, inverted_y, region_number])
         
         if not all_coordinates:
             return jsonify({'success': False, 'error': 'No coordinates to save'})
@@ -887,7 +996,7 @@ def upload_csv():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             
-            # Leer y validar CSV
+            # Read and validate CSV
             try:
                 df = pd.read_csv(filepath)
                 
@@ -908,7 +1017,7 @@ def upload_csv():
                         'error': 'Columns x and y must contain numeric values'
                     })
                 
-                # Analizar regiones si existe la columna 'region'
+                # Analyze regions if 'region' column exists
                 regions_info = []
                 total_regions = 1
                 

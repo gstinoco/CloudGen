@@ -6444,3 +6444,49 @@ input:checked + .toggle-slider:before {
         font-size: 0.95rem;
     }
 }
+/* ===== PARTICIPATING INSTITUTIONS ===== */
+.participating-institutions {
+    position: relative;
+    overflow: hidden;
+}
+
+.institutions-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 3rem;
+    align-items: center;
+    justify-items: center;
+    margin-top: 2rem;
+}
+
+.institution-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.institution-item:hover {
+    transform: scale(1.05);
+}
+
+.institution-logo {
+    max-width: 200px;
+    height: auto;
+    max-height: 120px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .institutions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .institutions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
