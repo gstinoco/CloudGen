@@ -196,6 +196,7 @@ segmented_*
 mask_*
 *.tiff
 *.tif
+*.svg
 
 # CSV processing files
 *.csv.bak
