@@ -78,12 +78,12 @@ from flask import Flask, render_template, request, jsonify, send_from_directory,
 from logging.handlers import RotatingFileHandler
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import pandas as pd
 import numpy as np
 import threading
 import tempfile
 import logging
 import time
+import csv
 import cv2
 import os
 import re
@@ -878,16 +878,20 @@ def save_coordinates():
         coordinates = data['coordinates']
         region_name = data.get('region_name', f'region_{datetime.now().strftime("%Y%m%d_%H%M%S")}')
         
-        # Create DataFrame
-        df = pd.DataFrame(coordinates, columns=['x', 'y'])
-        
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{region_name}_{timestamp}.csv"
         filepath = os.path.join(app.config['OUTPUT_FOLDER'], filename)
         
         # Save file
-        df.to_csv(filepath, index=False)
+        with open(filepath, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['x', 'y'])
+            for coord in coordinates:
+                if isinstance(coord, dict):
+                    writer.writerow([coord.get('x'), coord.get('y')])
+                elif isinstance(coord, (list, tuple)) and len(coord) >= 2:
+                    writer.writerow(coord[:2])
         
         return jsonify({
             'success': True,
@@ -973,9 +977,6 @@ def export_single_region():
             final_x, inverted_y = transform_coordinate(point, scale_x, scale_y)
             coordinates.append([final_x, inverted_y, region_number])
         
-        # Create DataFrame with correct column order: x, y, region
-        df = pd.DataFrame(coordinates, columns=['x', 'y', 'region'])
-        
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         safe_region_name = secure_filename(region_name) if region_name else 'region'
@@ -983,7 +984,10 @@ def export_single_region():
         filepath = os.path.join(app.config['OUTPUT_FOLDER'], output_filename)
         
         # Save file
-        df.to_csv(filepath, index=False)
+        with open(filepath, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['x', 'y', 'region'])
+            writer.writerows(coordinates)
         
         return jsonify({
             'success': True,
@@ -1078,9 +1082,6 @@ def save_all_coordinates():
         if not all_coordinates:
             return jsonify({'success': False, 'error': 'No coordinates to save'})
         
-        # Create DataFrame with correct column order: x, y, region
-        df = pd.DataFrame(all_coordinates, columns=['x', 'y', 'region'])
-        
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         safe_filename = secure_filename(filename) if filename else 'regions'
@@ -1088,7 +1089,10 @@ def save_all_coordinates():
         filepath = os.path.join(app.config['OUTPUT_FOLDER'], output_filename)
         
         # Save file
-        df.to_csv(filepath, index=False)
+        with open(filepath, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['x', 'y', 'region'])
+            writer.writerows(all_coordinates)
         
         return jsonify({
             'success': True,
@@ -1142,33 +1146,79 @@ def upload_csv():
             
             # Read and validate CSV
             try:
-                df = pd.read_csv(filepath)
+                points = []
+                with open(filepath, 'r', newline='', encoding='utf-8-sig') as f:
+                    reader = csv.DictReader(f)
+                    
+                    if not reader.fieldnames:
+                        raise ValueError("Empty CSV file")
+                        
+                    fieldnames = [f.strip() for f in reader.fieldnames]
+                    
+                    # Validate required columns
+                    required_columns = ['x', 'y']
+                    if not all(col in fieldnames for col in required_columns):
+                        os.remove(filepath)
+                        return jsonify({
+                            'success': False,
+                            'error': f'CSV file must contain columns: {", ".join(required_columns)}'
+                        })
+                    
+                    has_region = 'region' in fieldnames
+                    unique_regions = set()
+                    
+                    for row in reader:
+                        # Validate numeric data
+                        try:
+                            x_val = row['x'].strip() if row.get('x') else ''
+                            y_val = row['y'].strip() if row.get('y') else ''
+                            
+                            if not x_val or not y_val:
+                                continue
+                                
+                            x = float(x_val)
+                            y = float(y_val)
+                        except ValueError:
+                            os.remove(filepath)
+                            return jsonify({
+                                'success': False,
+                                'error': 'Columns x and y must contain numeric values'
+                            })
+                            
+                        point = {'x': x, 'y': y}
+                        
+                        if has_region and row.get('region'):
+                            try:
+                                r_val = row['region'].strip()
+                                if r_val:
+                                    # Try to handle "1.0" as 1
+                                    try:
+                                        r_num = float(r_val)
+                                        r_int = int(r_num)
+                                        unique_regions.add(r_int)
+                                        point['region'] = r_int
+                                    except ValueError:
+                                        # Keep as string if not numeric
+                                        unique_regions.add(r_val)
+                                        point['region'] = r_val
+                            except Exception:
+                                pass
+                        
+                        points.append(point)
                 
-                # Validate required columns
-                required_columns = ['x', 'y']
-                if not all(col in df.columns for col in required_columns):
-                    os.remove(filepath)
-                    return jsonify({
-                        'success': False,
-                        'error': f'CSV file must contain columns: {", ".join(required_columns)}'
-                    })
-                
-                # Validate numeric data
-                if not pd.api.types.is_numeric_dtype(df['x']) or not pd.api.types.is_numeric_dtype(df['y']):
-                    os.remove(filepath)
-                    return jsonify({
-                        'success': False,
-                        'error': 'Columns x and y must contain numeric values'
-                    })
-                
-                # Analyze regions if 'region' column exists
+                # Analyze regions
                 regions_info = []
                 total_regions = 1
                 
-                if 'region' in df.columns:
-                    unique_regions = df['region'].unique()
+                if has_region and unique_regions:
                     total_regions = len(unique_regions)
-                    regions_info = [f"Region {int(r)}" for r in sorted(unique_regions) if pd.notna(r)]
+                    # Sort regions
+                    try:
+                        sorted_regions = sorted(list(unique_regions))
+                    except TypeError:
+                         sorted_regions = sorted(list(unique_regions), key=str)
+                         
+                    regions_info = [f"Region {r}" for r in sorted_regions]
                 else:
                     regions_info = ["Region 1"]
                 
@@ -1179,11 +1229,11 @@ def upload_csv():
                     'success': True,
                     'filename': filename,
                     'url': file_url,
-                    'total_points': len(df),
+                    'total_points': len(points),
                     'regions': total_regions,
                     'region_list': regions_info,
-                    'rows': len(df),
-                    'preview': df.head(5).to_dict('records')
+                    'rows': len(points),
+                    'preview': points[:5]
                 })
                 
             except Exception as e:

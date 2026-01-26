@@ -71,7 +71,8 @@ Dependencies:
 """
 
 from shapely.geometry import Point, Polygon
-import pandas as pd
+import csv
+import numpy as np
 import tempfile
 import logging
 import os
@@ -94,13 +95,12 @@ def reduce_points_by_region_single(input_csv, output_csv):
                           Will be created/overwritten if it exists
     
     Returns:
-        pandas.DataFrame: DataFrame with reduced points if successful
+        list: List of dictionaries representing the reduced points if successful
         None: If any error occurred during processing (file not found, invalid data, etc.)
     
     Raises:
         Logs errors for:
         - FileNotFoundError: When input file doesn't exist
-        - EmptyDataError: When CSV file is empty or invalid
         - ValueError: When required columns are missing
         - Exception: For any other unexpected errors
     
@@ -110,39 +110,71 @@ def reduce_points_by_region_single(input_csv, output_csv):
         ...     print("Points reduced successfully")
     """
     try:
-        df = pd.read_csv(input_csv)
-        
-        required_columns = ['x', 'y', 'region']
-        if not all(col in df.columns for col in required_columns):
-            error_msg = f"CSV file missing required columns. Expected: {required_columns}, Found: {list(df.columns)}"
-            logging.error(error_msg)
-            raise ValueError(error_msg)
-        
-        reduced_data = []
-        
-        for region_id in sorted(df['region'].unique()):
-            region_data = df[df['region'] == region_id].copy()
+        rows = []
+        with open(input_csv, 'r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            if not reader.fieldnames:
+                raise ValueError("Empty CSV file")
+                
+            fieldnames = [f.strip() for f in reader.fieldnames]
+            required_columns = ['x', 'y', 'region']
+            if not all(col in fieldnames for col in required_columns):
+                error_msg = f"CSV file missing required columns. Expected: {required_columns}, Found: {fieldnames}"
+                logging.error(error_msg)
+                raise ValueError(error_msg)
             
-            if region_id == 1:
-                region_data = region_data.reset_index(drop=True)
-                reduced_region = region_data.iloc[::2]
+            for row in reader:
+                # Convert types
+                try:
+                    row['x'] = float(row['x'])
+                    row['y'] = float(row['y'])
+                    # Try to convert region to int/float
+                    try:
+                        row['region'] = int(float(row['region']))
+                    except:
+                        pass # Keep as is if not number
+                    rows.append(row)
+                except ValueError:
+                    continue
+
+        # Group by region
+        regions_data = {}
+        for row in rows:
+            rid = row['region']
+            if rid not in regions_data:
+                regions_data[rid] = []
+            regions_data[rid].append(row)
+        
+        reduced_rows = []
+        
+        # Sort regions for consistent output
+        try:
+            sorted_regions = sorted(regions_data.keys())
+        except:
+            sorted_regions = sorted(regions_data.keys(), key=str)
+            
+        for region_id in sorted_regions:
+            region_rows = regions_data[region_id]
+            
+            if region_id == 1 or str(region_id) == '1':
+                # Reduce region 1: take every 2nd point
+                reduced_region = region_rows[::2]
+                reduced_rows.extend(reduced_region)
             else:
-                reduced_region = region_data
+                # Keep other regions as is
+                reduced_rows.extend(region_rows)
+        
+        # Write to output CSV
+        with open(output_csv, 'w', newline='', encoding='utf-8') as f:
+            fieldnames = ['x', 'y', 'region']
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(reduced_rows)
             
-            reduced_data.append(reduced_region)
-        
-        final_df = pd.concat(reduced_data, ignore_index=True)
-        
-        final_df.to_csv(output_csv, index=False)
-        
-        return final_df
+        return reduced_rows
         
     except FileNotFoundError as e:
         error_msg = f"Input file not found: {input_csv}"
-        logging.error(error_msg)
-        return None
-    except pd.errors.EmptyDataError as e:
-        error_msg = f"Input file is empty or invalid: {input_csv}"
         logging.error(error_msg)
         return None
     except Exception as e:
@@ -171,8 +203,7 @@ def reduce_points_by_region_multiple(input_csv, output_csv, multiplier=2):
                                    - multiplier=4: ~93.75% reduction (1-(1/2)⁴=0.9375)
     
     Returns:
-        pandas.DataFrame: Final DataFrame with reduced points if successful.
-                         Contains same structure as input but with fewer points in region 1.
+        list: Final list of dictionaries with reduced points if successful.
         None: If any error occurred during processing (file errors, invalid data, etc.)
     
     Algorithm:
@@ -266,7 +297,7 @@ def reduce_points_by_region_multiple(input_csv, output_csv, multiplier=2):
         logging.error(error_msg)
         return None
 
-def filter_main_region_points_in_subregions(df):
+def filter_main_region_points_in_subregions(rows):
     """
     Advanced geometric filtering to remove main region points that fall within subregion boundaries.
     
@@ -277,13 +308,13 @@ def filter_main_region_points_in_subregions(df):
     in hierarchical region structures.
     
     Args:
-        df (pandas.DataFrame): Input DataFrame containing cloud data with required columns:
+        rows (list): List of dictionaries containing cloud data with required keys:
                               - 'x' (float): X coordinates of points
                               - 'y' (float): Y coordinates of points  
-                              - 'region' (int): Region identifier (1=main, 2+=subregions)
+                              - 'region' (int/str): Region identifier (1=main, 2+=subregions)
     
     Returns:
-        pandas.DataFrame: Filtered DataFrame with the same structure as input, but with
+        list: Filtered list of dictionaries with the same structure as input, but with
                          main region (region 1) points that fall inside subregion boundaries
                          removed. All subregion points remain unchanged.
     
@@ -333,29 +364,45 @@ def filter_main_region_points_in_subregions(df):
     
     Example:
         >>> # Filter main region points that overlap with subregions
-        >>> df_filtered = filter_main_region_points_in_subregions(df)
-        >>> main_points_before = len(df[df['region'] == 1])
-        >>> main_points_after = len(df_filtered[df_filtered['region'] == 1])
+        >>> filtered_rows = filter_main_region_points_in_subregions(rows)
+        >>> main_points_before = len([r for r in rows if r['region'] == 1])
+        >>> main_points_after = len([r for r in filtered_rows if r['region'] == 1])
         >>> print(f"Removed {main_points_before - main_points_after} overlapping points")
     """
     try:
-        # Get all regions
-        regions = sorted(df['region'].unique())
+        # Group points by region
+        regions_data = {}
+        for row in rows:
+            rid = row['region']
+            if rid not in regions_data:
+                regions_data[rid] = []
+            regions_data[rid].append(row)
+            
+        regions = sorted(regions_data.keys(), key=lambda x: str(x))
         
         if len(regions) <= 1:
             # No subregions to filter against
-            return df
+            return rows
         
         # Create polygons for subregions (regions 2, 3, 4, ...)
         subregion_polygons = []
-        for region_id in regions[1:]:  # Skip region 1 (main region)
-            region_points = df[df['region'] == region_id][['x', 'y']].values
-            if len(region_points) >= 3:
+        for region_id in regions:  
+            if str(region_id) == '1': # Skip region 1 (main region)
+                continue
+                
+            region_rows = regions_data[region_id]
+            region_points_coords = []
+            for r in region_rows:
+                region_points_coords.append([r['x'], r['y']])
+            
+            region_points_array = np.array(region_points_coords)
+            
+            if len(region_points_array) >= 3:
                 try:
                     # Create convex hull of region points to form polygon
                     from scipy.spatial import ConvexHull
-                    hull = ConvexHull(region_points)
-                    hull_points = region_points[hull.vertices]
+                    hull = ConvexHull(region_points_array)
+                    hull_points = region_points_array[hull.vertices]
                     poly = Polygon(hull_points)
                     if poly.is_valid:
                         subregion_polygons.append(poly)
@@ -363,12 +410,14 @@ def filter_main_region_points_in_subregions(df):
                     continue
         
         if not subregion_polygons:
-            return df
+            return rows
         
         # Filter main region points
         filtered_rows = []
-        for _, row in df.iterrows():
-            if row['region'] == 1:
+        for row in rows:
+            is_main_region = (row['region'] == 1 or str(row['region']) == '1')
+            
+            if is_main_region:
                 # Check if main region point falls inside any subregion
                 point_obj = Point(row['x'], row['y'])
                 inside_subregion = False
@@ -384,11 +433,11 @@ def filter_main_region_points_in_subregions(df):
                 # Keep all subregion points
                 filtered_rows.append(row)
         
-        return pd.DataFrame(filtered_rows).reset_index(drop=True)
+        return filtered_rows
         
     except Exception as e:
         logging.error(f"Error filtering main region points: {e}")
-        return df  # Return original if filtering fails
+        return rows  # Return original if filtering fails
 
 def reduce_points_by_region_with_filtering(input_csv, output_csv, multiplier=2, filter_subregions=False):
     """
@@ -416,7 +465,7 @@ def reduce_points_by_region_with_filtering(input_csv, output_csv, multiplier=2, 
                                            Default: False (for performance)
     
     Returns:
-        pandas.DataFrame: Processed DataFrame with reduced and optionally filtered points.
+        list: Processed list of dictionaries with reduced and optionally filtered points.
                          Maintains original structure with optimized point distribution.
                          All non-region-1 data preserved unchanged.
         None: If any error occurred during processing (file errors, invalid data, etc.)
@@ -498,15 +547,31 @@ def reduce_points_by_region_with_filtering(input_csv, output_csv, multiplier=2, 
     try:
         if filter_subregions:
             # Apply subregion filtering first
-            df = pd.read_csv(input_csv)
-            filtered_df = filter_main_region_points_in_subregions(df)
+            rows = []
+            with open(input_csv, 'r', newline='', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # Convert types
+                    try:
+                        row['x'] = float(row['x'])
+                        row['y'] = float(row['y'])
+                        try:
+                            row['region'] = int(float(row['region']))
+                        except:
+                            pass 
+                        rows.append(row)
+                    except ValueError:
+                        continue
+                        
+            filtered_rows = filter_main_region_points_in_subregions(rows)
             
             # Save filtered data to temporary file
-            import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as temp_file:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False, newline='', encoding='utf-8') as temp_file:
                 temp_filtered_file = temp_file.name
-            
-            filtered_df.to_csv(temp_filtered_file, index=False)
+                fieldnames = ['x', 'y', 'region']
+                writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(filtered_rows)
             
             # Apply reduction to filtered data
             if multiplier <= 1:
@@ -554,7 +619,7 @@ def reduce_points_by_region(input_csv, output_csv, multiplier=2):
                                    Default: 2 (for backward compatibility)
     
     Returns:
-        pandas.DataFrame: Processed DataFrame with reduced points if successful.
+        list: Processed list of dictionaries with reduced points if successful.
                          Maintains original structure with fewer points in region 1.
                          All non-region-1 data preserved unchanged.
         None: If any error occurred during processing (file errors, invalid data, etc.)
