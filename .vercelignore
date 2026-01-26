@@ -1,0 +1,14 @@
+static/examples
+output
+uploads
+logs
+tests
+*.csv
+*.png
+*.svg
+__pycache__
+*.pyc
+.git
+.DS_Store
+venv
+env
