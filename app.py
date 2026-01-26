@@ -74,7 +74,7 @@ Dependencies:
 - Scipy >= 1.8.0
 """
 
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 from logging.handlers import RotatingFileHandler
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -97,9 +97,18 @@ app = Flask(__name__, static_url_path='/static')
 
 # Absolute routes for uploads and outputs
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_DIR = os.path.join(BASE_DIR, 'logs')
-app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
-app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'output')
+
+if os.environ.get('VERCEL'):
+    # Vercel environment: Use /tmp for writable directories
+    LOG_DIR = os.path.join(tempfile.gettempdir(), 'logs')
+    app.config['UPLOAD_FOLDER'] = os.path.join(tempfile.gettempdir(), 'uploads')
+    app.config['OUTPUT_FOLDER'] = os.path.join(tempfile.gettempdir(), 'output')
+else:
+    # Local environment
+    LOG_DIR = os.path.join(BASE_DIR, 'logs')
+    app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
+    app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'output')
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 'mGFD_CloudGenerator_2025'
 
@@ -110,25 +119,40 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configure logging
 if not app.debug:
-    file_handler = RotatingFileHandler(
-        os.path.join(LOG_DIR, 'mGFD_CloudGenerator.log'),
-        maxBytes=10240000,
-        backupCount=10
-    )
-    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
-    file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-    app.logger.setLevel(logging.INFO)
+    if os.environ.get('VERCEL'):
+        # Stream logging for Vercel
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        stream_handler.setLevel(logging.INFO)
+        app.logger.addHandler(stream_handler)
+        app.logger.setLevel(logging.INFO)
+    else:
+        file_handler = RotatingFileHandler(
+            os.path.join(LOG_DIR, 'mGFD_CloudGenerator.log'),
+            maxBytes=10240000,
+            backupCount=10
+        )
+        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
 else:
-    file_handler = RotatingFileHandler(
-        os.path.join(LOG_DIR, 'mGFD_CloudGenerator_debug.log'),
-        maxBytes=10240000,
-        backupCount=5
-    )
-    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
-    file_handler.setLevel(logging.DEBUG)
-    app.logger.addHandler(file_handler)
-    app.logger.setLevel(logging.DEBUG)
+    if os.environ.get('VERCEL'):
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        stream_handler.setLevel(logging.DEBUG)
+        app.logger.addHandler(stream_handler)
+        app.logger.setLevel(logging.DEBUG)
+    else:
+        file_handler = RotatingFileHandler(
+            os.path.join(LOG_DIR, 'mGFD_CloudGenerator_debug.log'),
+            maxBytes=10240000,
+            backupCount=5
+        )
+        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.DEBUG)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.DEBUG)
 
 # Configuration
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
@@ -474,10 +498,13 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             
+            # Use url_for to generate correct URL regardless of application root
+            file_url = url_for('uploaded_file', filename=filename)
+            
             return jsonify({
                 'success': True,
                 'filename': filename,
-                'url': f'/uploads/{filename}'
+                'url': file_url
             })
         else:
             return jsonify({'success': False, 'error': 'File type not allowed'})
@@ -1145,9 +1172,13 @@ def upload_csv():
                 else:
                     regions_info = ["Region 1"]
                 
+                # Generate URL for the file
+                file_url = url_for('uploaded_file', filename=filename)
+                
                 return jsonify({
                     'success': True,
                     'filename': filename,
+                    'url': file_url,
                     'total_points': len(df),
                     'regions': total_regions,
                     'region_list': regions_info,

@@ -128,7 +128,6 @@ let uploadContent = null;
 let uploadIcon = null;
 let uploadTitle = null;
 let uploadSubtitle = null;
-let clearButton = null;
 let dragCounter = 0;
 
 // Supported file formats
@@ -197,7 +196,6 @@ function setupDragAndDrop() {
     uploadIcon = document.getElementById('uploadIcon');
     uploadTitle = document.getElementById('uploadTitle');
     uploadSubtitle = document.getElementById('uploadSubtitle');
-    clearButton = document.getElementById('clearButton');
     
     if (!uploadZone || !fileInput) {
         console.error('Upload elements not found');
@@ -673,7 +671,7 @@ function displayFileInfo(data) {
     `;
     
     // Create CSV graphical visualization
-    fetch(`${BASE_URL}/uploads/${data.filename}`)
+    fetch(data.url)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -685,7 +683,7 @@ function displayFileInfo(data) {
         })
         .catch(error => {
             console.error('Could not load CSV file for visualization:', error);
-        console.error('Attempted URL:', `${BASE_URL}/uploads/${data.filename}`);
+        console.error('Attempted URL:', data.url);
         });
     
     // Hide upload section and format info after successful file load

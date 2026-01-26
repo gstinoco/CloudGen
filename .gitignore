@@ -244,3 +244,6 @@ benchmark_*
 flask_session/
 .flask_session
 *.session
+
+# Vercel
+.vercel

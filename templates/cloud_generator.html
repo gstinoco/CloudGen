@@ -8,24 +8,24 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     
     <!-- SEO Meta Tags -->
-    <title>CloudGenerator - Generate Clouds of Points from Images | mGFD CloudGenerator 2.0</title>
+    <title>CloudGenerator | mGFD CloudGenerator 2.0</title>
     <meta name="description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data for scientific research and engineering applications.">
     <meta name="keywords" content="cloud of points generation, image to cloud of points, coordinate extraction, cloud generation, scientific visualization, image processing, data export, CSV coordinates">
-    <meta name="author" content="mGFD Research Team">
+    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="CloudGenerator - Generate Clouds of Points from Images">
+    <meta property="og:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
     <meta property="og:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="Gerardo Tinoco-Guerrero, PhD.">
+    <meta property="og:site_name" content="mGFD CloudGenerator">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="CloudGenerator - Generate Clouds of Points from Images">
+    <meta property="twitter:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
     <meta property="twitter:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     
@@ -34,6 +34,8 @@
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cloud_generator.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -326,6 +328,12 @@
                     </div>
                     <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 </div>
+                <div class="upload-actions">
+                    <button class="btn btn-secondary" id="resetUploadButton" onclick="clearUpload()" style="display: none;">
+                        <i class="fas fa-times"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
             </div>
         
             <!-- File Information -->
@@ -339,7 +347,7 @@
                         <p>Preview and analyze your uploaded CSV data</p>
                     </div>
                     <div class="card-actions">
-                        <button class="control-btn secondary" id="clearButton" onclick="clearUpload()">
+                        <button class="control-btn secondary" id="startOverButton" onclick="clearUpload()">
                             <i class="fas fa-redo"></i>
                             <span>Start Over</span>
                         </button>

@@ -689,7 +689,7 @@ function uploadFile() {
     .then(data => {
         if (data.success) {
             currentFilename = data.filename;
-            loadImage(data.filename);
+            loadImage(data.url);
             showAlert('Image uploaded successfully', 'success');
             
             // Hide upload section after successful file load
@@ -709,7 +709,7 @@ function uploadFile() {
 // ===== IMAGE AND CANVAS FUNCTIONALITY =====
 
 // Load image in canvas
-function loadImage(filename) {
+function loadImage(url) {
     const img = new Image();
     img.onload = function() {
         currentImage = img;
@@ -739,7 +739,7 @@ function loadImage(filename) {
         document.getElementById('imageSection').classList.remove('hidden');
     };
     
-    img.src = `${BASE_URL}/uploads/${filename}`;
+    img.src = url;
 }
 
 // ===== ZOOM AND PAN FUNCTIONALITY =====
@@ -1835,8 +1835,8 @@ function drawRefineElements() {
 
 // Enable refine mode button when image is loaded
 const originalLoadImage = loadImage;
-loadImage = function(filename) {
-    originalLoadImage(filename);
+loadImage = function(url) {
+    originalLoadImage(url);
     
     // Enable refine mode button
     const refineModeToggle = document.getElementById('refineModeToggle');

@@ -87,18 +87,25 @@ matplotlib.use('Agg')
 
 # Absolute routes for logs
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
+if os.environ.get('VERCEL'):
+    LOG_DIR = os.path.join(tempfile.gettempdir(), 'logs')
+else:
+    LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configure logging
+handlers = [logging.StreamHandler()]
+if not os.environ.get('VERCEL'):
+    handlers.append(logging.FileHandler(os.path.join(LOG_DIR, 'cloud_generation.log')))
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, 'cloud_generation.log')),
-        logging.StreamHandler()
-    ]
+    handlers=handlers
 )
+
 
 # Cloud generation parameters
 CLOUD_FACTORS = {

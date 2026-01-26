@@ -46,13 +46,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set content
         lightboxImg.src = imgElement.src;
+        lightboxImg.alt = imgElement.alt || 'Full size view';
         
         // Get caption safely
         let captionText = '';
         try {
             const card = imgElement.closest('.example-card');
             const title = card ? card.querySelector('.example-title').innerText : '';
-            const label = imgElement.nextElementSibling ? imgElement.nextElementSibling.innerText : '';
+            // Try to find the label sibling or find it within the container
+            let label = '';
+            const container = imgElement.closest('.example-image-container');
+            if (container) {
+                const labelEl = container.querySelector('.image-label');
+                if (labelEl) label = labelEl.innerText;
+            }
+            
             captionText = title ? `${title} - ${label}` : label;
         } catch (e) {
             console.warn('Could not extract caption', e);
@@ -95,11 +103,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // 4. Attach Event Listeners to Images
     // We delegate to document to handle any dynamic content and ensure robustness
     document.addEventListener('click', function(e) {
-        // Check if clicked element is an example image
-        if (e.target.matches('.example-image-container img')) {
-            e.preventDefault();
-            e.stopPropagation();
-            openLightbox(e.target);
+        // Check if clicked element is an example image OR inside the container
+        // This handles clicks on the label, overlay, or the image itself
+        const container = e.target.closest('.example-image-container');
+        
+        if (container) {
+            // Find the image within this container
+            const img = container.querySelector('img');
+            if (img) {
+                e.preventDefault();
+                e.stopPropagation();
+                openLightbox(img);
+                return; // Stop processing
+            }
         }
         
         // Check if clicked element is close button
