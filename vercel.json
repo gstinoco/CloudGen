@@ -5,7 +5,7 @@
             "src": "app.py",
             "use": "@vercel/python",
             "config": {
-                "excludeFiles": "{output/**,uploads/**,logs/**}"
+                "excludeFiles": "{static/examples/**,output/**,uploads/**,logs/**,tests/**}"
             }
         }
     ],
