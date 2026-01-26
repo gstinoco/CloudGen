@@ -59,7 +59,7 @@ Applications:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May 2025
-Last Modification: January 2026
+Last Modification: January 26th, 2026
 Version: 2.2.1
 
 Dependencies:

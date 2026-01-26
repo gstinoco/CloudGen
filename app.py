@@ -59,7 +59,7 @@ Point Generation Algorithms:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 25th, 2026
+Last Modification: January 26th, 2026
 
 Dependencies:
 - Flask >= 2.0.0
@@ -67,6 +67,7 @@ Dependencies:
 - NumPy >= 1.20.0
 - Werkzeug >= 2.0.0
 - Shapely >= 1.8.0
+- Matplotlib >= 3.10.0
 """
 
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for

@@ -1,5 +1,5 @@
 /* Cloud Generator Styles */
-/* ===== LEGACY STYLES FOR EXISTING FUNCTIONALITY ===== */
+
 /* Canvas container and styling */
 .canvas-container {
     display: flex;
@@ -18,9 +18,6 @@ canvas {
     max-width: 100%;
     height: auto;
 }
-
-/* File input styling - Legacy styles removed as they are now handled by tools.css */
-
 
 /* Form labels */
 label {
@@ -116,8 +113,6 @@ button:disabled {
     max-height: 200px;
     overflow-y: auto;
 }
-
-/* ===== REDESIGNED SECTIONS STYLES ===== */
 
 /* Required CSV Format Section */
 .format-requirements {

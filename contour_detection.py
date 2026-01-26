@@ -20,7 +20,7 @@ Changes & Optimizations:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 25th, 2026
+Last Modification: January 26th, 2026
 
 Dependencies:
 - NumPy >= 1.20.0
@@ -204,7 +204,6 @@ def grabcut_interactive(image, rect=None, mask=None, iterations=5):
     except Exception as e:
         logger.error(f"Error in GrabCut segmentation: {str(e)}")
         return None
-
 
 def refine_mask_with_brush(current_mask, brush_strokes):
     """

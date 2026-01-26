@@ -249,8 +249,6 @@
     margin-top: 1.5rem;
 }
 
-/* Control button styles moved to tools.css */
-
 /* ===== REFINE MODE CONTROLS ===== */
 .refine-controls-bar {
     display: flex;
@@ -407,8 +405,6 @@
     transform: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
-/* Refine mode button style moved to tools.css */
 
 /* ===== ENHANCED ZOOM CONTROLS ===== */
 .zoom-controls {
@@ -815,6 +811,3 @@
         margin-top: 0.5rem;
     }
 }
-
-/* App Card and Upload Styles moved to tools.css */
-

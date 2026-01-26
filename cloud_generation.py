@@ -43,7 +43,7 @@ Technical Implementation:
 - Shapely for geometric operations, polygon validation, and spatial queries
 - STRtree for optimized O(log N) spatial indexing and nearest-neighbor queries
 - ProcessPoolExecutor for parallel generation of multi-region clouds
-- PIL (Pillow) for high-quality visualization generation and export
+- Matplotlib for high-quality visualization generation and export
 - OpenCV for optimized point-in-polygon checks
 - Professional logging system with detailed progress tracking
 
@@ -64,19 +64,21 @@ interior regions to ensure consistency and reproducibility in cloud generation.
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 25th, 2026
+Last Modification: January 26th, 2026
 
 Dependencies:
 - NumPy >= 1.20.0
 - Shapely >= 1.8.0
-- Pillow >= 9.0.0
+- Matplotlib >= 3.10.0
 - OpenCV >= 4.5.0
 """
 
 from shapely.geometry import Point, Polygon, LineString
 from shapely.strtree import STRtree
 from concurrent.futures import ProcessPoolExecutor
-from PIL import Image, ImageDraw
+import matplotlib
+matplotlib.use('Agg') # Set non-interactive backend for server environments
+import matplotlib.pyplot as plt
 import reduce_points
 import numpy as np
 import tempfile
@@ -855,7 +857,7 @@ def export_to_csv(points: np.ndarray, classifications: list[str], regions_list: 
 def create_visualization(points: np.ndarray, regions_list: list[int], output_base: str, classifications: list[str] = None) -> bool:
     """
     Create a visualization of the generated cloud of points with differentiated colors for boundary and interior nodes.
-    Uses PIL for PNG and manual SVG generation to avoid Matplotlib dependency.
+    Uses Matplotlib for high-quality PNG and SVG generation.
     
     Args:
         points (numpy.ndarray): Array of point coordinates
@@ -867,111 +869,100 @@ def create_visualization(points: np.ndarray, regions_list: list[int], output_bas
         bool: True if visualization was successful, False otherwise
     """
     try:
-        # Define colors (RGB tuples)
+        # Define colors (RGB tuples scaled to 0-1 for matplotlib)
         interior_colors = [
-            (51, 153, 255),    # Light Blue
-            (77, 230, 77),     # Bright Green  
-            (255, 179, 51),    # Bright Orange
-            (204, 77, 255),    # Bright Purple
-            (230, 153, 51),    # Golden Brown
-            (255, 128, 204),   # Bright Pink
-            (179, 179, 179)    # Light Gray
+            (51/255, 153/255, 255/255),    # Light Blue
+            (77/255, 230/255, 77/255),     # Bright Green  
+            (255/255, 179/255, 51/255),    # Bright Orange
+            (204/255, 77/255, 255/255),    # Bright Purple
+            (230/255, 153/255, 51/255),    # Golden Brown
+            (255/255, 128/255, 204/255),   # Bright Pink
+            (179/255, 179/255, 179/255)    # Light Gray
         ]
         
         boundary_colors = [
-            (204, 0, 0),       # Dark Red
-            (153, 0, 153),     # Dark Purple
-            (0, 77, 204),      # Dark Blue
-            (204, 153, 0),     # Dark Yellow
-            (0, 102, 0),       # Dark Green
-            (0, 153, 102),     # Dark Teal
-            (51, 51, 51)       # Dark Gray
+            (204/255, 0/255, 0/255),       # Dark Red
+            (153/255, 0/255, 153/255),     # Dark Purple
+            (0/255, 77/255, 204/255),      # Dark Blue
+            (204/255, 153/255, 0/255),     # Dark Yellow
+            (0/255, 102/255, 0/255),       # Dark Green
+            (0/255, 153/255, 102/255),     # Dark Teal
+            (51/255, 51/255, 51/255)       # Dark Gray
         ]
         
-        # Calculate bounds and scale
         if len(points) == 0:
             return False
             
-        min_x, min_y = np.min(points, axis=0)
-        max_x, max_y = np.max(points, axis=0)
-        
-        width_range = max_x - min_x
-        height_range = max_y - min_y
-        
-        # Image dimensions
-        img_width = 1200
-        img_height = 1000
-        padding = 50
-        
-        # Scale to fit
-        scale_x = (img_width - 2 * padding) / width_range if width_range > 0 else 1
-        scale_y = (img_height - 2 * padding) / height_range if height_range > 0 else 1
-        scale = min(scale_x, scale_y)
-        
-        # Center the image
-        center_x = (min_x + max_x) / 2
-        center_y = (min_y + max_y) / 2
-        
-        # Coordinate transform function (Y up -> Y down)
-        def transform(x, y):
-            screen_x = img_width / 2 + (x - center_x) * scale
-            screen_y = img_height / 2 - (y - center_y) * scale
-            return screen_x, screen_y
-
-        # --- Generate PNG using Pillow ---
-        img = Image.new('RGB', (img_width, img_height), 'white')
-        draw = ImageDraw.Draw(img)
-        
-        for i, (x, y) in enumerate(points):
-            region_id = regions_list[i]
-            classification = classifications[i] if classifications else 'interior'
+        # Convert lists to numpy arrays for efficient indexing
+        regions_arr = np.array(regions_list)
+        if classifications:
+            classifications_arr = np.array(classifications)
+        else:
+            classifications_arr = np.array(['interior'] * len(points))
             
-            color_idx = (region_id - 1) % len(interior_colors)
-            
-            if classification == 'boundary':
-                color = boundary_colors[color_idx]
-                radius = 3
-            else:
-                color = interior_colors[color_idx]
-                radius = 2
-                
-            sx, sy = transform(x, y)
-            draw.ellipse([sx - radius, sy - radius, sx + radius, sy + radius], fill=color)
-            
-        png_file = f"{output_base}.png"
-        img.save(png_file)
+        # Setup plot
+        plt.figure(figsize=(10, 8), dpi=300)
+        ax = plt.gca()
+        ax.set_aspect('equal')
         
-        # --- Generate SVG manually ---
-        svg_file = f"{output_base}.svg"
-        with open(svg_file, 'w') as f:
-            f.write(f'<svg width="{img_width}" height="{img_height}" xmlns="http://www.w3.org/2000/svg">\n')
-            f.write(f'<rect width="100%" height="100%" fill="white"/>\n')
+        # Configure axes
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_xlabel('X Coordinate')
+        ax.set_ylabel('Y Coordinate')
+        
+        # Get unique regions
+        unique_regions = sorted(list(set(regions_list)))
+        
+        # Plot points by region
+        for region_id in unique_regions:
+            # Region mask
+            region_mask = (regions_arr == region_id)
             
-            for i, (x, y) in enumerate(points):
-                region_id = regions_list[i]
-                classification = classifications[i] if classifications else 'interior'
-                
+            # Boundary points
+            boundary_mask = region_mask & (classifications_arr == 'boundary')
+            if np.any(boundary_mask):
+                boundary_pts = points[boundary_mask]
+                color_idx = (region_id - 1) % len(boundary_colors)
+                ax.scatter(boundary_pts[:, 0], boundary_pts[:, 1], 
+                          c=[boundary_colors[color_idx]], s=8, marker='.', 
+                          edgecolors='none', label=f'Region {region_id} Boundary', zorder=10)
+            
+            # Interior points
+            interior_mask = region_mask & (classifications_arr != 'boundary')
+            if np.any(interior_mask):
+                interior_pts = points[interior_mask]
                 color_idx = (region_id - 1) % len(interior_colors)
-                
-                if classification == 'boundary':
-                    color = boundary_colors[color_idx]
-                    r = 2.5
-                else:
-                    color = interior_colors[color_idx]
-                    r = 1.5
-                    
-                hex_color = '#{:02x}{:02x}{:02x}'.format(*color)
-                
-                sx, sy = transform(x, y)
-                f.write(f'<circle cx="{sx:.2f}" cy="{sy:.2f}" r="{r}" fill="{hex_color}" />\n')
-                
-            f.write('</svg>')
+                ax.scatter(interior_pts[:, 0], interior_pts[:, 1], 
+                          c=[interior_colors[color_idx]], s=5, marker='.', 
+                          alpha=0.8, edgecolors='none', label=f'Region {region_id} Interior', zorder=5)
+
+        # Add title and adjust layout
+        plt.title(f'Generated Cloud of Points\n{len(points)} Total Nodes', fontsize=14)
+        
+        # Optional: Add legend if not too many items
+        if len(unique_regions) <= 5:
+            plt.legend(loc='best', fontsize='small', markerscale=1.5)
+            
+        # Save PNG
+        png_file = f"{output_base}.png"
+        plt.savefig(png_file, format='png', bbox_inches='tight', dpi=300)
+        
+        # Save SVG
+        svg_file = f"{output_base}.svg"
+        plt.savefig(svg_file, format='svg', bbox_inches='tight')
+        
+        plt.close()
         
         logging.info(f"Visualization saved to {png_file} and {svg_file}")
         return True
         
     except Exception as e:
         logging.error(f"Error creating visualization: {e}")
+        # Close plot in case of error to free memory
+        try:
+            plt.close()
+        except:
+            pass
         return False
 
 
