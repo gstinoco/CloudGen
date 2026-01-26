@@ -8,7 +8,7 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/gstinoco/CloudGen) [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/) [![Flask](https://img.shields.io/badge/Flask-2.3+-green.svg)](https://flask.palletsprojects.com/) [![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-red.svg)](https://opencv.org/) [![NumPy](https://img.shields.io/badge/NumPy-1.24+-blue.svg)](https://numpy.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/gstinoco/CloudGen) [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/) [![Flask](https://img.shields.io/badge/Flask-3.1+-green.svg)](https://flask.palletsprojects.com/) [![OpenCV](https://img.shields.io/badge/OpenCV-4.12+-red.svg)](https://opencv.org/) [![NumPy](https://img.shields.io/badge/NumPy-2.2+-blue.svg)](https://numpy.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Advanced Web Platform for Generating Unstructured Clouds of Points**
 
@@ -45,14 +45,14 @@
 
 The **mGFD CloudGenerator 2.0** is a comprehensive web-based platform designed for generating optimized unstructured clouds of points specifically tailored for the meshless Generalized Finite Difference Method (mGFD). This advanced tool combines interactive image processing capabilities with sophisticated cloud generation algorithms to provide researchers and engineers with a complete solution for numerical simulations.
 
-> :globe_with_meridians: **Try it now!** A stable live demo is available at: **[https://malla.umich.mx/CloudGenerator/](https://malla.umich.mx/CloudGenerator/)** <mcreference link="https://malla.umich.mx/CloudGenerator/" index="0">0</mcreference>
+> :globe_with_meridians: **Try it now!** A stable live demo is available at: **[https://malla.umich.mx/CloudGenerator/](https://malla.umich.mx/CloudGenerator/)**
 
 ### :gear: Key Capabilities
-- **:art: Interactive Contour Creation**: Advanced image segmentation with multiple algorithms (Watershed, GrabCut, Interactive, Region Growing)
-- **:cloud: Optimized Cloud Generation**: High-quality point cloud generation with Regular and Natural Distribution algorithms
-- **:chart_with_upwards_trend: Real-time Visualization**: Interactive canvas with zoom, pan, brush-based refinement, and multi-region support
-- **:floppy_disk: Multiple Export Formats**: CSV data export with PNG/SVG visualizations and statistical analysis
-- **:globe_with_meridians: Web-based Interface**: Modern, responsive design with asynchronous processing and Web Workers
+- **:art: Interactive Contour Creation**: Optimized image segmentation with adaptive Flood Fill and smart texture analysis.
+- **:cloud: Optimized Cloud Generation**: High-quality point cloud generation with Regular and Natural Distribution algorithms.
+- **:chart_with_upwards_trend: Real-time Visualization**: Interactive canvas with zoom, pan, brush-based refinement, and multi-region support.
+- **:floppy_disk: Multiple Export Formats**: CSV data export with PNG/SVG visualizations and statistical analysis.
+- **:globe_with_meridians: Web-based Interface**: Modern, responsive design with asynchronous processing and Web Workers.
 
 ### :microscope: Applications
 
@@ -69,47 +69,28 @@ The **mGFD CloudGenerator 2.0** is a comprehensive web-based platform designed f
 ## :sparkles: Features
 
 ### :art: ContourCreator Module
-- **Interactive Image Processing**: Upload and process images (PNG, JPG, JPEG, GIF, BMP, TIFF)
-- **Advanced Segmentation Algorithms**: Watershed, GrabCut, Interactive Segmentation, and Region Growing
-- **Brush-based Refinement**: Manual editing tools for precise contour adjustment
-- **Multi-region Management**: Detect, add, remove, and modify multiple regions with color-coded visualization
-- **Canvas Operations**: Zoom, pan, precise click-based region selection with coordinate tracking
-- **Real-time Preview**: Instant visualization of detected contours with interactive feedback
+- **Optimized Single-Region Detection**: High-performance `cv2.floodFill` implementation for instant region extraction.
+- **Adaptive Tolerance**: Automatic sensitivity adjustment based on local image texture analysis.
+- **Interactive Refinement**: Seed-based tools to add or subtract regions with precision.
+- **Brush-based Editing**: Manual correction tools with customizable size and opacity.
+- **Multi-region Management**: Detect, add, remove, and modify multiple regions with color-coded visualization.
+- **Canvas Operations**: Zoom, pan, precise click-based region selection with coordinate tracking.
+- **Format Support**: PNG, JPG, JPEG, GIF, BMP, TIFF with automatic format detection.
 
 ### :cloud: CloudGenerator Module
-- **Advanced Distribution Algorithms**: Regular and Natural Distributions
-- **Multi-region Processing**: Intelligent node classification (interior, boundary, interface nodes)
-- **CSV File Processing**: Upload validation, data parsing, and coordinate optimization
-- **Real-time Visualization**: Interactive scatter plots with statistical analysis and progress tracking
-- **Asynchronous Processing**: Background cloud generation with Web Workers and real-time status updates
-- **Multiple Export Formats**: CSV data files with high-resolution PNG and scalable SVG visualizations
+- **Advanced Distribution Algorithms**: Regular and Natural Distributions.
+- **Multi-region Processing**: Intelligent node classification (interior, boundary, interface nodes).
+- **CSV File Processing**: Upload validation, data parsing, and coordinate optimization.
+- **Real-time Visualization**: Interactive scatter plots with statistical analysis and progress tracking.
+- **Asynchronous Processing**: Background cloud generation with Web Workers and real-time status updates.
+- **Multiple Export Formats**: CSV data files with high-resolution PNG and scalable SVG visualizations.
 
 ### :globe_with_meridians: Web Interface
-- **Modern Design**: Responsive interface with glassmorphism effects and smooth animations
-- **Drag & Drop**: Intuitive file upload with progress indicators and validation
-- **Real-time Feedback**: Live status updates, error handling, and progress tracking
-- **Professional Logging**: Comprehensive logging system with file rotation and debugging
-- **Cross-platform**: Compatible with all modern web browsers and operating systems
-
-### :gear: Advanced Technical Features
-
-#### Image Processing & Segmentation
-- **Multiple Algorithms**: Watershed, GrabCut, Interactive Segmentation, Region Growing
-- **Brush Tools**: Manual refinement with customizable brush sizes and opacity
-- **Format Support**: PNG, JPG, JPEG, GIF, BMP, TIFF with automatic format detection
-- **Canvas Operations**: Zoom, pan, coordinate tracking, and real-time preview
-
-#### Cloud Generation Algorithms
-- **Regular Distribution**: Uniform point spacing with customizable density
-- **Natural Distribution**: Poisson Disk Sampling for organic point placement
-- **Multi-region Processing**: Intelligent handling of complex geometries
-- **Statistical Analysis**: Point distribution metrics and quality assessment
-
-#### Data Processing & Export
-- **CSV Processing**: Advanced parsing, validation, and optimization
-- **Multiple Formats**: CSV data files, PNG visualizations, SVG vector graphics
-- **Point Reduction**: Uniform, Multiple, and Filtered reduction algorithms
-- **Quality Preservation**: Maintains geometric integrity during processing
+- **Modern Design**: Responsive interface with modular CSS architecture and glassmorphism effects.
+- **Drag & Drop**: Intuitive file upload with progress indicators and validation.
+- **Real-time Feedback**: Live status updates, error handling, and progress tracking.
+- **Professional Logging**: Comprehensive logging system with file rotation and debugging.
+- **Cross-platform**: Compatible with all modern web browsers and operating systems.
 
 ---
 
@@ -119,7 +100,7 @@ The **mGFD CloudGenerator 2.0** is a comprehensive web-based platform designed f
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
-| **Python** | 3.8+ | 3.9+ |
+| **Python** | 3.9+ | 3.10+ |
 | **RAM** | 4 GB | 8 GB+ |
 | **CPU** | 2 cores | 4+ cores |
 | **Storage** | 1 GB | 5 GB+ (for datasets) |
@@ -131,20 +112,20 @@ The project uses the following main dependencies:
 
 ```python
 # Core web framework
-Flask >= 2.3.0               # Web application framework
-Werkzeug >= 2.3.0            # WSGI utilities
+Flask >= 3.1.1                 # Web application framework
+Werkzeug >= 3.1.3              # WSGI utilities
 
 # Computer vision and image processing
-opencv-python >= 4.8.0       # Image processing and segmentation algorithms
-Pillow >= 10.0.0             # Image manipulation and format support
+opencv-python-headless >= 4.12 # Image processing (server-optimized)
 
 # Scientific computing
-numpy >= 1.24.0              # Numerical computations and array operations
-shapely >= 2.0.0             # Geometric operations and computational geometry
+numpy >= 2.2.6                 # Numerical computations
+shapely >= 2.1.1               # Geometric operations
+matplotlib >= 3.10.0           # Visualization and plotting
 
 # Additional utilities
-threading                    # Asynchronous processing support
-logging                      # Comprehensive logging system
+threading                      # Asynchronous processing support
+logging                        # Comprehensive logging system
 ```
 
 ### :wrench: Installation Steps
@@ -174,7 +155,7 @@ pip install -r requirements.txt
 #### Method 3: Conda Environment
 ```bash
 # Create conda environment
-conda create -n mGFD_cloudgen python=3.9
+conda create -n mGFD_cloudgen python=3.10
 conda activate mGFD_cloudgen
 
 # Clone and install
@@ -243,10 +224,9 @@ python app.py
 ```
 
 #### Step 2: Region Detection
-- Click on image regions to detect contours
-- Adjust tolerance for segmentation sensitivity
-- Use zoom and pan for precise selection
-- Multiple regions supported with color coding
+- **One-Click Detection**: Instantly identify regions with optimized Flood Fill.
+- **Texture Analysis**: Automatic parameter adjustment for complex images.
+- **Refinement**: Use brush tools or seed points to perfect the contour.
 
 #### Step 3: Region Management
 - **Add Region**: Click "Add Region" after detection
@@ -294,6 +274,7 @@ mGFD-CloudGenerator/
 ├── 📄 app.py                    # Main Flask application
 ├── 📄 cloud_generation.py       # Cloud generation algorithms
 ├── 📄 reduce_points.py          # Point reduction utilities
+├── 📄 contour_detection.py      # Contour detection logic
 ├── 📄 requirements.txt          # Python dependencies
 ├── 📁 templates/                # HTML templates
 │   ├── 🏠 home.html             # Landing page
@@ -301,7 +282,15 @@ mGFD-CloudGenerator/
 │   ├── ☁️ cloud_generator.html  # CloudGenerator interface
 │   └── ℹ️ about.html            # About page
 ├── 📁 static/                   # Static assets
-│   ├── 🎨 css/styles.css        # Main stylesheet (6000+ lines)
+│   ├── 🎨 css/                  # Modular CSS Architecture
+│   │   ├── styles.css           # Global variables and resets
+│   │   ├── tools.css            # Shared tool components
+│   │   ├── home.css             # Landing page styles
+│   │   ├── about.css            # About page specific styles
+│   │   ├── contour_creator.css  # ContourCreator specific styles
+│   │   ├── cloud_generator.css  # CloudGenerator specific styles
+│   │   ├── examples.css         # Examples gallery styles
+│   │   └── privacy_notice.css   # Privacy page styles
 │   ├── 📜 js/                   # JavaScript modules
 │   │   ├── contour_creator.js   # ContourCreator functionality
 │   │   ├── cloud_generator.js   # CloudGenerator functionality
@@ -326,26 +315,24 @@ mGFD-CloudGenerator/
 - **Advanced Distribution Algorithms**: Regular and Natural Distributions
 - **Multi-region Processing**: Intelligent boundary data processing for mGFD method
 - **Node Classification**: Interior/boundary/interface detection with automatic classification
-- **Memory Management**: Efficient processing for large datasets with optimization
 - **Visualization**: High-quality PNG/SVG output with statistical analysis
 
 #### Point Reduction (`reduce_points.py`)
 - **Multiple Reduction Algorithms**: Uniform, Multiple, and Filtered reduction methods
-- **CSV Processing**: Advanced point reduction functionality for cloud data optimization
 - **Quality Preservation**: Maintains geometric integrity while reducing point density
 - **Flexible Configuration**: Customizable reduction parameters for different use cases
 
 #### Contour Detection (`contour_detection.py`)
-- **Advanced Segmentation**: Watershed, GrabCut, Interactive, and Region Growing algorithms
+- **Optimized Algorithms**: Fast Flood Fill and Adaptive Tolerance for real-time detection
 - **Brush-based Refinement**: Manual editing tools for precise boundary adjustment
 - **Multi-format Support**: Comprehensive image format compatibility (PNG, JPG, TIFF, etc.)
-- **Real-time Processing**: Interactive segmentation with immediate visual feedback
+- **Interactive Refinement**: Seed-based region modification
 
 #### Frontend (`static/`)
+- **Modular CSS**: Clean, maintainable, and scoped styling architecture
 - **Modern UI**: Responsive design with CSS Grid/Flexbox
 - **Interactive Canvas**: HTML5 Canvas with zoom/pan capabilities
 - **Real-time Updates**: WebSocket-like status monitoring
-- **File Handling**: Drag & drop with progress indicators
 
 ---
 
@@ -363,7 +350,6 @@ We welcome contributions from the research community! Here's how you can help:
 1. **Describe the Feature**: Clear description of the proposed functionality
 2. **Justify the Need**: Explain how it benefits the research community
 3. **Provide Examples**: Include use cases and expected behavior
-4. **Consider Implementation**: Suggest possible approaches if applicable
 
 ### :computer: Code Contributions
 
@@ -386,20 +372,6 @@ git checkout -b feature/your-feature-name
 - **Python Style**: Follow PEP 8 guidelines
 - **Documentation**: Include comprehensive docstrings
 - **Testing**: Add unit tests for new functionality
-- **Logging**: Use the existing logging framework
-- **Error Handling**: Implement robust error handling
-
-#### Pull Request Process
-1. **Update Documentation**: Ensure README and docstrings are current
-2. **Test Thoroughly**: Verify functionality across different scenarios
-3. **Follow Conventions**: Maintain consistent code style
-4. **Describe Changes**: Provide clear PR description with examples
-
-### :memo: Documentation
-- **API Documentation**: Help improve endpoint documentation
-- **User Guides**: Create tutorials and usage examples
-- **Scientific Papers**: Contribute to research publications
-- **Translations**: Help translate documentation to other languages
 
 ---
 
