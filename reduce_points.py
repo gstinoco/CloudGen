@@ -38,10 +38,9 @@ Key Features:
     - Geometric integrity preservation during reduction
 
 Technical Implementation:
-    - Built on pandas for efficient data manipulation
+    - Built on standard libraries for efficient data manipulation
     - Uses NumPy for numerical operations and indexing
     - Integrates Shapely for geometric computations
-    - Employs SciPy for convex hull analysis
     - Implements tempfile handling for safe file operations
 
 Workflow:
@@ -60,17 +59,15 @@ Applications:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May 2025
-Last Modification: September 2025
-Version: 2.1.0
+Last Modification: January 2026
+Version: 2.2.1
 
 Dependencies:
-    - pandas >= 1.3.0 (data manipulation and CSV handling)
     - numpy >= 1.21.0 (numerical operations and array processing)
     - shapely >= 1.8.0 (geometric operations and spatial analysis)
-    - scipy >= 1.7.0 (convex hull computation and spatial algorithms)
 """
 
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Point, Polygon, MultiPoint
 import csv
 import numpy as np
 import tempfile
@@ -399,14 +396,15 @@ def filter_main_region_points_in_subregions(rows):
             
             if len(region_points_array) >= 3:
                 try:
-                    # Create convex hull of region points to form polygon
-                    from scipy.spatial import ConvexHull
-                    hull = ConvexHull(region_points_array)
-                    hull_points = region_points_array[hull.vertices]
-                    poly = Polygon(hull_points)
-                    if poly.is_valid:
+                    # Create convex hull of region points to form polygon using Shapely
+                    # This replaces the previous SciPy implementation to reduce dependency weight
+                    multi_point = MultiPoint(region_points_array)
+                    poly = multi_point.convex_hull
+                    
+                    if poly.is_valid and isinstance(poly, Polygon):
                         subregion_polygons.append(poly)
-                except:
+                except Exception as e:
+                    logging.warning(f"Failed to create convex hull for subregion {region_id}: {e}")
                     continue
         
         if not subregion_polygons:

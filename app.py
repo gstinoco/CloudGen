@@ -40,12 +40,10 @@ Technical Implementation:
 - Flask web framework with Jinja2 templating and secure file handling
 - OpenCV for computer vision, image processing, and segmentation algorithms
 - NumPy for numerical computations and array operations
-- Pandas for data manipulation, CSV handling, and coordinate processing
+- Standard libraries for data manipulation, CSV handling, and coordinate processing
 - Shapely for geometric operations and polygon validation
-- Matplotlib for visualization generation and export
 - Threading for background tasks, file cleanup, and progress tracking
 - Rotating file handlers for production logging with configurable levels
-- Scipy for advanced mathematical operations in point generation
 
 Segmentation Algorithms:
 - Watershed: Combined with region growing for robust boundary detection
@@ -61,17 +59,14 @@ Point Generation Algorithms:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 21st, 2026
+Last Modification: January 25th, 2026
 
 Dependencies:
 - Flask >= 2.0.0
 - OpenCV >= 4.5.0
 - NumPy >= 1.20.0
-- Pandas >= 1.3.0
 - Werkzeug >= 2.0.0
 - Shapely >= 1.8.0
-- Matplotlib >= 3.5.0
-- Scipy >= 1.8.0
 """
 
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
@@ -859,7 +854,7 @@ def save_coordinates():
     Save contour coordinates to CSV file format.
     
     Takes coordinate data and saves it as a CSV file with timestamp and optional
-    region name. Creates pandas DataFrame from coordinates and exports to output folder.
+    region name. Writes coordinates directly to CSV in output folder.
     
     Expected JSON payload:
         coordinates (list): List of coordinate points with x, y values
@@ -1295,7 +1290,7 @@ def generate_cloud_api():
         500: Internal Server Error - Processing error during generation
     
     Technical Implementation:
-        - Direct execution using Regular Distribution (scipy.spatial)
+        - Direct execution using Regular Distribution
         - Synchronous processing for immediate results
         - Optional point reduction post-processing
         - Comprehensive error handling and logging
@@ -1374,9 +1369,9 @@ def generate_cloud_api():
         result = generate_cloud_regular(
             csv_file=input_file,
             output_file=output_file,
-            regiones_inside=regiones_inside,
-            reducir_contorno=reduce_points_flag,  # Use the actual reduce_points flag from frontend
-            porcentaje_reduccion=reduce_points_multiplier * 5,  # Convert multiplier to percentage
+            inside_regions=regiones_inside,
+            contour_reduction=reduce_points_flag,  # Use the actual reduce_points flag from frontend
+            reduction_percentage=reduce_points_multiplier * 5,  # Convert multiplier to percentage
             cloud_size=None
         )
         
@@ -1538,9 +1533,9 @@ def generate_cloud_natural_api():
         result = generate_cloud_natural(
             csv_file=input_file,
             output_file=output_file,
-            regiones_inside=regiones_inside,
-            reducir_contorno=reduce_points_flag,
-            porcentaje_reduccion=reduce_points_multiplier * 5,
+            inside_regions=regiones_inside,
+            contour_reduction=reduce_points_flag,
+            reduction_percentage=reduce_points_multiplier * 5,
             cloud_size=None
         )
         

@@ -20,7 +20,11 @@ Changes & Optimizations:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 21st, 2026
+Last Modification: January 25th, 2026
+
+Dependencies:
+- NumPy >= 1.20.0
+- OpenCV >= 4.5.0
 """
 
 import numpy as np

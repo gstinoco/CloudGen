@@ -39,10 +39,12 @@ Key Features:
 
 Technical Implementation:
 - NumPy for efficient numerical computations and array operations
-- Pandas for CSV data manipulation and coordinate processing
+- Standard libraries for CSV data manipulation and coordinate processing
 - Shapely for geometric operations, polygon validation, and spatial queries
-- Matplotlib for high-quality visualization generation and export
-- Scipy for advanced mathematical operations in point generation algorithms
+- STRtree for optimized O(log N) spatial indexing and nearest-neighbor queries
+- ProcessPoolExecutor for parallel generation of multi-region clouds
+- PIL (Pillow) for high-quality visualization generation and export
+- OpenCV for optimized point-in-polygon checks
 - Professional logging system with detailed progress tracking
 
 Workflow Process:
@@ -62,28 +64,27 @@ interior regions to ensure consistency and reproducibility in cloud generation.
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 21st, 2026
+Last Modification: January 25th, 2026
 
 Dependencies:
 - NumPy >= 1.20.0
-- Pandas >= 1.3.0
 - Shapely >= 1.8.0
-- Matplotlib >= 3.5.0
-- Scipy >= 1.8.0
+- Pillow >= 9.0.0
+- OpenCV >= 4.5.0
 """
 
-from shapely.geometry import Point, Polygon
-import matplotlib.pyplot as plt
+from shapely.geometry import Point, Polygon, LineString
+from shapely.strtree import STRtree
+from concurrent.futures import ProcessPoolExecutor
+from PIL import Image, ImageDraw
 import reduce_points
 import numpy as np
 import tempfile
 import logging
 import random
 import csv
+import cv2
 import os
-
-import matplotlib
-matplotlib.use('Agg')
 
 # Absolute routes for logs
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -114,7 +115,7 @@ CLOUD_FACTORS = {
     "boundary_refinement": 0.00325
 }
 
-def load_regions(csv_file):
+def load_regions(csv_file: str) -> list[list[tuple[float, float]]]:
     """Load region data from CSV file."""
     try:
         regions_dict = {}
@@ -191,7 +192,7 @@ def load_regions(csv_file):
         raise
 
 
-def calculate_cloud_size(region_points):
+def calculate_cloud_size(region_points: list[tuple[float, float]]) -> float:
     """
     Calculate adaptive cloud size based on region geometry characteristics.
     
@@ -240,7 +241,7 @@ def calculate_cloud_size(region_points):
         return CLOUD_FACTORS["default_cloud_size"]
 
 
-def create_closed_contour(points):
+def create_closed_contour(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
     """
     Ensure a contour is properly closed for geometric operations.
     
@@ -270,7 +271,7 @@ def create_closed_contour(points):
         return points
 
 
-def generate_boundary_points(contour, cloud_size):
+def generate_boundary_points(contour: list[tuple[float, float]], cloud_size: float) -> np.ndarray:
     """
     Generate points along the boundary of a contour.
     
@@ -311,9 +312,10 @@ def generate_boundary_points(contour, cloud_size):
     return np.empty((0, 2))
 
 
-def generate_interior_points(polygon, cloud_size):
+def generate_interior_points(polygon: Polygon, cloud_size: float) -> np.ndarray:
     """
-    Generate points inside a polygon using a grid-based approach.
+    Generate points inside a polygon using a vectorized grid-based approach.
+    Optimized using OpenCV mask for fast point-in-polygon checks (replacing Matplotlib Path).
     
     Args:
         polygon (shapely.geometry.Polygon): The polygon to fill with points
@@ -322,23 +324,67 @@ def generate_interior_points(polygon, cloud_size):
     Returns:
         numpy.ndarray: Array of (x, y) coordinates of generated points
     """
-    bounds = polygon.bounds
-    x_min, y_min, x_max, y_max = bounds
-    
-    x_range = np.arange(x_min, x_max + cloud_size, cloud_size)
-    y_range = np.arange(y_min, y_max + cloud_size, cloud_size)
-    
-    points = []
-    for x in x_range:
-        for y in y_range:
-            point = Point(x, y)
-            if polygon.contains(point):
-                points.append([x, y])
-    
-    return np.array(points) if points else np.empty((0, 2))
+    try:
+        bounds = polygon.bounds
+        x_min, y_min, x_max, y_max = bounds
+        
+        # Create grid of points
+        x_range = np.arange(x_min, x_max + cloud_size, cloud_size)
+        y_range = np.arange(y_min, y_max + cloud_size, cloud_size)
+        
+        if len(x_range) == 0 or len(y_range) == 0:
+            return np.empty((0, 2))
+            
+        xx, yy = np.meshgrid(x_range, y_range)
+        grid_points = np.vstack((xx.ravel(), yy.ravel())).T
+        
+        # Create a mask using OpenCV
+        width = len(x_range)
+        height = len(y_range)
+        mask = np.zeros((height, width), dtype=np.uint8)
+        
+        # Function to convert world coords to pixel coords
+        def to_pixel_coords(coords):
+            pixel_coords = []
+            for x, y in coords:
+                px = int(round((x - x_min) / cloud_size))
+                py = int(round((y - y_min) / cloud_size))
+                pixel_coords.append([px, py])
+            return np.array(pixel_coords, dtype=np.int32)
+
+        # Draw exterior
+        ext_coords = list(polygon.exterior.coords)
+        ext_pixels = to_pixel_coords(ext_coords)
+        cv2.fillPoly(mask, [ext_pixels], 1)
+        
+        # Draw interiors (holes)
+        for interior in polygon.interiors:
+            int_coords = list(interior.coords)
+            int_pixels = to_pixel_coords(int_coords)
+            cv2.fillPoly(mask, [int_pixels], 0)
+            
+        # Select points
+        selected_mask = mask.astype(bool).ravel()
+        points = grid_points[selected_mask]
+        
+        return points if len(points) > 0 else np.empty((0, 2))
+        
+    except Exception as e:
+        logging.error(f"Error in vectorized point generation: {e}")
+        # Fallback to Shapely iterative method
+        logging.info("Falling back to Shapely iterative method")
+        points = []
+        # Re-generate grid points if needed (though they are local in try block)
+        x_range = np.arange(x_min, x_max + cloud_size, cloud_size)
+        y_range = np.arange(y_min, y_max + cloud_size, cloud_size)
+        for x in x_range:
+            for y in y_range:
+                if polygon.contains(Point(x, y)):
+                    points.append([x, y])
+        return np.array(points) if points else np.empty((0, 2))
 
 
-def poisson_disk_sampling(polygon, radius, k=30, boundary_points=None):
+def poisson_disk_sampling(polygon: Polygon, radius: float, k: int = 30, boundary_points: list[tuple[float, float]] = None) -> list[tuple[float, float]]:
     """
     Generate points using Poisson Disk Sampling algorithm for natural point distribution.
     
@@ -437,7 +483,9 @@ def poisson_disk_sampling(polygon, radius, k=30, boundary_points=None):
                 break
         
         if not found_valid:
-            active_list.pop(active_idx)
+            # Optimized removal: Swap with last element and pop (O(1)) instead of pop(idx) (O(N))
+            active_list[active_idx] = active_list[-1]
+            active_list.pop()
     
     if boundary_points:
         boundary_set = set(boundary_points)
@@ -447,7 +495,7 @@ def poisson_disk_sampling(polygon, radius, k=30, boundary_points=None):
     return points
 
 
-def is_valid_poisson_point(x, y, minx, miny, cell_size, grid, points, radius):
+def is_valid_poisson_point(x: float, y: float, minx: float, miny: float, cell_size: float, grid: np.ndarray, points: list[tuple[float, float]], radius: float) -> bool:
     """
     Check if a point is valid for Poisson disk sampling.
     
@@ -486,7 +534,7 @@ def is_valid_poisson_point(x, y, minx, miny, cell_size, grid, points, radius):
     return True
 
 
-def generate_interior_points_poisson(polygon, cloud_size):
+def generate_interior_points_poisson(polygon: Polygon, cloud_size: float) -> list[tuple[float, float]]:
     """
     Generate interior points using Poisson Disk Sampling for more natural distribution.
     
@@ -510,11 +558,29 @@ def generate_interior_points_poisson(polygon, cloud_size):
         return generate_interior_points(polygon, cloud_size)
 
 
-def generate_interior_regions_clouds(regions, main_cloud_size):
+def generate_region_task(region_points: list[tuple[float, float]], region_id: int, main_cloud_size: float) -> tuple[np.ndarray, np.ndarray, int] | None:
+    """
+    Helper function for parallel region generation.
+    Must be at top level for ProcessPoolExecutor (pickling).
+    """
+    try:
+        boundary_points, interior_points, _ = generate_region_cloud_with_uniform_density(region_points, main_cloud_size)
+        if boundary_points is not None and interior_points is not None:
+            logging.info(f"Generated cloud for interior region {region_id} with uniform density (cloud_size: {main_cloud_size:.6f})")
+            return (boundary_points, interior_points, region_id)
+        else:
+            logging.warning(f"Failed to generate cloud for interior region {region_id}")
+            return None
+    except Exception as e:
+        logging.error(f"Error generating cloud for interior region {region_id}: {e}")
+        return None
+
+def generate_interior_regions_clouds(regions: list[list[tuple[float, float]]], main_cloud_size: float) -> list[tuple[np.ndarray, np.ndarray, int]]:
     """
     Generate clouds for interior regions (regions 2 onwards) using the same cloud size as the main region.
     This ensures uniform density across all regions.
-    Only called when regiones_inside=True.
+    Only called when inside_regions=True.
+    Optimized with ProcessPoolExecutor for parallel generation.
     
     Args:
         regions (list): List of all regions, where regions[0] is the main region
@@ -526,30 +592,36 @@ def generate_interior_regions_clouds(regions, main_cloud_size):
     interior_clouds = []
     
     # Process regions 2 onwards (skip region 1 which is index 0)
-    for i in range(1, len(regions)):
-        region_points = regions[i]
-        region_id = i + 1
+    # Using ProcessPoolExecutor for parallelization
+    
+    # Determine max workers (leave one core free or use all if few)
+    max_workers = max(1, os.cpu_count() - 1)
+    
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for i in range(1, len(regions)):
+            region_points = regions[i]
+            region_id = i + 1
+            futures.append(executor.submit(generate_region_task, region_points, region_id, main_cloud_size))
         
-        try:
-            boundary_points, interior_points, _ = generate_region_cloud_with_uniform_density(region_points, main_cloud_size)
-            
-            if boundary_points is not None and interior_points is not None:
-                interior_clouds.append((boundary_points, interior_points, region_id))
-                logging.info(f"Generated cloud for interior region {region_id} with uniform density (cloud_size: {main_cloud_size:.6f})")
-            else:
-                logging.warning(f"Failed to generate cloud for interior region {region_id}")
-                
-        except Exception as e:
-            logging.error(f"Error generating cloud for interior region {region_id}: {e}")
-            continue
+        for future in futures:
+            try:
+                result = future.result()
+                if result:
+                    interior_clouds.append(result)
+            except Exception as e:
+                logging.error(f"Error retrieving parallel task result: {e}")
     
     return interior_clouds
 
 
-def classify_nodes(points, regions_list, original_regions_contours=None, cloud_size=None):
+def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions_contours: list[list[tuple[float, float]]] = None, cloud_size: float = None) -> list[str]:
     """
     Classify nodes as boundary or interior using Shapely contours for precise geometric operations.
     This approach creates LineString/Polygon objects from contours for accurate distance calculations.
+    
+    Optimized with STRtree (R-tree spatial index) for O(log N) nearest-neighbor queries,
+    significantly reducing classification time for large point clouds.
     
     Args:
         points (numpy.ndarray): Array of point coordinates
@@ -560,8 +632,6 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
     Returns:
         list: Node classifications ("boundary" or "interior")
     """
-    from shapely.geometry import Point, LineString, Polygon
-    
     classifications = []
     
     # Convert to numpy arrays for better performance
@@ -577,6 +647,8 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
     
     # Create Shapely geometries from contours
     shapely_contours = []
+    valid_geometries = [] # For STRtree
+    
     if original_regions_contours:
         for contour_points in original_regions_contours:
             if contour_points and len(contour_points) >= 3:
@@ -593,18 +665,22 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
                             valid_coords.append(valid_coords[0])  # Close the polygon
                         
                         # Create polygon if possible, otherwise LineString
+                        geom = None
                         if len(valid_coords) >= 4:  # At least 3 unique points + closure
                             try:
                                 polygon = Polygon(valid_coords)
                                 if polygon.is_valid:
-                                    shapely_contours.append(polygon.boundary)  # Use boundary for distance
+                                    geom = polygon.boundary  # Use boundary for distance
                                 else:
-                                    # Fallback to LineString if polygon is invalid
-                                    shapely_contours.append(LineString(valid_coords))
+                                    geom = LineString(valid_coords)
                             except:
-                                shapely_contours.append(LineString(valid_coords))
+                                geom = LineString(valid_coords)
                         else:
-                            shapely_contours.append(LineString(valid_coords))
+                            geom = LineString(valid_coords)
+                        
+                        shapely_contours.append(geom)
+                        if geom:
+                            valid_geometries.append(geom)
                     else:
                         shapely_contours.append(None)
                 except Exception as e:
@@ -613,6 +689,14 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
             else:
                 shapely_contours.append(None)
     
+    # Build STRtree for efficient spatial queries
+    spatial_index = None
+    if valid_geometries:
+        try:
+            spatial_index = STRtree(valid_geometries)
+        except Exception as e:
+            logging.warning(f"Failed to build STRtree: {e}")
+
     # Create global domain boundary as a rectangle
     domain_boundary = None
     try:
@@ -639,18 +723,21 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
             
             # Primary method: Check distance to Shapely contours
             if shapely_contours:
-                # Check distance to own region's contour first (most relevant)
-                if 0 <= region_id - 1 < len(shapely_contours):
-                    own_contour = shapely_contours[region_id - 1]
-                    if own_contour is not None:
-                        distance = point_geom.distance(own_contour)
-                        min_distance_to_contour = min(min_distance_to_contour, distance)
-                
-                # Check distance to other region contours (for inter-region boundaries)
-                for region_idx, contour in enumerate(shapely_contours):
-                    if contour is not None and region_idx != (region_id - 1):
-                        distance = point_geom.distance(contour)
-                        min_distance_to_contour = min(min_distance_to_contour, distance)
+                # Optimized: Use STRtree if available to find candidate contours
+                if spatial_index:
+                    # query returns candidates (geometries) that *might* be near
+                    candidates = spatial_index.query(point_geom)
+                    if not candidates:
+                        # If no intersection with envelopes, use all valid geometries (fallback)
+                        candidates = valid_geometries
+                    
+                    for contour in candidates:
+                         min_distance_to_contour = min(min_distance_to_contour, point_geom.distance(contour))
+                else:
+                    # Fallback to checking all contours
+                    for contour in shapely_contours:
+                        if contour is not None:
+                            min_distance_to_contour = min(min_distance_to_contour, point_geom.distance(contour))
                 
                 # Classify as boundary if close to any contour
                 if min_distance_to_contour <= boundary_tolerance:
@@ -682,7 +769,7 @@ def classify_nodes(points, regions_list, original_regions_contours=None, cloud_s
     return classifications
 
 
-def export_to_csv(points, classifications, regions_list, output_file):
+def export_to_csv(points: np.ndarray, classifications: list[str], regions_list: list[int], output_file: str) -> bool:
     """
     Export node data to CSV file with validation and verification.
     
@@ -765,9 +852,10 @@ def export_to_csv(points, classifications, regions_list, output_file):
         return False
 
 
-def create_visualization(points, regions_list, output_base, classifications=None):
+def create_visualization(points: np.ndarray, regions_list: list[int], output_base: str, classifications: list[str] = None) -> bool:
     """
     Create a visualization of the generated cloud of points with differentiated colors for boundary and interior nodes.
+    Uses PIL for PNG and manual SVG generation to avoid Matplotlib dependency.
     
     Args:
         points (numpy.ndarray): Array of point coordinates
@@ -779,85 +867,105 @@ def create_visualization(points, regions_list, output_base, classifications=None
         bool: True if visualization was successful, False otherwise
     """
     try:
-        _, ax = plt.subplots(1, 1, figsize=(12, 10))
-        
-        # Interior colors: bright and saturated colors for main structure
+        # Define colors (RGB tuples)
         interior_colors = [
-            (0.2, 0.6, 1.0),    # Light Blue
-            (0.3, 0.9, 0.3),    # Bright Green  
-            (1.0, 0.7, 0.2),    # Bright Orange
-            (0.8, 0.3, 1.0),    # Bright Purple
-            (0.9, 0.6, 0.2),    # Golden Brown
-            (1.0, 0.5, 0.8),    # Bright Pink
-            (0.7, 0.7, 0.7)     # Light Gray
+            (51, 153, 255),    # Light Blue
+            (77, 230, 77),     # Bright Green  
+            (255, 179, 51),    # Bright Orange
+            (204, 77, 255),    # Bright Purple
+            (230, 153, 51),    # Golden Brown
+            (255, 128, 204),   # Bright Pink
+            (179, 179, 179)    # Light Gray
         ]
         
-        # Boundary colors: contrasting colors for clear boundary definition
         boundary_colors = [
-            (0.8, 0.0, 0.0),    # Dark Red (contrasts with Light Blue)
-            (0.6, 0.0, 0.6),    # Dark Purple (contrasts with Bright Green)
-            (0.0, 0.3, 0.8),    # Dark Blue (contrasts with Bright Orange)
-            (0.8, 0.6, 0.0),    # Dark Yellow (contrasts with Bright Purple)
-            (0.0, 0.4, 0.0),    # Dark Green (contrasts with Golden Brown)
-            (0.0, 0.6, 0.4),    # Dark Teal (contrasts with Bright Pink)
-            (0.2, 0.2, 0.2)     # Dark Gray (contrasts with Light Gray)
+            (204, 0, 0),       # Dark Red
+            (153, 0, 153),     # Dark Purple
+            (0, 77, 204),      # Dark Blue
+            (204, 153, 0),     # Dark Yellow
+            (0, 102, 0),       # Dark Green
+            (0, 153, 102),     # Dark Teal
+            (51, 51, 51)       # Dark Gray
         ]
         
-        # Plot points by region and classification
-        unique_regions = sorted(set(regions_list))
-        
-        for region_id in unique_regions:
-            region_mask = np.array(regions_list) == region_id
-            if not np.any(region_mask):
-                continue
-                
-            # Get colors for this region
-            color_index = (region_id - 1) % len(interior_colors)
-            interior_color = interior_colors[color_index]
-            boundary_color = boundary_colors[color_index]
+        # Calculate bounds and scale
+        if len(points) == 0:
+            return False
             
-            if classifications is not None:
-                # Separate boundary and interior nodes for this region
-                region_points = points[region_mask]
-                region_classifications = np.array(classifications)[region_mask]
-                
-                # Interior nodes: bright and saturated colors for main structure
-                interior_mask = region_classifications == 'interior'
-                if np.any(interior_mask):
-                    ax.scatter(region_points[interior_mask, 0], region_points[interior_mask, 1],
-                             c=[interior_color], s=1.0, alpha=0.8, 
-                             label=f'Region {region_id} (Interior)', edgecolors='none')
-                
-                # Boundary nodes: contrasting colors for clear boundary definition
-                boundary_mask = region_classifications == 'boundary'
-                if np.any(boundary_mask):
-                    ax.scatter(region_points[boundary_mask, 0], region_points[boundary_mask, 1],
-                             c=[boundary_color], s=1.5, alpha=0.95,
-                             label=f'Region {region_id} (Boundary)', edgecolors='white', linewidths=0.1)
+        min_x, min_y = np.min(points, axis=0)
+        max_x, max_y = np.max(points, axis=0)
+        
+        width_range = max_x - min_x
+        height_range = max_y - min_y
+        
+        # Image dimensions
+        img_width = 1200
+        img_height = 1000
+        padding = 50
+        
+        # Scale to fit
+        scale_x = (img_width - 2 * padding) / width_range if width_range > 0 else 1
+        scale_y = (img_height - 2 * padding) / height_range if height_range > 0 else 1
+        scale = min(scale_x, scale_y)
+        
+        # Center the image
+        center_x = (min_x + max_x) / 2
+        center_y = (min_y + max_y) / 2
+        
+        # Coordinate transform function (Y up -> Y down)
+        def transform(x, y):
+            screen_x = img_width / 2 + (x - center_x) * scale
+            screen_y = img_height / 2 - (y - center_y) * scale
+            return screen_x, screen_y
+
+        # --- Generate PNG using Pillow ---
+        img = Image.new('RGB', (img_width, img_height), 'white')
+        draw = ImageDraw.Draw(img)
+        
+        for i, (x, y) in enumerate(points):
+            region_id = regions_list[i]
+            classification = classifications[i] if classifications else 'interior'
+            
+            color_idx = (region_id - 1) % len(interior_colors)
+            
+            if classification == 'boundary':
+                color = boundary_colors[color_idx]
+                radius = 3
             else:
-                # Fallback: use interior color if no classifications
-                ax.scatter(points[region_mask, 0], points[region_mask, 1], 
-                          c=[interior_color], s=1.0, alpha=0.8, label=f'Region {region_id}', edgecolors='none')
-        
-        ax.set_xlabel('X Coordinate')
-        ax.set_ylabel('Y Coordinate')
-        ax.set_title('Generated Cloud of Points')
-        ax.legend(loc='best')
-        ax.grid(True, alpha=0.3)
-        ax.axis('equal')
-        ax.set_aspect('equal')
-        
-        # Save both PNG and SVG formats
+                color = interior_colors[color_idx]
+                radius = 2
+                
+            sx, sy = transform(x, y)
+            draw.ellipse([sx - radius, sy - radius, sx + radius, sy + radius], fill=color)
+            
         png_file = f"{output_base}.png"
+        img.save(png_file)
+        
+        # --- Generate SVG manually ---
         svg_file = f"{output_base}.svg"
-        
-        # Save PNG with high resolution
-        plt.savefig(png_file, dpi=300, bbox_inches='tight')
-        
-        # Save SVG for vector graphics
-        plt.savefig(svg_file, format='svg', bbox_inches='tight')
-        
-        plt.close()
+        with open(svg_file, 'w') as f:
+            f.write(f'<svg width="{img_width}" height="{img_height}" xmlns="http://www.w3.org/2000/svg">\n')
+            f.write(f'<rect width="100%" height="100%" fill="white"/>\n')
+            
+            for i, (x, y) in enumerate(points):
+                region_id = regions_list[i]
+                classification = classifications[i] if classifications else 'interior'
+                
+                color_idx = (region_id - 1) % len(interior_colors)
+                
+                if classification == 'boundary':
+                    color = boundary_colors[color_idx]
+                    r = 2.5
+                else:
+                    color = interior_colors[color_idx]
+                    r = 1.5
+                    
+                hex_color = '#{:02x}{:02x}{:02x}'.format(*color)
+                
+                sx, sy = transform(x, y)
+                f.write(f'<circle cx="{sx:.2f}" cy="{sy:.2f}" r="{r}" fill="{hex_color}" />\n')
+                
+            f.write('</svg>')
         
         logging.info(f"Visualization saved to {png_file} and {svg_file}")
         return True
@@ -867,7 +975,7 @@ def create_visualization(points, regions_list, output_base, classifications=None
         return False
 
 
-def generate_region_cloud(region_points):
+def generate_region_cloud(region_points: list[tuple[float, float]]) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a complete cloud for a single region.
     This function generates the SAME result every time for the same input.
@@ -905,7 +1013,7 @@ def generate_region_cloud(region_points):
         return None, None, None
 
 
-def generate_region_cloud_with_uniform_density(region_points, cloud_size):
+def generate_region_cloud_with_uniform_density(region_points: list[tuple[float, float]], cloud_size: float) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a complete cloud for a single region using a specified cloud size.
     This ensures uniform density across different regions.
@@ -941,7 +1049,7 @@ def generate_region_cloud_with_uniform_density(region_points, cloud_size):
         return None, None, None
 
 
-def generate_region_cloud_poisson(region_points, cloud_size):
+def generate_region_cloud_poisson(region_points: list[tuple[float, float]], cloud_size: float) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a complete cloud for a single region using Poisson Disk Sampling for more natural distribution.
     
@@ -977,21 +1085,23 @@ def generate_region_cloud_poisson(region_points, cloud_size):
         return generate_region_cloud_with_uniform_density(region_points, cloud_size)
 
 
-def generate_region_cloud_with_holes(main_region_points, hole_regions_list):
+def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a cloud for the main region (region 1) considering interior regions as holes.
-    This ensures that region 1 is always generated the same way, regardless of regiones_inside flag.
+    This ensures that region 1 is always generated the same way, regardless of inside_regions flag.
     
     Args:
         main_region_points (list): List of (x, y) coordinate tuples for the main region
         hole_regions_list (list): List of regions to be treated as holes
+        cloud_size (float, optional): Specified cloud size. If None, calculated automatically.
     
     Returns:
         tuple: (boundary_points, interior_points, cloud_size) or (None, None, None) if failed
     """
     try:
-        # Calculate cloud size for the main region
-        cloud_size = calculate_cloud_size(main_region_points)
+        # Calculate cloud size for the main region if not provided
+        if cloud_size is None:
+            cloud_size = calculate_cloud_size(main_region_points)
         
         # Create closed contour for main region
         main_contour = create_closed_contour(main_region_points)
@@ -1036,7 +1146,7 @@ def generate_region_cloud_with_holes(main_region_points, hole_regions_list):
         return None, None, None
 
 
-def generate_region_cloud_with_holes_poisson(main_region_points, hole_regions_list):
+def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a cloud for the main region (region 1) considering interior regions as holes,
     using Poisson Disk Sampling for more natural distribution.
@@ -1044,13 +1154,15 @@ def generate_region_cloud_with_holes_poisson(main_region_points, hole_regions_li
     Args:
         main_region_points (list): List of (x, y) coordinate tuples for the main region
         hole_regions_list (list): List of regions to be treated as holes
+        cloud_size (float, optional): Specified cloud size. If None, calculated automatically.
     
     Returns:
         tuple: (boundary_points, interior_points, cloud_size) or (None, None, None) if failed
     """
     try:
-        # Calculate cloud size for the main region
-        cloud_size = calculate_cloud_size(main_region_points)
+        # Calculate cloud size for the main region if not provided
+        if cloud_size is None:
+            cloud_size = calculate_cloud_size(main_region_points)
         
         # Create closed contour for main region
         main_contour = create_closed_contour(main_region_points)
@@ -1096,8 +1208,152 @@ def generate_region_cloud_with_holes_poisson(main_region_points, hole_regions_li
         return generate_region_cloud_with_holes(main_region_points, hole_regions_list)
 
 
-def generate_cloud_natural(csv_file, output_file, regiones_inside=False, reducir_contorno=False, 
-                           porcentaje_reduccion=10, cloud_size=None):
+def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main_region_strategy: callable, interior_regions_strategy: callable, 
+                         inside_regions: bool = False, contour_reduction: bool = False, reduction_percentage: int = 10, cloud_size: float = None) -> dict:
+    """
+    Core function for cloud generation to strictly follow DRY principle.
+    Encapsulates common logic for Natural and Regular distribution methods.
+    """
+    temp_reduced_file = None
+    try:
+        logging.info(f"=== Starting Cloud Generation Process with {method_name} Distribution ===")
+        logging.info(f"Input file: {csv_file}")
+        logging.info(f"Output file: {output_file}")
+        logging.info(f"Interior regions: {inside_regions}")
+        logging.info(f"Reduce contour: {contour_reduction}")
+        
+        working_csv_file = csv_file
+        
+        if contour_reduction and reduction_percentage > 0:
+            multiplier = max(1, int(reduction_percentage / 10))
+            # Fix: use tempfile properly
+            temp_fd, temp_reduced_file = tempfile.mkstemp(suffix='.csv')
+            os.close(temp_fd)
+            
+            logging.info(f"Applying contour reduction with {reduction_percentage}% reduction (multiplier: {multiplier})")
+            result_df = reduce_points.reduce_points_by_region(csv_file, temp_reduced_file, multiplier)
+            
+            if result_df is not None:
+                working_csv_file = temp_reduced_file
+                logging.info(f"Contour reduction completed successfully")
+            else:
+                logging.warning("Contour reduction failed, using original file")
+                if os.path.exists(temp_reduced_file):
+                    os.remove(temp_reduced_file)
+                temp_reduced_file = None
+        
+        regions = load_regions(working_csv_file)
+        if not regions:
+            if temp_reduced_file and os.path.exists(temp_reduced_file):
+                os.remove(temp_reduced_file)
+            return {"success": False, "error": "Failed to load regions from CSV"}
+        
+        logging.info(f"Loaded {len(regions)} region(s)")
+        
+        main_region = regions[0]
+        hole_regions = regions[1:] if len(regions) > 1 else []
+        
+        # Execute Main Region Strategy
+        main_boundary, main_interior, actual_cloud_size = main_region_strategy(main_region, hole_regions, cloud_size)
+        
+        if main_boundary is None or main_interior is None:
+            return {"success": False, "error": "Failed to generate cloud for main region"}
+        
+        logging.info(f"Generated main region cloud with {method_name} Distribution: {len(main_boundary)} boundary + {len(main_interior)} interior points")
+        
+        all_points = []
+        all_regions = []
+        
+        for point in main_boundary:
+            all_points.append(point)
+            all_regions.append(1)
+        
+        for point in main_interior:
+            all_points.append(point)
+            all_regions.append(1)
+        
+        # Execute Interior Regions Strategy
+        if inside_regions and len(regions) > 1:
+            logging.info(f"Generating interior regions with {method_name} Distribution...")
+            interior_clouds = interior_regions_strategy(regions, actual_cloud_size)
+            
+            for boundary_points, interior_points, region_id in interior_clouds:
+                for point in boundary_points:
+                    all_points.append(point)
+                    all_regions.append(region_id)
+                for point in interior_points:
+                    all_points.append(point)
+                    all_regions.append(region_id)
+                logging.info(f"Added region {region_id}: {len(boundary_points)} boundary + {len(interior_points)} interior points")
+        
+        all_points = np.array(all_points)
+        
+        classifications = classify_nodes(all_points, all_regions, regions, actual_cloud_size)
+        
+        success = export_to_csv(all_points, classifications, all_regions, output_file)
+        if not success:
+            return {"success": False, "error": "Failed to export CSV"}
+        
+        output_base = os.path.splitext(output_file)[0]
+        create_visualization(all_points, all_regions, output_base, classifications)
+        
+        results = {
+            "success": True,
+            "output_file": output_file,
+            "visualization_file": f"{output_base}.png",
+            "visualization_svg_file": f"{output_base}.svg",
+            "total_nodes": len(all_points),
+            "regions_generated": len(set(all_regions)),
+            "main_region_nodes": sum(1 for r in all_regions if r == 1),
+            "interior_regions_generated": inside_regions and len(regions) > 1,
+            "cloud_size": actual_cloud_size
+        }
+        
+        logging.info(f"=== Cloud Generation with {method_name} Distribution Completed Successfully ===")
+        
+        if temp_reduced_file and os.path.exists(temp_reduced_file):
+            os.remove(temp_reduced_file)
+            
+        return results
+        
+    except Exception as e:
+        error_msg = f"Error in cloud generation with {method_name} Distribution: {str(e)}"
+        logging.error(error_msg)
+        if temp_reduced_file and os.path.exists(temp_reduced_file):
+            os.remove(temp_reduced_file)
+        return {"success": False, "error": error_msg}
+
+def generate_region_task_poisson(region_points: list[tuple[float, float]], region_id: int, main_cloud_size: float) -> tuple[np.ndarray, np.ndarray, int] | None:
+    """Helper for parallel Poisson interior regions."""
+    try:
+        boundary_points, interior_points, _ = generate_region_cloud_poisson(region_points, main_cloud_size)
+        if boundary_points is not None and interior_points is not None:
+            return (boundary_points, interior_points, region_id)
+        return None
+    except Exception:
+        return None
+
+def generate_interior_regions_clouds_poisson(regions: list[list[tuple[float, float]]], main_cloud_size: float) -> list[tuple[np.ndarray, np.ndarray, int]]:
+    """Parallel generation for interior regions using Poisson."""
+    interior_clouds = []
+    max_workers = max(1, os.cpu_count() - 1)
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for i in range(1, len(regions)):
+            futures.append(executor.submit(generate_region_task_poisson, regions[i], i + 1, main_cloud_size))
+        
+        for future in futures:
+            try:
+                result = future.result()
+                if result:
+                    interior_clouds.append(result)
+            except Exception as e:
+                logging.error(f"Error in parallel poisson task: {e}")
+    return interior_clouds
+
+
+def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
+                           reduction_percentage: int = 10, cloud_size: float = None) -> dict:
     """
     Generate cloud of points using Natural Distribution algorithm with Poisson Disk Sampling.
     
@@ -1110,11 +1366,11 @@ def generate_cloud_natural(csv_file, output_file, regiones_inside=False, reducir
                        Must have columns: x, y, and optionally 'region' for multi-region support.
         output_file (str): Base path for output files (without extension).
                           Generated files: .csv (coordinates), .png (visualization), .svg (vector).
-        regiones_inside (bool, optional): Enable multi-region processing for interior holes.
+        inside_regions (bool, optional): Enable multi-region processing for interior holes.
                                         If True, processes regions 2+ as interior holes. Default: False.
-        reducir_contorno (bool, optional): Apply point reduction to boundary contours.
+        contour_reduction (bool, optional): Apply point reduction to boundary contours.
                                          Reduces computational complexity. Default: False.
-        porcentaje_reduccion (int, optional): Percentage of points to reduce from contours.
+        reduction_percentage (int, optional): Percentage of points to reduce from contours.
                                             Valid range: 1-90. Default: 10.
         cloud_size (float, optional): Override automatic cloud size calculation.
                                      If None, calculates adaptive size based on geometry.
@@ -1164,139 +1420,25 @@ def generate_cloud_natural(csv_file, output_file, regiones_inside=False, reducir
                   Detailed error information is logged for debugging purposes.
     """
     try:
-        logging.info("=== Starting Cloud Generation Process with Natural Distribution ===")
-        logging.info(f"Input file: {csv_file}")
-        logging.info(f"Output file: {output_file}")
-        logging.info(f"Interior regions: {regiones_inside}")
-        logging.info(f"Reduce contour: {reducir_contorno}")
+        # Define strategies
+        main_strategy = generate_region_cloud_with_holes_poisson
+        interior_strategy = generate_interior_regions_clouds_poisson
         
-        working_csv_file = csv_file
-        temp_reduced_file = None
-        
-        if reducir_contorno and porcentaje_reduccion > 0:
-            multiplier = max(1, int(porcentaje_reduccion / 10))
-            
-            temp_fd, temp_reduced_file = tempfile.mkstemp(suffix='.csv')
-            os.close(temp_fd)  # Close file descriptor
-            
-            logging.info(f"Applying contour reduction with {porcentaje_reduccion}% reduction (multiplier: {multiplier})")
-            
-            # Apply reduction using reduce_points module
-            result_df = reduce_points.reduce_points_by_region(csv_file, temp_reduced_file, multiplier)
-            
-            if result_df is not None:
-                working_csv_file = temp_reduced_file
-                logging.info(f"Contour reduction completed successfully")
-            else:
-                logging.warning("Contour reduction failed, using original file")
-                if temp_reduced_file and os.path.exists(temp_reduced_file):
-                    os.remove(temp_reduced_file)
-                temp_reduced_file = None
-        
-        regions = load_regions(working_csv_file)
-        if not regions:
-            if temp_reduced_file and os.path.exists(temp_reduced_file):
-                os.remove(temp_reduced_file)
-            return {"success": False, "error": "Failed to load regions from CSV"}
-        
-        logging.info(f"Loaded {len(regions)} region(s)")
-        
-        main_region = regions[0]
-        main_cloud_size = calculate_cloud_size(main_region)
-        
-        hole_regions = regions[1:] if len(regions) > 1 else []
-        
-        main_boundary, main_interior, _ = generate_region_cloud_with_holes_poisson(main_region, hole_regions)
-        
-        if main_boundary is None or main_interior is None:
-            return {"success": False, "error": "Failed to generate cloud for main region"}
-        
-        logging.info(f"Generated main region cloud with Natural Distribution (excluding {len(hole_regions)} holes): {len(main_boundary)} boundary + {len(main_interior)} interior points")
-        
-        all_points = []
-        all_regions = []
-        
-        for point in main_boundary:
-            all_points.append(point)
-            all_regions.append(1)
-        
-        for point in main_interior:
-            all_points.append(point)
-            all_regions.append(1)
-        
-        if regiones_inside and len(regions) > 1:
-            logging.info("Generating interior regions with Poisson Disk Sampling and uniform density...")
-            
-            for i in range(1, len(regions)):
-                region_points = regions[i]
-                region_id = i + 1
-                
-                try:
-                    boundary_points, interior_points, _ = generate_region_cloud_poisson(region_points, main_cloud_size)
-                    
-                    if boundary_points is not None and interior_points is not None:
-                        for point in boundary_points:
-                            all_points.append(point)
-                            all_regions.append(region_id)
-                        
-                        for point in interior_points:
-                            all_points.append(point)
-                            all_regions.append(region_id)
-                        
-                        logging.info(f"Added region {region_id} with Poisson Disk Sampling: {len(boundary_points)} boundary + {len(interior_points)} interior points")
-                    else:
-                        logging.warning(f"Failed to generate cloud for interior region {region_id}")
-                        
-                except Exception as e:
-                    logging.error(f"Error generating cloud for interior region {region_id}: {e}")
-                    continue
-        
-        all_points = np.array(all_points)
-        
-        classifications = classify_nodes(all_points, all_regions, regions, main_cloud_size)
-        
-        success = export_to_csv(all_points, classifications, all_regions, output_file)
-        if not success:
-            return {"success": False, "error": "Failed to export CSV"}
-        
-        output_base = os.path.splitext(output_file)[0]
-        create_visualization(all_points, all_regions, output_base, classifications)
-        
-        # Prepare results
-        results = {
-            "success": True,
-            "output_file": output_file,
-            "visualization_file": f"{output_base}.png",
-            "visualization_svg_file": f"{output_base}.svg",
-            "total_nodes": len(all_points),
-            "regions_generated": len(set(all_regions)),
-            "main_region_nodes": sum(1 for r in all_regions if r == 1),
-            "interior_regions_generated": regiones_inside and len(regions) > 1
-        }
-        
-        logging.info("=== Cloud Generation with Natural Distribution Completed Successfully ===")
-        logging.info(f"Total nodes generated: {results['total_nodes']}")
-        logging.info(f"Regions generated: {results['regions_generated']}")
-        
-        # Clean up temporary file if it exists
-        if temp_reduced_file and os.path.exists(temp_reduced_file):
-            os.remove(temp_reduced_file)
-        
-        return results
+        return _generate_cloud_core(
+            csv_file, output_file, "Natural",
+            main_strategy, interior_strategy,
+            inside_regions, contour_reduction, reduction_percentage, cloud_size
+        )
         
     except Exception as e:
+        # Fallback error handling just in case, though _generate_cloud_core handles it
         error_msg = f"Error in cloud generation with Natural Distribution: {str(e)}"
         logging.error(error_msg)
-        
-        # Clean up temporary file if it exists
-        if 'temp_reduced_file' in locals() and temp_reduced_file and os.path.exists(temp_reduced_file):
-            os.remove(temp_reduced_file)
-        
         return {"success": False, "error": error_msg}
 
 
-def generate_cloud_regular(csv_file, output_file, regiones_inside=False, reducir_contorno=False, 
-                           porcentaje_reduccion=10, cloud_size=None):
+def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
+                           reduction_percentage: int = 10, cloud_size: float = None) -> dict:
     """
     Generate cloud of points using Regular Distribution algorithm with grid-based approach.
     
@@ -1309,11 +1451,11 @@ def generate_cloud_regular(csv_file, output_file, regiones_inside=False, reducir
                        Must have columns: x, y, and optionally 'region' for multi-region support.
         output_file (str): Base path for output files (without extension).
                           Generated files: .csv (coordinates), .png (visualization), .svg (vector).
-        regiones_inside (bool, optional): Enable multi-region processing for interior holes.
+        inside_regions (bool, optional): Enable multi-region processing for interior holes.
                                         If True, processes regions 2+ as interior holes. Default: False.
-        reducir_contorno (bool, optional): Apply point reduction to boundary contours.
+        contour_reduction (bool, optional): Apply point reduction to boundary contours.
                                          Reduces computational complexity. Default: False.
-        porcentaje_reduccion (int, optional): Percentage of points to reduce from contours.
+        reduction_percentage (int, optional): Percentage of points to reduce from contours.
                                             Valid range: 1-90. Default: 10.
         cloud_size (float, optional): Override automatic cloud size calculation.
                                      If None, calculates adaptive size based on geometry.
@@ -1363,125 +1505,26 @@ def generate_cloud_regular(csv_file, output_file, regiones_inside=False, reducir
                   Detailed error information is logged for debugging purposes.
     """
     try:
-        logging.info("=== Starting Cloud Generation Process with Regular Distribution ===")
-        logging.info(f"Input file: {csv_file}")
-        logging.info(f"Output file: {output_file}")
-        logging.info(f"Interior regions: {regiones_inside}")
-        logging.info(f"Reduce contour: {reducir_contorno}")
+        # Define strategies
+        main_strategy = generate_region_cloud_with_holes
+        interior_strategy = generate_interior_regions_clouds
         
-        # Step 1: Perform contour point reduction if requested (before loading regions)
-        working_csv_file = csv_file
-        temp_reduced_file = None
+        return _generate_cloud_core(
+            csv_file, output_file, "Regular",
+            main_strategy, interior_strategy,
+            inside_regions, contour_reduction, reduction_percentage, cloud_size
+        )
         
-        if reducir_contorno and porcentaje_reduccion > 0:
-            multiplier = max(1, int(porcentaje_reduccion / 10))
-            
-            # Create temporary file for reduced points
-            temp_fd, temp_reduced_file = tempfile.mkstemp(suffix='.csv')
-            os.close(temp_fd)  # Close file descriptor
-            
-            logging.info(f"Applying contour reduction with {porcentaje_reduccion}% reduction (multiplier: {multiplier})")
-            
-            # Apply reduction using reduce_points module
-            result_df = reduce_points.reduce_points_by_region(csv_file, temp_reduced_file, multiplier)
-            
-            if result_df is not None:
-                working_csv_file = temp_reduced_file
-                logging.info(f"Contour reduction completed successfully")
-            else:
-                logging.warning("Contour reduction failed, using original file")
-                if temp_reduced_file and os.path.exists(temp_reduced_file):
-                    os.remove(temp_reduced_file)
-                temp_reduced_file = None
-        
-        # Step 2: Load CSV boundary points (from original or reduced file)
-        regions = load_regions(working_csv_file)
-        if not regions:
-            if temp_reduced_file and os.path.exists(temp_reduced_file):
-                os.remove(temp_reduced_file)
-            return {"success": False, "error": "Failed to load regions from CSV"}
-        
-        logging.info(f"Loaded {len(regions)} region(s)")
-        
-        main_region = regions[0]
-        hole_regions = regions[1:] if len(regions) > 1 else []
-        
-        main_boundary, main_interior, main_cloud_size = generate_region_cloud_with_holes(main_region, hole_regions)
-        
-        if main_boundary is None or main_interior is None:
-            return {"success": False, "error": "Failed to generate cloud for main region"}
-        
-        logging.info(f"Generated main region cloud with holes: {len(main_boundary)} boundary + {len(main_interior)} interior points")
-        
-        all_points = []
-        all_regions = []
-        
-        for point in main_boundary:
-            all_points.append(point)
-            all_regions.append(1)
-        
-        for point in main_interior:
-            all_points.append(point)
-            all_regions.append(1)
-        
-        if regiones_inside and len(regions) > 1:
-            logging.info("Generating interior regions with uniform density...")
-            interior_clouds = generate_interior_regions_clouds(regions, main_cloud_size)
-            
-            for boundary_points, interior_points, region_id in interior_clouds:
-                for point in boundary_points:
-                    all_points.append(point)
-                    all_regions.append(region_id)
-                
-                for point in interior_points:
-                    all_points.append(point)
-                    all_regions.append(region_id)
-                
-                logging.info(f"Added region {region_id}: {len(boundary_points)} boundary + {len(interior_points)} interior points")
-        
-        all_points = np.array(all_points)
-        
-        classifications = classify_nodes(all_points, all_regions, regions, main_cloud_size)
-        
-        success = export_to_csv(all_points, classifications, all_regions, output_file)
-        if not success:
-            return {"success": False, "error": "Failed to export CSV"}
-        
-        output_base = os.path.splitext(output_file)[0]
-        create_visualization(all_points, all_regions, output_base, classifications)
-        
-        results = {
-            "success": True,
-            "output_file": output_file,
-            "visualization_file": f"{output_base}.png",
-            "visualization_svg_file": f"{output_base}.svg",
-            "total_nodes": len(all_points),
-            "regions_generated": len(set(all_regions)),
-            "main_region_nodes": sum(1 for r in all_regions if r == 1),
-            "interior_regions_generated": regiones_inside and len(regions) > 1
-        }
-        
-        logging.info("=== Cloud Generation with Regular Distribution Completed Successfully ===")
-        logging.info(f"Total nodes generated: {results['total_nodes']}")
-        logging.info(f"Regions generated: {results['regions_generated']}")
-        
-        if temp_reduced_file and os.path.exists(temp_reduced_file):
-            os.remove(temp_reduced_file)
-        
-        return results
+
         
     except Exception as e:
+        # Fallback error handling just in case, though _generate_cloud_core handles it
         error_msg = f"Error in cloud generation with Regular Distribution: {str(e)}"
         logging.error(error_msg)
-        
-        # Clean up temporary file if it exists
-        if 'temp_reduced_file' in locals() and temp_reduced_file and os.path.exists(temp_reduced_file):
-            os.remove(temp_reduced_file)
-        
         return {"success": False, "error": error_msg}
 
 
-def calculate_dynamic_boundary_refinement(points, cloud_size=None):
+def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float = None) -> float:
     """
     Calculate dynamic boundary refinement based on cloud density.
     
@@ -1510,15 +1553,18 @@ def calculate_dynamic_boundary_refinement(points, cloud_size=None):
         domain_area = domain_width * domain_height
         
         # Method 1: Based on average nearest neighbor distance
-        from scipy.spatial.distance import cdist
+        # from scipy.spatial.distance import cdist  <-- Removed to avoid scipy dependency
         
         # Sample a subset of points for efficiency (max 500 points)
         sample_size = min(500, len(points_array))
         sample_indices = np.random.choice(len(points_array), sample_size, replace=False)
         sample_points = points_array[sample_indices]
         
-        # Calculate distances between all sample points
-        distances = cdist(sample_points, sample_points)
+        # Calculate distances between all sample points using NumPy broadcasting
+        # Shape: (sample_size, 1, 2) - (1, sample_size, 2) -> (sample_size, sample_size, 2)
+        diff = sample_points[:, np.newaxis, :] - sample_points[np.newaxis, :, :]
+        # Calculate Euclidean distance
+        distances = np.sqrt(np.sum(diff**2, axis=-1))
         
         # For each point, find the distance to its nearest neighbor (excluding itself)
         np.fill_diagonal(distances, np.inf)  # Exclude self-distances

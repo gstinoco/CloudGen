@@ -140,12 +140,7 @@ Pillow >= 10.0.0             # Image manipulation and format support
 
 # Scientific computing
 numpy >= 1.24.0              # Numerical computations and array operations
-pandas >= 2.0.0              # Data manipulation and CSV processing
-scipy >= 1.10.0              # Scientific algorithms and spatial operations
 shapely >= 2.0.0             # Geometric operations and computational geometry
-
-# Visualization and plotting
-matplotlib >= 3.7.0          # Scientific plotting and visualization
 
 # Additional utilities
 threading                    # Asynchronous processing support
@@ -192,7 +187,7 @@ pip install -r requirements.txt
 
 ```bash
 # Test installation
-python -c "import flask, cv2, gmsh, numpy, pandas; print('✅ Installation successful!')"
+python -c "import flask, cv2, numpy; print('✅ Installation successful!')"
 
 # Run the application
 python app.py
