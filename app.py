@@ -321,36 +321,6 @@ def examples():
     """Render the Examples page with case studies."""
     examples_list = [
         {
-            'name': 'Balkhash',
-            'title': 'Lake Balkhash',
-            'description': 'One of the largest lakes in Asia, located in southeastern Kazakhstan. Uniquely, its western part is fresh water while the eastern part is saline.',
-            'image': 'Balkhash.png',
-            'cloud_image': 'Balkhash_cloud.png',
-            'cloud_svg': 'Balkhash_cloud.svg',
-            'contours_csv': 'Balkhash_contours.csv',
-            'cloud_csv': 'Balkhash_cloud.csv'
-        },
-        {
-            'name': 'Caspio',
-            'title': 'Caspian Sea',
-            'description': 'The world\'s largest inland body of water, often described as the world\'s largest lake or a full-fledged sea. It lies between Europe and Asia.',
-            'image': 'Caspio.png',
-            'cloud_image': 'Caspio_cloud.png',
-            'cloud_svg': 'Caspio_cloud.svg',
-            'contours_csv': 'Caspio_contours.csv',
-            'cloud_csv': 'Caspio_cloud.csv'
-        },
-        {
-            'name': 'Catemaco',
-            'title': 'Lake Catemaco',
-            'description': 'A freshwater lake located in south-central Veracruz, Mexico, formed by natural damming of volcanic origin.',
-            'image': 'Catemaco.png',
-            'cloud_image': 'Catemaco_cloud.png',
-            'cloud_svg': 'Catemaco_cloud.svg',
-            'contours_csv': 'Catemaco_contours.csv',
-            'cloud_csv': 'Catemaco_cloud.csv'
-        },
-        {
             'name': 'Huron',
             'title': 'Lake Huron',
             'description': 'One of the five Great Lakes of North America, connecting to Lake Michigan by the Straits of Mackinac.',
@@ -379,46 +349,6 @@ def examples():
             'cloud_svg': 'Patzcuaro_cloud.svg',
             'contours_csv': 'Patzcuaro_contours.csv',
             'cloud_csv': 'Patzcuaro_cloud.csv'
-        },
-        {
-            'name': 'Poopo',
-            'title': 'Lake Poopó',
-            'description': 'A large saline lake in a shallow depression in the Altiplano Mountains in Bolivia, known for its fluctuating water levels.',
-            'image': 'Poopo.png',
-            'cloud_image': 'Poopo_cloud.png',
-            'cloud_svg': 'Poopo_cloud.svg',
-            'contours_csv': 'Poopo_contours.csv',
-            'cloud_csv': 'Poopo_cloud.csv'
-        },
-        {
-            'name': 'Santa_Maria_del_Oro',
-            'title': 'Santa María del Oro',
-            'description': 'A crater lake located in the crater of a volcano in the state of Nayarit, Mexico.',
-            'image': 'Santa_Maria_del_Oro.png',
-            'cloud_image': 'Santa_Maria_del_Oro_cloud.png',
-            'cloud_svg': 'Santa_Maria_del_Oro_cloud.svg',
-            'contours_csv': 'Santa_Maria_del_Oro_contours.csv',
-            'cloud_csv': 'Santa_Maria_del_Oro_cloud.csv'
-        },
-        {
-            'name': 'Titicaca',
-            'title': 'Lake Titicaca',
-            'description': 'A large, deep, freshwater lake in the Andes on the border of Bolivia and Peru, often called the highest navigable lake in the world.',
-            'image': 'Titicaca.png',
-            'cloud_image': 'Titicaca_cloud.png',
-            'cloud_svg': 'Titicaca_cloud.svg',
-            'contours_csv': 'Titicaca_contours.csv',
-            'cloud_csv': 'Titicaca_cloud.csv'
-        },
-        {
-            'name': 'Yuriria',
-            'title': 'Lake Yuriria',
-            'description': 'A man-made lake in Guanajuato, Mexico, constructed in the 16th century, representing the first hydraulic work of the colonial period in America.',
-            'image': 'Yuriria.png',
-            'cloud_image': 'Yuriria_cloud.png',
-            'cloud_svg': 'Yuriria_cloud.svg',
-            'contours_csv': 'Yuriria_contours.csv',
-            'cloud_csv': 'Yuriria_cloud.csv'
         },
         {
             'name': 'Zirahuen',
