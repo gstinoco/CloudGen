@@ -35,7 +35,6 @@ import cv2
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 def detect_region_at_point(image, click_x, click_y, tolerance=30):
     """
     Detects a single connected region starting from a seed point using optimized Flood Fill.

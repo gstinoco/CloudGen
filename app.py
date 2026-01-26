@@ -99,10 +99,11 @@ if os.environ.get('VERCEL'):
     app.config['UPLOAD_FOLDER'] = os.path.join(tempfile.gettempdir(), 'uploads')
     app.config['OUTPUT_FOLDER'] = os.path.join(tempfile.gettempdir(), 'output')
 else:
-    # Local environment
-    LOG_DIR = os.path.join(BASE_DIR, 'logs')
-    app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
-    app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'output')
+    # Local or Custom Server environment
+    # Use environment variables if provided (useful for production deployments)
+    LOG_DIR = os.environ.get('LOG_DIR', os.path.join(BASE_DIR, 'logs'))
+    app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER', os.path.join(BASE_DIR, 'uploads'))
+    app.config['OUTPUT_FOLDER'] = os.environ.get('OUTPUT_FOLDER', os.path.join(BASE_DIR, 'output'))
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 'mGFD_CloudGenerator_2025'

@@ -397,7 +397,7 @@
 
     <!-- JavaScript Files -->
     <script>
-        const BASE_URL = window.location.origin;
+        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
     </script>
     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
