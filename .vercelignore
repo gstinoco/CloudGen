@@ -3,6 +3,7 @@ uploads
 logs
 tests
 *.csv
+*.png
 *.svg
 __pycache__
 *.pyc
