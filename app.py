@@ -151,6 +151,11 @@ else:
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.DEBUG)
 
+# Log startup info
+app.logger.info(f"App started. BASE_DIR: {BASE_DIR}")
+app.logger.info(f"LOG_DIR: {LOG_DIR}")
+app.logger.info(f"UPLOAD_FOLDER: {app.config['UPLOAD_FOLDER']}")
+
 # Configuration
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 ALLOWED_CSV_EXTENSIONS = {'csv'}

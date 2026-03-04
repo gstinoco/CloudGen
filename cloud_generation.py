@@ -109,7 +109,6 @@ logging.basicConfig(
     handlers=handlers
 )
 
-
 # Cloud generation parameters
 CLOUD_FACTORS = {
     "adaptive_factor": 0.15,
@@ -242,7 +241,6 @@ def calculate_cloud_size(region_points: list[tuple[float, float]]) -> float:
         logging.error(f"Error calculating cloud size: {e}")
         return CLOUD_FACTORS["default_cloud_size"]
 
-
 def create_closed_contour(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
     """
     Ensure a contour is properly closed for geometric operations.
@@ -272,7 +270,6 @@ def create_closed_contour(points: list[tuple[float, float]]) -> list[tuple[float
     else:
         return points
 
-
 def generate_boundary_points(contour: list[tuple[float, float]], cloud_size: float) -> np.ndarray:
     """
     Generate points along the boundary of a contour.
@@ -296,7 +293,9 @@ def generate_boundary_points(contour: list[tuple[float, float]], cloud_size: flo
         distance = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
         
         if distance > 0:
-            num_points = max(1, int(distance / cloud_size))
+            # Use ceil to ensure we don't under-sample the boundary
+            # This prevents large gaps when distance is slightly less than a multiple of cloud_size
+            num_points = max(1, int(np.ceil(distance / cloud_size)))
             
             for j in range(num_points):
                 t = j / num_points
@@ -312,7 +311,6 @@ def generate_boundary_points(contour: list[tuple[float, float]], cloud_size: flo
         return boundary_points
     
     return np.empty((0, 2))
-
 
 def generate_interior_points(polygon: Polygon, cloud_size: float) -> np.ndarray:
     """
@@ -359,6 +357,9 @@ def generate_interior_points(polygon: Polygon, cloud_size: float) -> np.ndarray:
         ext_pixels = to_pixel_coords(ext_coords)
         cv2.fillPoly(mask, [ext_pixels], 1)
         
+        # Exclude exterior boundary (set to 0) to avoid overlapping with explicit boundary nodes
+        cv2.polylines(mask, [ext_pixels], isClosed=True, color=0, thickness=1)
+        
         # Draw interiors (holes)
         for interior in polygon.interiors:
             int_coords = list(interior.coords)
@@ -384,7 +385,6 @@ def generate_interior_points(polygon: Polygon, cloud_size: float) -> np.ndarray:
                 if polygon.contains(Point(x, y)):
                     points.append([x, y])
         return np.array(points) if points else np.empty((0, 2))
-
 
 def poisson_disk_sampling(polygon: Polygon, radius: float, k: int = 30, boundary_points: list[tuple[float, float]] = None) -> list[tuple[float, float]]:
     """
@@ -496,7 +496,6 @@ def poisson_disk_sampling(polygon: Polygon, radius: float, k: int = 30, boundary
     
     return points
 
-
 def is_valid_poisson_point(x: float, y: float, minx: float, miny: float, cell_size: float, grid: np.ndarray, points: list[tuple[float, float]], radius: float) -> bool:
     """
     Check if a point is valid for Poisson disk sampling.
@@ -535,7 +534,6 @@ def is_valid_poisson_point(x: float, y: float, minx: float, miny: float, cell_si
     
     return True
 
-
 def generate_interior_points_poisson(polygon: Polygon, cloud_size: float) -> list[tuple[float, float]]:
     """
     Generate interior points using Poisson Disk Sampling for more natural distribution.
@@ -558,7 +556,6 @@ def generate_interior_points_poisson(polygon: Polygon, cloud_size: float) -> lis
         logging.error(f"Error in Poisson Disk Sampling, falling back to grid method: {e}")
         # Fallback to original method
         return generate_interior_points(polygon, cloud_size)
-
 
 def generate_region_task(region_points: list[tuple[float, float]], region_id: int, main_cloud_size: float) -> tuple[np.ndarray, np.ndarray, int] | None:
     """
@@ -616,8 +613,7 @@ def generate_interior_regions_clouds(regions: list[list[tuple[float, float]]], m
     
     return interior_clouds
 
-
-def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions_contours: list[list[tuple[float, float]]] = None, cloud_size: float = None) -> list[str]:
+def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions_contours: list[list[tuple[float, float]]] = None, cloud_size: float = None, inside_regions: bool = False) -> list[str]:
     """
     Classify nodes as boundary or interior using Shapely contours for precise geometric operations.
     This approach creates LineString/Polygon objects from contours for accurate distance calculations.
@@ -630,6 +626,7 @@ def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions
         regions_list (list): List of region IDs for each point
         original_regions_contours (list): List of original contour points for each region
         cloud_size (float, optional): Cloud size parameter used in generation for dynamic boundary refinement
+        inside_regions (bool, optional): If True, applies region-specific boundary logic (holes are not boundaries for region 1)
     
     Returns:
         list: Node classifications ("boundary" or "interior")
@@ -650,9 +647,10 @@ def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions
     # Create Shapely geometries from contours
     shapely_contours = []
     valid_geometries = [] # For STRtree
+    geom_id_to_index = {} # Map geometry ID to contour index
     
     if original_regions_contours:
-        for contour_points in original_regions_contours:
+        for idx, contour_points in enumerate(original_regions_contours):
             if contour_points and len(contour_points) >= 3:
                 try:
                     # Convert contour points to valid coordinates
@@ -683,6 +681,7 @@ def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions
                         shapely_contours.append(geom)
                         if geom:
                             valid_geometries.append(geom)
+                            geom_id_to_index[id(geom)] = idx
                     else:
                         shapely_contours.append(None)
                 except Exception as e:
@@ -729,21 +728,64 @@ def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions
                 if spatial_index:
                     # query returns candidates (geometries) that *might* be near
                     candidates = spatial_index.query(point_geom)
-                    if not candidates:
-                        # If no intersection with envelopes, use all valid geometries (fallback)
-                        candidates = valid_geometries
                     
-                    for contour in candidates:
-                         min_distance_to_contour = min(min_distance_to_contour, point_geom.distance(contour))
+                    # Handle different STRtree API versions
+                    final_candidates = []
+                    
+                    if hasattr(candidates, '__iter__') and len(candidates) > 0:
+                        first_item = list(candidates)[0]
+                        if isinstance(first_item, (int, np.integer)):
+                            # Shapely 2.0+ returns indices
+                            final_candidates = [valid_geometries[i] for i in candidates]
+                        elif isinstance(first_item, (Polygon, LineString, Point)):
+                             # Shapely < 2.0 returns geometries
+                             final_candidates = list(candidates)
+                        else:
+                             # Fallback
+                             final_candidates = valid_geometries
+                    else:
+                        final_candidates = valid_geometries
+                    
+                    if not final_candidates:
+                        final_candidates = valid_geometries
+                        
+                    for contour in final_candidates:
+                        # Check if this contour is a valid boundary for the current point's region
+                        if inside_regions:
+                            contour_idx = geom_id_to_index.get(id(contour))
+                            if contour_idx is not None:
+                                # Region 1: Only contour 0 is boundary (holes are interfaces)
+                                if region_id == 1 and contour_idx != 0:
+                                    continue
+                                # Region K (>1): Only contour K-1 is boundary
+                                if region_id > 1 and contour_idx != (region_id - 1):
+                                    continue
+                        
+                        # Calculate distance
+                        dist = point_geom.distance(contour)
+                        # Handle potential array return (unlikely for single point, but safe)
+                        if isinstance(dist, (np.ndarray, list)):
+                            dist = np.min(dist)
+                        min_distance_to_contour = min(min_distance_to_contour, float(dist))
                 else:
                     # Fallback to checking all contours
-                    for contour in shapely_contours:
+                    for idx, contour in enumerate(shapely_contours):
                         if contour is not None:
+                            # Check if this contour is a valid boundary for the current point's region
+                            if inside_regions:
+                                # Region 1: Only contour 0 is boundary
+                                if region_id == 1 and idx != 0:
+                                    continue
+                                # Region K (>1): Only contour K-1 is boundary
+                                if region_id > 1 and idx != (region_id - 1):
+                                    continue
+                                    
                             min_distance_to_contour = min(min_distance_to_contour, point_geom.distance(contour))
                 
                 # Classify as boundary if close to any contour
                 if min_distance_to_contour <= boundary_tolerance:
                     is_boundary = True
+
             
             # Fallback method: Check distance to global domain boundary
             if not is_boundary and domain_boundary is not None:
@@ -769,7 +811,6 @@ def classify_nodes(points: np.ndarray, regions_list: list[int], original_regions
     logging.info(f"Boundary tolerance used: {boundary_tolerance}")
     
     return classifications
-
 
 def export_to_csv(points: np.ndarray, classifications: list[str], regions_list: list[int], output_file: str) -> bool:
     """
@@ -853,7 +894,6 @@ def export_to_csv(points: np.ndarray, classifications: list[str], regions_list: 
         logging.error(f"Error exporting nodes to {output_file}: {e}")
         return False
 
-
 def create_visualization(points: np.ndarray, regions_list: list[int], output_base: str, classifications: list[str] = None) -> bool:
     """
     Create a visualization of the generated cloud of points with differentiated colors for boundary and interior nodes.
@@ -925,7 +965,7 @@ def create_visualization(points: np.ndarray, regions_list: list[int], output_bas
                 color_idx = (region_id - 1) % len(boundary_colors)
                 ax.scatter(boundary_pts[:, 0], boundary_pts[:, 1], 
                           c=[boundary_colors[color_idx]], s=8, marker='.', 
-                          edgecolors='none', label=f'Region {region_id} Boundary', zorder=10)
+                          edgecolors='none', label=f'{region_id} Boundary', zorder=10)
             
             # Interior points
             interior_mask = region_mask & (classifications_arr != 'boundary')
@@ -934,15 +974,14 @@ def create_visualization(points: np.ndarray, regions_list: list[int], output_bas
                 color_idx = (region_id - 1) % len(interior_colors)
                 ax.scatter(interior_pts[:, 0], interior_pts[:, 1], 
                           c=[interior_colors[color_idx]], s=5, marker='.', 
-                          alpha=0.8, edgecolors='none', label=f'Region {region_id} Interior', zorder=5)
+                          alpha=0.8, edgecolors='none', label=f'{region_id} Interior', zorder=5)
 
         # Add title and adjust layout
         plt.title(f'Generated Cloud of Points\n{len(points)} Total Nodes', fontsize=14)
         
-        # Optional: Add legend if not too many items
-        if len(unique_regions) <= 5:
-            plt.legend(loc='best', fontsize='small', markerscale=1.5)
-            
+        # Add legend outside the plot area to prevent overlap
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., fontsize='small', markerscale=1.5)
+        
         # Save PNG
         png_file = f"{output_base}.png"
         plt.savefig(png_file, format='png', bbox_inches='tight', dpi=300)
@@ -964,7 +1003,6 @@ def create_visualization(points: np.ndarray, regions_list: list[int], output_bas
         except:
             pass
         return False
-
 
 def generate_region_cloud(region_points: list[tuple[float, float]]) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
@@ -1003,7 +1041,6 @@ def generate_region_cloud(region_points: list[tuple[float, float]]) -> tuple[np.
         logging.error(f"Error generating region cloud: {e}")
         return None, None, None
 
-
 def generate_region_cloud_with_uniform_density(region_points: list[tuple[float, float]], cloud_size: float) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a complete cloud for a single region using a specified cloud size.
@@ -1038,7 +1075,6 @@ def generate_region_cloud_with_uniform_density(region_points: list[tuple[float, 
     except Exception as e:
         logging.error(f"Error generating region cloud with uniform density: {e}")
         return None, None, None
-
 
 def generate_region_cloud_poisson(region_points: list[tuple[float, float]], cloud_size: float) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
@@ -1075,8 +1111,7 @@ def generate_region_cloud_poisson(region_points: list[tuple[float, float]], clou
         # Fallback to uniform density method
         return generate_region_cloud_with_uniform_density(region_points, cloud_size)
 
-
-def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
+def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None, inside_regions: bool = False) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a cloud for the main region (region 1) considering interior regions as holes.
     This ensures that region 1 is always generated the same way, regardless of inside_regions flag.
@@ -1085,6 +1120,7 @@ def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float
         main_region_points (list): List of (x, y) coordinate tuples for the main region
         hole_regions_list (list): List of regions to be treated as holes
         cloud_size (float, optional): Specified cloud size. If None, calculated automatically.
+        inside_regions (bool, optional): If True, do not generate boundary points for holes (they belong to interior regions).
     
     Returns:
         tuple: (boundary_points, interior_points, cloud_size) or (None, None, None) if failed
@@ -1105,14 +1141,29 @@ def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float
         if not main_polygon.is_valid:
             main_polygon = main_polygon.buffer(0)
         
-        # Create hole polygons
+        # Create hole polygons and generate boundary points for holes
         hole_polygons = []
+        hole_boundary_count = 0
+        
         for hole_region in hole_regions_list:
             hole_contour = create_closed_contour(hole_region)
+            
+            # Generate boundary points for this hole (it is an interior boundary)
+            # Only if inside_regions is False (meaning we are NOT filling the holes with other regions)
+            # If inside_regions is True, these boundaries belong to the interior regions (regions 2, 3, etc.)
+            if not inside_regions:
+                hole_points = generate_boundary_points(hole_contour, cloud_size)
+                if len(hole_points) > 0:
+                    boundary_points = np.vstack((boundary_points, hole_points))
+                    hole_boundary_count += len(hole_points)
+                
             hole_polygon = Polygon(hole_contour)
             if not hole_polygon.is_valid:
                 hole_polygon = hole_polygon.buffer(0)
             hole_polygons.append(hole_polygon)
+        
+        if hole_boundary_count > 0:
+            logging.info(f"Generated {hole_boundary_count} boundary points from {len(hole_regions_list)} hole regions (inside_regions={inside_regions})")
         
         # Create polygon with holes
         if hole_polygons:
@@ -1136,8 +1187,7 @@ def generate_region_cloud_with_holes(main_region_points: list[tuple[float, float
         logging.error(f"Error generating region cloud with holes: {e}")
         return None, None, None
 
-
-def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
+def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[float, float]], hole_regions_list: list[list[tuple[float, float]]], cloud_size: float = None, inside_regions: bool = False) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a cloud for the main region (region 1) considering interior regions as holes,
     using Poisson Disk Sampling for more natural distribution.
@@ -1146,6 +1196,7 @@ def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[floa
         main_region_points (list): List of (x, y) coordinate tuples for the main region
         hole_regions_list (list): List of regions to be treated as holes
         cloud_size (float, optional): Specified cloud size. If None, calculated automatically.
+        inside_regions (bool, optional): If True, do not generate boundary points for holes (they belong to interior regions).
     
     Returns:
         tuple: (boundary_points, interior_points, cloud_size) or (None, None, None) if failed
@@ -1166,14 +1217,29 @@ def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[floa
         if not main_polygon.is_valid:
             main_polygon = main_polygon.buffer(0)
         
-        # Create hole polygons
+        # Create hole polygons and generate boundary points for holes
         hole_polygons = []
+        hole_boundary_count = 0
+        
         for hole_region in hole_regions_list:
             hole_contour = create_closed_contour(hole_region)
+            
+            # Generate boundary points for this hole (it is an interior boundary)
+            # Only if inside_regions is False (meaning we are NOT filling the holes with other regions)
+            # If inside_regions is True, these boundaries belong to the interior regions (regions 2, 3, etc.)
+            if not inside_regions:
+                hole_points = generate_boundary_points(hole_contour, cloud_size)
+                if len(hole_points) > 0:
+                    boundary_points = np.vstack((boundary_points, hole_points))
+                    hole_boundary_count += len(hole_points)
+                
             hole_polygon = Polygon(hole_contour)
             if not hole_polygon.is_valid:
                 hole_polygon = hole_polygon.buffer(0)
             hole_polygons.append(hole_polygon)
+        
+        if hole_boundary_count > 0:
+            logging.info(f"Generated {hole_boundary_count} boundary points from {len(hole_regions_list)} hole regions (inside_regions={inside_regions})")
         
         # Create polygon with holes
         if hole_polygons:
@@ -1197,7 +1263,6 @@ def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[floa
         logging.error(f"Error generating region cloud with holes using Poisson: {e}")
         # Fallback to grid-based method with holes
         return generate_region_cloud_with_holes(main_region_points, hole_regions_list)
-
 
 def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main_region_strategy: callable, interior_regions_strategy: callable, 
                          inside_regions: bool = False, contour_reduction: bool = False, reduction_percentage: int = 10, cloud_size: float = None) -> dict:
@@ -1245,7 +1310,8 @@ def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main
         hole_regions = regions[1:] if len(regions) > 1 else []
         
         # Execute Main Region Strategy
-        main_boundary, main_interior, actual_cloud_size = main_region_strategy(main_region, hole_regions, cloud_size)
+        # Pass inside_regions to control hole boundary generation
+        main_boundary, main_interior, actual_cloud_size = main_region_strategy(main_region, hole_regions, cloud_size, inside_regions)
         
         if main_boundary is None or main_interior is None:
             return {"success": False, "error": "Failed to generate cloud for main region"}
@@ -1279,7 +1345,7 @@ def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main
         
         all_points = np.array(all_points)
         
-        classifications = classify_nodes(all_points, all_regions, regions, actual_cloud_size)
+        classifications = classify_nodes(all_points, all_regions, regions, actual_cloud_size, inside_regions=inside_regions)
         
         success = export_to_csv(all_points, classifications, all_regions, output_file)
         if not success:
@@ -1341,7 +1407,6 @@ def generate_interior_regions_clouds_poisson(regions: list[list[tuple[float, flo
             except Exception as e:
                 logging.error(f"Error in parallel poisson task: {e}")
     return interior_clouds
-
 
 def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
                            reduction_percentage: int = 10, cloud_size: float = None) -> dict:
@@ -1427,7 +1492,6 @@ def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool
         logging.error(error_msg)
         return {"success": False, "error": error_msg}
 
-
 def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
                            reduction_percentage: int = 10, cloud_size: float = None) -> dict:
     """
@@ -1506,14 +1570,11 @@ def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool
             inside_regions, contour_reduction, reduction_percentage, cloud_size
         )
         
-
-        
     except Exception as e:
         # Fallback error handling just in case, though _generate_cloud_core handles it
         error_msg = f"Error in cloud generation with Regular Distribution: {str(e)}"
         logging.error(error_msg)
         return {"success": False, "error": error_msg}
-
 
 def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float = None) -> float:
     """
@@ -1575,21 +1636,39 @@ def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float 
         refinement_candidates = []
         
         # Primary: Average nearest neighbor distance (scaled down)
+        # We want to be careful not to overestimate this
         refinement_candidates.append(avg_nearest_distance * 0.3)
         
         # Secondary: Density-based calculation
         refinement_candidates.append(density_based_refinement * 0.1)
         
-        # Tertiary: Cloud size based (if available)
+        # Tertiary: Cloud size based (if available) - this is the most reliable metric for Regular clouds
         if cloud_size_based_refinement:
-            refinement_candidates.append(cloud_size_based_refinement)
+            # cloud_size_based_refinement was cloud_size * 0.5
+            # We want something slightly larger to be robust, e.g. 0.6 * cloud_size
+            # Since cloud_size_based_refinement is 0.5 * cloud_size, we multiply by 1.2
+            refinement_candidates.append(cloud_size_based_refinement * 1.2)
         
-        # Take the median of the candidates for robustness
-        dynamic_refinement = np.median(refinement_candidates)
+        # Use a weighted approach or median, but favor the cloud_size if available
+        if cloud_size and cloud_size_based_refinement:
+             # If we have cloud_size, it's the ground truth for spacing.
+             # Use a tolerance that is a fraction of cloud_size, e.g. 0.6
+             dynamic_refinement = cloud_size * 0.6
+        else:
+             # Fallback to median of candidates
+             dynamic_refinement = np.median(refinement_candidates)
         
         # Apply reasonable bounds
         min_refinement = 0.0001  # Minimum threshold
-        max_refinement = min(domain_width, domain_height) * 0.01  # Max 1% of domain size
+        if cloud_size:
+            # Ensure we don't go below half the cloud size
+            min_refinement = max(min_refinement, cloud_size * 0.4)
+            
+        max_refinement = min(domain_width, domain_height) * 0.02
+        
+        # If cloud_size is provided, allow a larger refinement relative to it
+        if cloud_size:
+            max_refinement = max(max_refinement, cloud_size * 1.0)
         
         dynamic_refinement = np.clip(dynamic_refinement, min_refinement, max_refinement)
         
