@@ -196,7 +196,6 @@ segmented_*
 mask_*
 *.tiff
 *.tif
-*.svg
 
 # CSV processing files
 *.csv.bak
@@ -238,7 +237,6 @@ debug_*
 test_*
 *.debug
 *.test
-profile_*
 benchmark_*
 
 # Flask development
