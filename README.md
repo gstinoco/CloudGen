@@ -753,6 +753,36 @@ git checkout -b feature/your-feature-name
   </tbody>
 </table>
 
+### :mortar_board: Undergraduate Research Students
+
+<table align="center">
+  <thead>
+    <tr>
+      <th align="center" width="120">Photo</th>
+      <th align="left">Student</th>
+      <th align="left">Institution</th>
+      <th align="left">Contact</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center" width="120">
+        <img src="docs/team/profile_placeholder_woman.svg" alt="Maria Goretti Fraga Lopez" width="96" height="96" style="border-radius: 50%;">
+      </td>
+      <td>
+        <b>Maria Goretti Fraga Lopez</b><br/>
+        <img alt="Undergraduate Research Student" src="https://img.shields.io/badge/Undergraduate-Research%20Student-green?style=flat-square">
+      </td>
+      <td>
+        <a href="http://www.umich.mx"><img alt="University: UMSNH" src="https://img.shields.io/badge/%F0%9F%8E%93%20University-UMSNH-1A3A6B"></a>
+      </td>
+      <td>
+        <a href="mailto:1702174b@umich.mx"><img alt="Contact" src="https://img.shields.io/badge/%F0%9F%93%A7-Contact-blue"></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ---
 
 ## :factory: Industry Partners Supporting Innovation
