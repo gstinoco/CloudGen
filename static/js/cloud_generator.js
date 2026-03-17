@@ -1,14 +1,14 @@
 /**
- * Cloud Generator Module - Advanced Cloud of Points Generation and Visualization Interface
+ * Cloud Generator Module - Advanced Point Cloud Generation and Visualization Interface
  * 
- * This module provides comprehensive functionality for generating and visualizing cloud of points
+ * This module provides comprehensive functionality for generating and visualizing point clouds
  * from CSV coordinate data. It implements multiple point generation algorithms with real-time
  * visualization, statistical analysis, and export capabilities for scientific and engineering
  * applications requiring precise geometric point distribution.
  * 
  * Core Functionality:
  * 1. CSV file upload with drag & drop support and format validation
- * 2. Advanced cloud of points generation with multiple distribution algorithms
+ * 2. Advanced point cloud generation with multiple distribution algorithms
  * 3. Real-time visualization with interactive charts and statistical analysis
  * 4. Export capabilities with multiple format support (CSV, PNG, SVG)
  * 5. Progress tracking for long-running generation processes
@@ -100,7 +100,7 @@
  * - Asynchronous processing to maintain UI responsiveness
  * - Progressive enhancement for better user experience
  * 
- * @fileoverview Cloud Generator JavaScript Module - Cloud of points generation and visualization
+ * @fileoverview Cloud Generator JavaScript Module - Point cloud generation and visualization
  * @author Gerardo Tinoco-Guerrero
  * @author Universidad Michoacana de San Nicolás de Hidalgo
  * @author SIIIA - Sistema de Investigación e Innovación en Inteligencia Artificial

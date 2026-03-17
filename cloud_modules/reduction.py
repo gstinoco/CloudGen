@@ -58,13 +58,12 @@ Applications:
     - Performance optimization for real-time applications
 
 Author: Gerardo Tinoco-Guerrero
-Date: May 2025
-Last Modification: January 26th, 2026
-Version: 2.2.1
+Date: May, 2025
+Last Modification: March, 2026
 
 Dependencies:
-    - numpy >= 1.21.0 (numerical operations and array processing)
-    - shapely >= 1.8.0 (geometric operations and spatial analysis)
+    - numpy >= 1.21.0
+    - shapely >= 1.8.0
 """
 
 from shapely.geometry import Point, Polygon, MultiPoint

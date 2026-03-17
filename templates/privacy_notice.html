@@ -84,6 +84,14 @@
                             <i class="fas fa-cloud"></i>
                             CloudGenerator
                         </a></li>
+                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
+                            <i class="fas fa-eye"></i>
+                            CloudViewer
+                        </a></li>
+                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
+                            <i class="fas fa-users"></i>
+                            NeighborsCalculator
+                        </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -334,17 +342,13 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
+                <div class="footer-brand">
                     <div class="footer-logo">
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                        <div class="logo-text">
-                            <span class="logo-title">mGFD: CloudGenerator</span>
-                            <span class="logo-subtitle">2.0</span>
-                        </div>
                     </div>
                     <p class="footer-description">
-                        Advanced cloud of points generation for meshless Generalized Finite Difference Method (mGFD) applications.
-                    </p>
+                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                     </p>
                 </div>
                 
                 <div class="footer-section">
@@ -353,6 +357,8 @@
                         <li><a href="{{ url_for('home') }}">Home</a></li>
                         <li><a href="{{ url_for('contour_creator') }}">ContourCreator</a></li>
                         <li><a href="{{ url_for('cloud_generator') }}">CloudGenerator</a></li>
+                        <li><a href="{{ url_for('viewer') }}">CloudViewer</a></li>
+                        <li><a href="{{ url_for('neighbors') }}">NeighborsCalculator</a></li>
                         <li><a href="{{ url_for('examples') }}">Examples</a></li>
                         <li><a href="{{ url_for('about') }}">About</a></li>
                     </ul>

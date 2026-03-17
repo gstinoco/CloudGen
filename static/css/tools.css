@@ -224,7 +224,7 @@
 
 .feature-highlights {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 20px;
     margin-top: 30px;
 }
@@ -264,6 +264,7 @@
     font-weight: 600;
     color: #2d3748;
     margin: 0 0 5px 0;
+    word-break: break-word;
 }
 
 .highlight-content p {
@@ -1213,5 +1214,27 @@
 .control-btn.refine.active {
     background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
     box-shadow: 0 6px 20px rgba(29, 78, 216, 0.5);
+}
+
+.control-btn.small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* File Details in Upload Success */
+.file-details {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.file-size {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 

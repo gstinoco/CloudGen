@@ -1,0 +1,165 @@
+/* NeighborsCalculator Specific Styles */
+
+/* Results Content Layout */
+.results-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+/* Stats Container - Grid Layout */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    perspective: 1000px; /* For 3D card effects */
+}
+
+/* Stat Card Styling */
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: slideUpFade 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Staggered animation delays for cards */
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+.stat-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Icon Container */
+.stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: #3b82f6;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.stat-card:hover .stat-icon {
+    transform: rotate(10deg) scale(1.1);
+}
+
+/* Specific colors for different stats */
+.stat-card:nth-child(1) .stat-icon { /* Total Points */
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: #2563eb;
+}
+
+.stat-card:nth-child(2) .stat-icon { /* Regions */
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    color: #16a34a;
+}
+
+.stat-card:nth-child(3) .stat-icon { /* Avg Neighbors */
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    color: #ca8a04;
+}
+
+.stat-card:nth-child(4) .stat-icon { /* Max Neighbors */
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    color: #9333ea;
+}
+
+/* Stat Info Text */
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, #1e293b, #475569);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Download Actions Styling */
+.download-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    animation: fadeIn 0.5s ease-out 0.6s forwards; /* Delay to appear after cards */
+    opacity: 0;
+}
+
+/* Animations */
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
+    }
+    
+    .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+}

@@ -9,8 +9,8 @@
     
     <!-- SEO Meta Tags -->
     <title>ContourCreator | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis, engineering design, and clouds of points generation workflows.">
-    <meta name="keywords" content="contour creation, image contours, boundary detection, image processing, scientific analysis, engineering design, shape extraction, computer vision, clouds of points">
+    <meta name="description" content="Create precise contours from images for point cloud generation. Advanced image processing tools for boundary detection.">
+    <meta name="keywords" content="contour creator, image processing, boundary detection, point cloud, mGFD, scientific tools">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
     
@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and clouds of points generation workflows.">
+    <meta property="og:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
     
@@ -26,7 +26,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and clouds of points generation workflows.">
+    <meta property="twitter:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     
     <!-- Canonical URL -->
@@ -85,6 +85,14 @@
                             <i class="fas fa-cloud"></i>
                             CloudGenerator
                         </a></li>
+                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
+                            <i class="fas fa-eye"></i>
+                            CloudViewer
+                        </a></li>
+                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
+                            <i class="fas fa-users"></i>
+                            NeighborsCalculator
+                        </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -125,7 +133,7 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
                     </div>
                     <h1 class="hero-title">ContourCreator</h1>
-                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic segmentation algorithms. Perfect for computational modeling and cloud of points generation workflows.</p>
+                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic segmentation algorithms. Perfect for computational modeling and point cloud generation workflows.</p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-magic"></i>
@@ -343,7 +351,7 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
                      </p>
                 </div>
                 <div class="footer-section">
@@ -351,6 +359,8 @@
                     <ul>
                         <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
                     <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>

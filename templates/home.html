@@ -8,25 +8,25 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
     
     <!-- SEO Meta Tags -->
-    <title>mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research, engineering, and data visualization.">
-    <meta name="keywords" content="cloud of points, contour creation, image processing, scientific visualization, cloud generation, data analysis, engineering tools, research software">
+    <title>mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation</title>
+    <meta name="description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research, engineering, and data visualization.">
+    <meta name="keywords" content="point cloud, contour creation, image processing, scientific visualization, cloud generation, data analysis, engineering tools, research software">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="mGFD: CloudGenerator 2.0 | Advanced Cloud of Points Generation">
-    <meta property="og:description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research and engineering.">
+    <meta property="og:title" content="mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation">
+    <meta property="og:description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research and engineering.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="mGFD: CloudGenerator 2.0 | Advanced Cloud of Points Generation">
-    <meta property="twitter:description" content="Professional tool for generating clouds of points and creating contours from images. Advanced algorithms for scientific research and engineering.">
+    <meta property="twitter:title" content="mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation">
+    <meta property="twitter:description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research and engineering.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     
     <!-- Canonical URL -->
@@ -84,6 +84,14 @@
                             <i class="fas fa-cloud"></i>
                             CloudGenerator
                         </a></li>
+                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
+                            <i class="fas fa-eye"></i>
+                            CloudViewer
+                        </a></li>
+                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
+                            <i class="fas fa-users"></i>
+                            NeighborsCalculator
+                        </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -124,7 +132,7 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
                     </div>
                     <h1 class="hero-title">mGFD: CloudGenerator 2.0</h1>
-                    <p class="hero-subtitle">Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method</p>
+                    <p class="hero-subtitle">Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method</p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-bullseye"></i>
@@ -159,7 +167,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Powerful Tools for Scientific Computing</h2>
-                <p class="section-subtitle">Everything you need to generate high-quality clouds of points</p>
+                <p class="section-subtitle">Everything you need to generate high-quality point clouds</p>
             </div>
             
             <div class="features-grid">
@@ -191,7 +199,7 @@
                         <i class="fas fa-bolt"></i>
                     </div>
                     <h3 class="feature-title">CloudGenerator</h3>
-                    <p class="feature-description">Generate unstructured clouds of points from CSV files. Automatically optimizes point distribution according to geometry for mGFD simulations.</p>
+                    <p class="feature-description">Generate unstructured point clouds from CSV files. Automatically optimizes point distribution according to geometry for mGFD simulations.</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-tachometer-alt"></i>
@@ -208,6 +216,50 @@
                     </a>
                 </div>
                 
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="feature-title">CloudViewer</h3>
+                    <p class="feature-description">Visualize your generated point clouds directly in the browser. Inspect node distribution, regions, and boundary classifications with high-quality 2D plots.</p>
+                    <div class="feature-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-image"></i>
+                            <span>2D Plots</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-search-plus"></i>
+                            <span>Inspect</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('viewer') }}" class="feature-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Try CloudViewer
+                    </a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="feature-title">NeighborsCalculator</h3>
+                    <p class="feature-description">Calculate and analyze neighbor relationships within your point clouds. Essential for mGFD connectivity analysis and validation.</p>
+                    <div class="feature-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-calculator"></i>
+                            <span>Fast Calc</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-network-wired"></i>
+                            <span>Connectivity</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('neighbors') }}" class="feature-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        Try NeighborsCalculator
+                    </a>
+                </div>
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
@@ -238,7 +290,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">Complete process from image to unstructured cloud of points</p>
+                <p class="section-subtitle">Complete process from image to unstructured point cloud</p>
             </div>
             
             <div class="workflow-timeline">
@@ -293,11 +345,11 @@
                 <div class="workflow-step">
                     <div class="step-connector"></div>
                     <div class="step-circle">
-                        <i class="fas fa-project-diagram"></i>
+                        <i class="fas fa-cogs"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-cogs"></i> Generate Cloud of Points</h4>
-                        <p class="step-description">Transform contours into optimized unstructured clouds of points using advanced algorithms specifically designed for mGFD computational efficiency.</p>
+                        <h4 class="step-title"><i class="fas fa-cogs"></i> Generate Point Cloud</h4>
+                        <p class="step-description">Transform contours into optimized unstructured point clouds using advanced algorithms specifically designed for mGFD computational efficiency.</p>
                         <div class="step-features">
                             <span class="feature-tag">mGFD Optimized</span>
                             <span class="feature-tag">Adaptive Density</span>
@@ -312,9 +364,9 @@
                     </div>
                     <div class="step-content">
                         <h4 class="step-title"><i class="fas fa-eye"></i> Visualize & Analyze</h4>
-                        <p class="step-description">Interactive visualization of generated clouds of points with comprehensive analysis tools, quality metrics, and multiple export formats for your research needs.</p>
+                        <p class="step-description">Detailed visualization of generated point clouds with comprehensive analysis tools, quality metrics, and multiple export formats for your research needs.</p>
                         <div class="step-features">
-                            <span class="feature-tag">3D Visualization</span>
+                            <span class="feature-tag">2D Visualization</span>
                             <span class="feature-tag">Quality Analysis</span>
                             <span class="feature-tag">Multiple Exports</span>
                         </div>
@@ -369,9 +421,9 @@
                     <div class="key-feature-content">
                         <div class="key-feature-badge">Optimized</div>
                         <div class="key-feature-header">
-                            <h4 class="key-feature-title">Adaptive Cloud of Points Generation</h4>
+                            <h4 class="key-feature-title">Adaptive Point Cloud Generation</h4>
                         </div>
-                        <p class="key-feature-description">Generates optimized clouds of points with adaptive density based on geometric complexity. Preserves original contour points and automatically classifies boundary nodes for mGFD applications.</p>
+                        <p class="key-feature-description">Generates optimized point clouds with adaptive density based on geometric complexity. Preserves original contour points and automatically classifies boundary nodes for mGFD applications.</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
                                 <span class="metric-value">Adaptive</span>
@@ -423,7 +475,7 @@
                         <div class="key-feature-header">
                             <h4 class="key-feature-title">Flexible Data Export</h4>
                         </div>
-                        <p class="key-feature-description">Exports cloud of points data in CSV format with comprehensive node classification including boundary, interface, and interior node types. Compatible with scientific computing workflows and mGFD solvers.</p>
+                        <p class="key-feature-description">Exports point cloud data in CSV format with comprehensive node classification including boundary, interface, and interior node types. Compatible with scientific computing workflows and mGFD solvers.</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
                                 <span class="metric-value">CSV</span>
@@ -449,7 +501,7 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
                      </p>
                 </div>
                 <div class="footer-section">
@@ -457,6 +509,8 @@
                     <ul>
                         <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
                         <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>

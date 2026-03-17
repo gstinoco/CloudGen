@@ -9,8 +9,8 @@
     
     <!-- SEO Meta Tags -->
     <title>CloudGenerator | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data for scientific research and engineering applications.">
-    <meta name="keywords" content="cloud of points generation, image to cloud of points, coordinate extraction, cloud generation, scientific visualization, image processing, data export, CSV coordinates">
+    <meta name="description" content="Generate 2D point clouds with advanced control over distribution, density, and boundary conditions. Support for mGFD method requirements.">
+    <meta name="keywords" content="point cloud generator, 2D points, mGFD, meshless method, node generation, scientific visualization">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
     
@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="og:description" content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
     
@@ -26,7 +26,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Generate high-quality clouds of points from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="twitter:description" content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     
     <!-- Canonical URL -->
@@ -84,9 +84,17 @@
                             <i class="fas fa-draw-polygon"></i>
                             ContourCreator
                         </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
+                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link active">
                             <i class="fas fa-cloud"></i>
                             CloudGenerator
+                        </a></li>
+                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
+                            <i class="fas fa-eye"></i>
+                            CloudViewer
+                        </a></li>
+                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
+                            <i class="fas fa-users"></i>
+                            NeighborsCalculator
                         </a></li>
                     </ul>
                 </li>
@@ -129,8 +137,8 @@
                     </div>
                     <h1 class="hero-title">CloudGenerator</h1>
                     <p class="hero-subtitle">
-                        Generate unstructured clouds of points from CSV files with contour coordinates for mGFD applications. 
-                        Transform your geometric data into computational clouds of points ready for scientific simulations.
+                        Generate unstructured point clouds from CSV files with contour coordinates for mGFD applications. 
+                        Transform your geometric data into computational point clouds ready for scientific simulations.
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
@@ -139,7 +147,7 @@
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-cloud"></i>
-                            <span>Cloud of Points Generation</span>
+                            <span>Point Cloud Generation</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-download"></i>
@@ -163,7 +171,7 @@
                     </div>
                     <div class="card-title">
                         <h3>Required CSV File Format</h3>
-                        <p>Understand the expected data structure for cloud of points generation</p>
+                        <p>Understand the expected data structure for point cloud generation</p>
                     </div>
                 </div>
                 <div class="format-content">
@@ -404,7 +412,7 @@
                     </div>
                     <div class="card-title">
                         <h3>Generation Options</h3>
-                        <p>Configure cloud of points generation parameters</p>
+                        <p>Configure point cloud generation parameters</p>
                     </div>
                 </div>
                 
@@ -423,8 +431,8 @@
                                 </div>
                             </div>
                             <div class="option-content">
-                                <h4 class="option-title">Interior Clouds of Points</h4>
-                                <p class="option-description">Generate clouds of points inside internal regions (holes). Recommended for complex geometries with internal boundaries.</p>
+                                <h4 class="option-title">Interior Point Clouds</h4>
+                                <p class="option-description">Generate point clouds inside internal regions (holes). Recommended for complex geometries with internal boundaries.</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
@@ -508,7 +516,7 @@
                     <div class="generation-action">
                         <button onclick="generateCloud()" id="generateBtn" class="btn btn-primary btn-large">
                             <i class="fas fa-rocket"></i>
-                            <span>Generate Cloud of Points</span>
+                            <span>Generate Point Cloud</span>
                             <div class="btn-shine"></div>
                         </button>
                         <p class="action-note">
@@ -526,7 +534,7 @@
                         <i class="fas fa-cog fa-spin"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Generating Cloud of Points</h3>
+                        <h3>Generating Point Cloud</h3>
                         <p>Please wait while we process your data...</p>
                     </div>
                 </div>
@@ -565,7 +573,7 @@
                     </div>
                     <div class="card-title">
                         <h3>Generation Complete</h3>
-                        <p>Cloud of points generated successfully</p>
+                        <p>Point cloud generated successfully</p>
                     </div>
                 </div>
                 
@@ -651,7 +659,7 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating clouds of points that can be used with the meshless Generalized Finite Differences (mGFD) method.
+                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
                      </p>
                 </div>
                 <div class="footer-section">
@@ -659,6 +667,8 @@
                     <ul>
                         <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
                     <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>

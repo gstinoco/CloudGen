@@ -45,7 +45,7 @@ const Utils = {
                 </div>
                 <h4>${title}</h4>
                 <p>${message}</p>
-                <button class="btn btn-secondary btn-small" onclick="${resetFn}()">
+                <button class="control-btn secondary small" onclick="${resetFn}()">
                     <i class="fas fa-redo"></i>
                     Try Again
                 </button>

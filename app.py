@@ -1,7 +1,7 @@
 """
-mGFD CloudGenerator - Advanced Cloud of Points Generation Tool
+mGFD CloudGenerator - Advanced Point Cloud Generation Tool
 
-This Flask web application provides an advanced tool for generating clouds of points
+This Flask web application provides an advanced tool for generating point clouds
 that can be used with the meshless Generalized Finite Differences (mGFD) method.
 The application offers two main functionalities:
 
@@ -14,8 +14,8 @@ The application offers two main functionalities:
    Users can visualize, manage, and export detected regions as CSV files containing
    normalized coordinate points.
 
-2. Cloud Generator: Cloud of points generation system that processes CSV files
-   containing contour coordinates and generates optimized clouds of points using
+2. Cloud Generator: Point cloud generation system that processes CSV files
+   containing contour coordinates and generates optimized point clouds using
    two advanced distribution algorithms:
    - Regular Distribution: Uniform grid-based point generation for structured patterns
    - Natural Distribution: Poisson Disk Sampling for organic, randomly spaced patterns
@@ -32,7 +32,7 @@ Key Features:
 - Comprehensive logging system with rotation and debug modes
 - RESTful API endpoints for all operations with JSON responses
 - Support for multiple image formats (PNG, JPG, JPEG, GIF, BMP)
-- Asynchronous cloud of points generation with real-time progress tracking
+- Asynchronous point cloud generation with real-time progress tracking
 - Multi-region support for complex geometries with interior holes
 - Downloadable results in multiple formats with visualization previews
 
@@ -59,7 +59,7 @@ Point Generation Algorithms:
 
 Author: Gerardo Tinoco-Guerrero
 Date: May, 2025
-Last Modification: January 26th, 2026
+Last Modification: March, 2026
 
 Dependencies:
 - Flask >= 2.0.0
@@ -85,9 +85,12 @@ import os
 import re
 
 # Import project-specific modules
-from cloud_generation import generate_cloud_regular, generate_cloud_natural
-from reduce_points import reduce_points_by_region
-import contour_detection
+from cloud_modules.generator import generate_cloud_regular, generate_cloud_natural
+from cloud_modules.reduction import reduce_points_by_region
+from contour_modules import detection as contour_detection
+from cloud_modules.data_processing import load_cloud_data
+from cloud_modules.visualization import create_visualization
+from analysis_modules.neighbors import compute_neighbors_from_file
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -312,6 +315,157 @@ def home():
         str: Rendered HTML template for the home page
     """
     return render_template('home.html')
+
+@app.route('/viewer')
+def viewer():
+    """
+    Render the cloud/contour viewer page.
+    
+    Returns:
+        str: Rendered HTML template for the viewer interface
+    """
+    return render_template('viewer.html')
+
+@app.route('/upload_viewer', methods=['POST'])
+def upload_viewer():
+    """
+    Handle CSV file upload and generate visualization for the viewer.
+    
+    Returns:
+        JSON response with image URLs or error message
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file part'})
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No selected file'})
+            
+        if file and allowed_csv_file(file.filename):
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            unique_filename = f"viewer_{timestamp}_{filename}"
+            input_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            output_base = os.path.splitext(input_path)[0]
+            
+            file.save(input_path)
+            
+            # Load cloud data
+            points, regions, classifications = load_cloud_data(input_path)
+            
+            if not points:
+                return jsonify({'success': False, 'error': 'Failed to load points from CSV or file is empty'})
+                
+            # Convert to numpy array for visualization
+            points_array = np.array(points)
+            
+            # Create visualization
+            if create_visualization(points_array, regions, output_base, classifications):
+                # Generate URLs
+                filename_base = os.path.basename(output_base)
+                image_url = url_for('uploaded_file', filename=f"{filename_base}.png")
+                svg_url = url_for('uploaded_file', filename=f"{filename_base}.svg")
+                
+                return jsonify({
+                    'success': True,
+                    'image_url': image_url,
+                    'svg_url': svg_url,
+                    'total_points': len(points)
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Visualization generation failed'})
+                
+        else:
+            return jsonify({'success': False, 'error': 'Invalid file type. Please upload a CSV file.'})
+            
+    except Exception as e:
+        app.logger.error(f"Error in upload_viewer: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/neighbors')
+def neighbors():
+    """
+    Render the neighbors calculator page.
+    
+    Returns:
+        str: Rendered HTML template for the neighbors interface
+    """
+    return render_template('neighbors.html')
+
+@app.route('/upload_neighbors', methods=['POST'])
+def upload_neighbors():
+    """
+    Handle CSV file upload and calculate neighbors.
+    
+    Returns:
+        JSON response with neighbors CSV URL and visualization or error message
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file part'})
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No selected file'})
+            
+        if file and allowed_csv_file(file.filename):
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            unique_filename = f"neighbors_{timestamp}_{filename}"
+            input_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            output_base = os.path.splitext(input_path)[0]
+            
+            file.save(input_path)
+            
+            # Calculate neighbors
+            neighbors_indices = compute_neighbors_from_file(input_path)
+            
+            if neighbors_indices is None:
+                return jsonify({'success': False, 'error': 'Failed to compute neighbors'})
+            
+            # Save neighbors to CSV
+            neighbors_csv_path = f"{output_base}_neighbors.csv"
+            with open(neighbors_csv_path, 'w', newline='') as f:
+                writer = csv.writer(f)
+                # Write header: point_idx, neighbor_1, neighbor_2, ...
+                header = ['point_idx'] + [f'neighbor_{i+1}' for i in range(neighbors_indices.shape[1])]
+                writer.writerow(header)
+                for i, row in enumerate(neighbors_indices):
+                    writer.writerow([i] + row.tolist())
+            
+            # Load cloud data for statistics
+            points, regions, classifications = load_cloud_data(input_path)
+            
+            # Calculate statistics
+            total_points = len(points)
+            unique_regions = len(np.unique(regions))
+            
+            # Calculate neighbors stats
+            neighbors_found = np.sum(neighbors_indices != -1)
+            total_possible_neighbors = neighbors_indices.size
+            avg_neighbors = neighbors_found / total_points
+            
+            filename_base = os.path.basename(output_base)
+            neighbors_csv_url = url_for('uploaded_file', filename=f"{filename_base}_neighbors.csv")
+            
+            return jsonify({
+                'success': True,
+                'neighbors_csv_url': neighbors_csv_url,
+                'stats': {
+                    'total_points': total_points,
+                    'total_regions': unique_regions,
+                    'avg_neighbors': round(avg_neighbors, 2),
+                    'max_neighbors': neighbors_indices.shape[1]
+                }
+            })
+                
+        else:
+            return jsonify({'success': False, 'error': 'Invalid file type. Please upload a CSV file.'})
+            
+    except Exception as e:
+        app.logger.error(f"Error in upload_neighbors: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/contour_creator')
 def contour_creator():
@@ -1255,10 +1409,10 @@ def upload_csv():
 @app.route('/generate_cloud', methods=['POST'])
 def generate_cloud_api():
     """
-    API endpoint to generate a cloud of points from uploaded CSV data.
+    API endpoint to generate a point cloud from uploaded CSV data.
     
     This endpoint processes CSV files containing coordinate data and generates
-    optimized clouds of points using Regular Distribution algorithms.
+    optimized point clouds using Regular Distribution algorithms.
     
     Request Format:
         POST /generate_cloud
@@ -1281,7 +1435,7 @@ def generate_cloud_api():
         JSON Response:
         {
             "success": true,
-            "message": "Cloud of points generated successfully",
+            "message": "Point cloud generated successfully",
             "files": ["file1.csv", "file2.csv", ...]
         }
         
@@ -1320,7 +1474,7 @@ def generate_cloud_api():
     Example Response:
         {
             "success": true,
-            "message": "Cloud of points generated successfully",
+            "message": "Point cloud generated successfully",
             "files": ["coordinates_nodes_20250823_143022.csv", "coordinates_elements_20250823_143022.csv"]
         }
     """
@@ -1366,7 +1520,7 @@ def generate_cloud_api():
             except Exception as e:
                 app.logger.error(f"Error in point reduction: {str(e)}, using original file")
         
-        # Generate cloud of points using Regular Distribution
+        # Generate point cloud using Regular Distribution
         app.logger.info(f"Starting cloud generation for {csv_filename}")
         
         # Construct output file path
@@ -1432,7 +1586,7 @@ def generate_cloud_api():
 @app.route('/generate_cloud_natural', methods=['POST'])
 def generate_cloud_natural_api():
     """
-    API endpoint to generate a cloud of points using Natural Distribution for more natural distribution.
+    API endpoint to generate a point cloud using Natural Distribution for more natural distribution.
     
     This endpoint provides an alternative to the standard grid-based approach by using
     Natural Distribution, which creates more natural and less regular point distributions.
@@ -1460,7 +1614,7 @@ def generate_cloud_natural_api():
         JSON Response:
         {
             "success": true,
-            "message": "Natural Distribution cloud of points generated successfully",
+            "message": "Natural Distribution point cloud generated successfully",
             "files": ["file1.csv", "file2.csv", ...]
         }
         
@@ -1530,7 +1684,7 @@ def generate_cloud_natural_api():
             except Exception as e:
                 app.logger.error(f"Error in point reduction for Natural Distribution: {str(e)}, using original file")
         
-        # Generate cloud of points using Natural Distribution
+        # Generate point cloud using Natural Distribution
         app.logger.info(f"Starting Natural Distribution cloud generation for {csv_filename}")
         
         # Construct output file path with "natural" identifier

@@ -8,25 +8,25 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
     
     <!-- SEO Meta Tags -->
-    <title>Examples & Case Studies | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Explore case studies and examples of point clouds generated from real-world geographical regions using CloudGenerator 2.0.">
-    <meta name="keywords" content="point cloud generation examples, point cloud case studies, geographical data, lake contours, scientific visualization">
+    <title>NeighborsCalculator | mGFD CloudGenerator 2.0</title>
+    <meta name="description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists and visualize data.">
+    <meta name="keywords" content="neighbors calculation, point cloud, mGFD, region isolation, csv processing">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="Examples & Case Studies | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Explore case studies and examples of point clouds generated from real-world geographical regions.">
+    <meta property="og:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
+    <meta property="og:description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="Examples & Case Studies | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Explore case studies and examples of point clouds generated from real-world geographical regions.">
+    <meta property="twitter:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
+    <meta property="twitter:description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     
     <!-- Canonical URL -->
@@ -34,11 +34,10 @@
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/examples.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/neighbors.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-
 </head>
 <body>
     <!-- Navigation -->
@@ -72,7 +71,7 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
+                    <a href="#" class="nav-link dropdown-toggle active">
                         <i class="fas fa-tools"></i>
                         <span>Tools</span>
                         <i class="fas fa-chevron-down"></i>
@@ -90,7 +89,7 @@
                             <i class="fas fa-eye"></i>
                             CloudViewer
                         </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
+                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link active">
                             <i class="fas fa-users"></i>
                             NeighborsCalculator
                         </a></li>
@@ -133,56 +132,120 @@
                     <div class="hero-logo">
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
                     </div>
-                    <h1 class="hero-title">Examples & Case Studies</h1>
+                    <h1 class="hero-title">NeighborsCalculator</h1>
                     <p class="hero-subtitle">
-                        Explore our collection of generated point clouds from diverse geographical regions. Download datasets and visualizations to test and validate your research.
+                        Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to generate neighbor lists and visualize the results.
                     </p>
+                    <div class="hero-features">
+                        <div class="feature-highlight">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Region Aware</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-list-ol"></i>
+                            <span>Global Indexing</span>
+                        </div>
+                        <div class="feature-highlight">
+                            <i class="fas fa-file-csv"></i>
+                            <span>CSV Export</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Examples Section -->
-    <section class="section-light">
+    <!-- Main Content -->
+    <section class="section-dark">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Case Studies</h2>
-                <p class="section-subtitle">Real-world applications of mGFD CloudGenerator</p>
-            </div>
             
-            <div class="examples-grid">
-                {% for example in examples %}
-                <div class="example-card">
-                    <div class="example-visuals">
-                        <div class="example-image-container">
-                            <img src="{{ url_for('static', filename='examples/' + example.image) }}" alt="{{ example.title }} Original" loading="lazy">
-                            <div class="image-label">Original</div>
-                        </div>
-                        <div class="example-image-container">
-                            <img src="{{ url_for('static', filename='examples/' + example.cloud_image) }}" alt="{{ example.title }} Point Cloud" loading="lazy">
-                            <div class="image-label">Point Cloud</div>
-                        </div>
+            <!-- Upload Section -->
+            <div class="app-card upload-card">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    
-                    <div class="example-content">
-                        <h3 class="example-title">{{ example.title }}</h3>
-                        <p class="example-description">{{ example.description }}</p>
-                        
-                        <div class="example-downloads">
-                            <a href="{{ url_for('static', filename='examples/' + example.contours_csv) }}" class="download-btn contours" download>
-                                <i class="fas fa-file-csv"></i> Contours
-                            </a>
-                            <a href="{{ url_for('static', filename='examples/' + example.cloud_csv) }}" class="download-btn cloud" download>
-                                <i class="fas fa-file-csv"></i> Cloud
-                            </a>
-                            <!--<a href="{{ url_for('static', filename='examples/' + example.cloud_svg) }}" class="download-btn svg" download>
-                                <i class="fas fa-vector-square"></i> SVG
-                            </a>-->
-                        </div>
+                    <div class="card-title">
+                        <h3>Upload Point Cloud</h3>
+                        <p>Select a CSV file with x, y, classification, region columns</p>
                     </div>
                 </div>
-                {% endfor %}
+                
+                <div class="upload-zone-container">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-content" id="uploadContent">
+                            <div class="upload-icon-container">
+                                <i class="fas fa-file-csv upload-icon" id="uploadIcon"></i>
+                                <div class="upload-animation">
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                    <div class="upload-pulse"></div>
+                                </div>
+                            </div>
+                            <h4 class="upload-title" id="uploadTitle">Drop your CSV file here</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <div class="upload-formats">
+                                <span class="format-badge">CSV</span>
+                            </div>
+                            <div class="upload-size-limit">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Maximum file size: 10MB</span>
+                            </div>
+                            <div class="upload-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Browse Files</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" id="csvFileInput" name="file" accept=".csv" style="display: none;">
+                </div>
             </div>
+
+            <!-- Loading Section -->
+            <div id="loadingSection" class="app-card loading-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon processing">
+                        <i class="fas fa-cog fa-spin"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Calculating Neighbors</h3>
+                        <p>Processing regions and computing distances...</p>
+                    </div>
+                </div>
+                <div class="progress-content">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="resultSection" class="app-card result-card hidden">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Calculation Complete</h3>
+                        <p>Neighbors computed successfully</p>
+                    </div>
+                </div>
+                
+                <div class="results-content">
+                    <div id="statsContainer" class="stats-container">
+                        <!-- Stats will be inserted here by JS -->
+                    </div>
+                    
+                    <div class="download-actions">
+                        <a id="downloadNeighbors" href="#" class="control-btn primary" download>
+                            <i class="fas fa-download"></i>
+                            <span>Download Neighbors CSV</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="errorSection" class="alert alert-error hidden"></div>
         </div>
     </section>
 
@@ -207,8 +270,6 @@
                         <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -239,18 +300,21 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
+                <div class="container">
+                    <div class="footer-bottom-content">
+                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                        <div class="footer-links">
+                            <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- JavaScript Files -->
     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/examples.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/neighbors.js') }}"></script>
 </body>
 </html>
