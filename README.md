@@ -1186,9 +1186,7 @@ SOFTWARE.
 
 *Advancing meshless methods through open-source collaboration*
 
-[![GitHub stars](https://img.shields.io/github/stars/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/network/members)
-[![GitHub watchers](https://img.shields.io/github/watchers/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/watchers)
+[![GitHub stars](https://img.shields.io/github/stars/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/stargazers) [![GitHub forks](https://img.shields.io/github/forks/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/network/members) [![GitHub watchers](https://img.shields.io/github/watchers/gstinoco/mGFD_CloudGenerator?style=social)](https://github.com/gstinoco/mGFD_CloudGenerator/watchers)
 
 <br/>
 
