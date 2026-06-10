@@ -767,7 +767,7 @@ git checkout -b feature/your-feature-name
   <tbody>
     <tr>
       <td align="center" width="120">
-        <img src="docs/team/profile_placeholder_woman.svg" alt="Maria Goretti Fraga Lopez" width="96" height="96" style="border-radius: 50%;">
+        <img src="docs/team/mgfl.webp" alt="Maria Goretti Fraga Lopez" width="96" height="96" style="border-radius: 50%;">
       </td>
       <td>
         <b>Maria Goretti Fraga-Lopez</b><br/>

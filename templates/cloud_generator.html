@@ -1,47 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
+
     <!-- SEO Meta Tags -->
     <title>CloudGenerator | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Generate 2D point clouds with advanced control over distribution, density, and boundary conditions. Support for mGFD method requirements.">
-    <meta name="keywords" content="point cloud generator, 2D points, mGFD, meshless method, node generation, scientific visualization">
+    <meta name="description"
+        content="Generate 2D point clouds with advanced control over distribution, density, and boundary conditions. Support for mGFD method requirements.">
+    <meta name="keywords"
+        content="point cloud generator, 2D points, mGFD, meshless method, node generation, scientific visualization">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="og:description"
+        content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
+    <meta property="twitter:description"
+        content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ request.url }}">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cloud_generator.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -53,7 +60,7 @@
                     <span class="logo-subtitle">v2.0</span>
                 </div>
             </a>
-            
+
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ url_for('home') }}" class="nav-link">
@@ -81,21 +88,21 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
+                                <i class="fas fa-draw-polygon"></i>
+                                ContourCreator
+                            </a></li>
                         <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link active">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
+                                <i class="fas fa-cloud"></i>
+                                CloudGenerator
+                            </a></li>
                         <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
+                                <i class="fas fa-eye"></i>
+                                CloudViewer
+                            </a></li>
                         <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
+                                <i class="fas fa-users"></i>
+                                NeighborsCalculator
+                            </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -111,14 +118,14 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="nav-actions">
                 <a href="{{ url_for('contour_creator') }}" class="nav-cta">
                     <i class="fas fa-rocket"></i>
                     <span>Get Started</span>
                 </a>
             </div>
-            
+
             <div class="nav-toggle">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -133,11 +140,13 @@
             <div class="hero-content">
                 <div class="hero-main">
                     <div class="hero-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
+                            class="logo-image">
                     </div>
                     <h1 class="hero-title">CloudGenerator</h1>
                     <p class="hero-subtitle">
-                        Generate unstructured point clouds from CSV files with contour coordinates for mGFD applications. 
+                        Generate unstructured point clouds from CSV files with contour coordinates for mGFD
+                        applications.
                         Transform your geometric data into computational point clouds ready for scientific simulations.
                     </p>
                     <div class="hero-features">
@@ -162,7 +171,7 @@
     <!-- Main Application Section -->
     <section class="section-dark">
         <div class="container">
-        
+
             <!-- CSV Format Information -->
             <div id="formatInfoCard" class="app-card format-info-card">
                 <div class="card-header">
@@ -204,7 +213,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="format-example">
                         <div class="example-header">
                             <h4 class="format-example-title">
@@ -213,7 +222,7 @@
                             </h4>
                             <p class="example-description">Here's how your CSV file should be structured</p>
                         </div>
-                        
+
                         <div class="code-preview-container">
                             <div class="code-preview">
                                 <div class="code-header">
@@ -221,7 +230,9 @@
                                         <i class="fas fa-file-csv"></i>
                                         <span class="file-name">example.csv</span>
                                     </div>
-                                    <button class="copy-btn" onclick="copyToClipboard('x,y,region\n0.4571,0.8178,1\n0.4559,0.8166,1\n0.4547,0.8166,1')" title="Copy to clipboard">
+                                    <button class="copy-btn"
+                                        onclick="copyToClipboard('x,y,region\n0.4571,0.8178,1\n0.4559,0.8166,1\n0.4547,0.8166,1')"
+                                        title="Copy to clipboard">
                                         <i class="fas fa-copy"></i>
                                         <span class="copy-text">Copy</span>
                                     </button>
@@ -243,14 +254,15 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="format-tips">
                         <div class="tip-item">
                             <div class="tip-icon">
                                 <i class="fas fa-lightbulb"></i>
                             </div>
                             <div class="tip-text">
-                                <strong>Perfect Compatibility:</strong> Use files generated by ContourCreator for seamless integration
+                                <strong>Perfect Compatibility:</strong> Use files generated by ContourCreator for
+                                seamless integration
                             </div>
                         </div>
                         <div class="tip-item">
@@ -258,18 +270,19 @@
                                 <i class="fas fa-download"></i>
                             </div>
                             <div class="tip-text">
-                                <strong>Sample File:</strong> Download our 
-                                <a href="{{ url_for('static', filename='examples/example_1_contour.csv') }}" download="example_1_contour.csv" class="download-link">
+                                <strong>Sample File:</strong> Download our
+                                <a href="{{ url_for('static', filename='examples/example_1_contour.csv') }}"
+                                    download="example_1_contour.csv" class="download-link">
                                     <i class="fas fa-file-csv"></i>
                                     example_1.csv
-                                </a> 
+                                </a>
                                 reference example
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
+
             <!-- File Upload Section -->
             <div class="app-card upload-card" id="uploadSection">
                 <div class="card-header">
@@ -309,7 +322,8 @@
                         <div class="upload-progress" id="uploadProgress" style="display: none;">
                             <div class="progress-circle">
                                 <svg class="progress-ring" width="60" height="60">
-                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4"
+                                        fill="transparent" r="26" cx="30" cy="30" />
                                 </svg>
                                 <span class="progress-text" id="progressText">0%</span>
                             </div>
@@ -337,13 +351,14 @@
                     <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 </div>
                 <div class="upload-actions">
-                    <button class="btn btn-secondary" id="resetUploadButton" onclick="clearUpload()" style="display: none;">
+                    <button class="btn btn-secondary" id="resetUploadButton" onclick="clearUpload()"
+                        style="display: none;">
                         <i class="fas fa-times"></i>
                         <span>Clear</span>
                     </button>
                 </div>
             </div>
-        
+
             <!-- File Information -->
             <div id="fileInfoSection" class="app-card file-info-card hidden">
                 <div class="card-header">
@@ -361,7 +376,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="file-info-content">
                     <div class="file-stats-section">
                         <h4 class="section-subtitle">
@@ -370,7 +385,7 @@
                         </h4>
                         <div id="fileDetails" class="stats-grid"></div>
                     </div>
-                    
+
                     <div class="visualization-section">
                         <h4 class="section-subtitle">
                             <i class="fas fa-eye"></i>
@@ -403,7 +418,7 @@
                     </div>
                 </div>
             </div>
-        
+
             <!-- Generation Options -->
             <div id="cloudOptionsSection" class="app-card options-card hidden">
                 <div class="card-header">
@@ -415,7 +430,7 @@
                         <p>Configure point cloud generation parameters</p>
                     </div>
                 </div>
-                
+
                 <div class="options-content">
                     <div class="options-grid">
                         <div class="option-card">
@@ -432,7 +447,8 @@
                             </div>
                             <div class="option-content">
                                 <h4 class="option-title">Interior Point Clouds</h4>
-                                <p class="option-description">Generate point clouds inside internal regions (holes). Recommended for complex geometries with internal boundaries.</p>
+                                <p class="option-description">Generate point clouds inside internal regions (holes).
+                                    Recommended for complex geometries with internal boundaries.</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
@@ -445,41 +461,37 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="option-card">
                             <div class="option-header">
                                 <div class="option-icon">
-                                    <i class="fas fa-compress-alt"></i>
+                                    <i class="fas fa-layer-group"></i>
                                 </div>
                                 <div class="option-toggle">
-                                    <select id="reducePointsOption" class="form-select">
-                                        <option value="0">No reduction</option>
-                                        <option value="2">Reduce 2x</option>
-                                        <option value="3">Reduce 3x</option>
-                                        <option value="4">Reduce 4x</option>
+                                    <select id="densityMultiplierOption" class="form-select">
+                                        <option value="0.1">0.1x (Lowest Density)</option>
+                                        <option value="0.25">0.25x (Lower Density)</option>
+                                        <option value="0.5">0.5x (Lower Density)</option>
+                                        <option value="1.0" selected>1.0x (Normal Density)</option>
+                                        <option value="1.5">1.5x (Higher Density)</option>
+                                        <option value="2.0">2.0x (Highest Density)</option>
+                                        <option value="3.0">3.0x (Extreme Density)</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="option-content">
-                                <h4 class="option-title">Reduce Contour Points</h4>
-                                <p class="option-description">Reduces contour points by applying the reduction algorithm multiple times. Higher values provide more aggressive reduction for very dense datasets.</p>
+                                <h4 class="option-title">Node Density</h4>
+                                <p class="option-description">Global density multiplier. Values greater than 1 will
+                                    generate more points and a denser cloud, reducing the distance between them.</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Faster processing
-                                    </span>
-                                    <span class="benefit-tag">
-                                        <i class="fas fa-check"></i>
-                                        Large datasets
-                                    </span>
-                                    <span class="benefit-tag">
-                                        <i class="fas fa-check"></i>
-                                        Configurable reduction
+                                        Resolution control
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="option-card">
                             <div class="option-header">
                                 <div class="option-icon">
@@ -494,7 +506,9 @@
                             </div>
                             <div class="option-content">
                                 <h4 class="option-title">Generation Method</h4>
-                                <p class="option-description">Choose how points are distributed in your cloud. Regular distribution creates uniform, grid-like patterns, while Natural distribution creates more organic, randomly spaced patterns.</p>
+                                <p class="option-description">Choose how points are distributed in your cloud. Regular
+                                    distribution creates uniform, grid-like patterns, while Natural distribution creates
+                                    more organic, randomly spaced patterns.</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
@@ -512,7 +526,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="generation-action">
                         <button onclick="generateCloud()" id="generateBtn" class="btn btn-primary btn-large">
                             <i class="fas fa-rocket"></i>
@@ -526,7 +540,7 @@
                     </div>
                 </div>
             </div>
-        
+
             <!-- Generation Progress -->
             <div id="progressSection" class="app-card progress-card hidden">
                 <div class="card-header">
@@ -538,7 +552,7 @@
                         <p>Please wait while we process your data...</p>
                     </div>
                 </div>
-                
+
                 <div class="progress-content">
                     <div class="progress-wrapper">
                         <div class="progress-bar">
@@ -564,7 +578,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Results -->
             <div id="resultsSection" class="app-card results-card hidden">
                 <div class="card-header">
@@ -576,7 +590,7 @@
                         <p>Point cloud generated successfully</p>
                     </div>
                 </div>
-                
+
                 <div class="results-content">
                     <div class="results-summary">
                         <div class="summary-grid">
@@ -609,13 +623,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="resultsContent" class="results-visualization">
                         <!-- Results will be populated here -->
                     </div>
                 </div>
             </div>
-            
+
             <!-- File Download Section -->
             <div id="fileDownloadSection" class="app-card download-card hidden">
                 <div class="card-header">
@@ -627,7 +641,7 @@
                         <p>Download the generated files in various formats</p>
                     </div>
                 </div>
-                
+
                 <div class="download-content">
                     <div class="download-grid" id="downloadLinks">
                         <!-- Download links will be populated here -->
@@ -659,16 +673,20 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
+                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
+                        Differences (mGFD) method.
+                    </p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                    <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('contour_creator') }}"><i
+                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
+                        </li>
                         <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
+                        </li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
@@ -688,15 +706,18 @@
                     <h3>Sponsored by</h3>
                     <div class="sponsor-logos">
                         <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
+                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
                             <span class="sponsor-name">SIIIA MATH</span>
                         </a>
                         <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
+                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
                             <span class="sponsor-name">UMSNH</span>
                         </a>
                         <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
+                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
                             <span class="sponsor-name">SECIHTI</span>
                         </a>
                     </div>
@@ -704,7 +725,8 @@
             </div>
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.
+                    </p>
                     <div class="footer-links">
                         <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
                     </div>
@@ -714,11 +736,12 @@
     </footer>
 
     <!-- JavaScript Files -->
-     <script>
+    <script>
         const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
     </script>
     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
 </body>
+
 </html>

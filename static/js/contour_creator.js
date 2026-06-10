@@ -987,8 +987,10 @@ function drawAllRegions() {
         ctx.strokeStyle = region.color;
         ctx.lineWidth = 2 / zoomLevel;
         
-        for (let i = 0; i < region.contour_points.length; i++) {
-            const point = region.contour_points[i];
+        let pointsToDraw = region.contour_points;
+        
+        for (let i = 0; i < pointsToDraw.length; i++) {
+            const point = pointsToDraw[i];
             // Coordinates come normalized by width and height respectively
             const x = point.x * scaleX;
             const y = point.y * scaleY;
@@ -1031,8 +1033,10 @@ function drawTempRegion(data) {
     ctx.lineWidth = 3 / zoomLevel;
     ctx.setLineDash([5, 5]); // Dashed line for temporary region
     
-    for (let i = 0; i < data.contour_points.length; i++) {
-        const point = data.contour_points[i];
+    let pointsToDraw = data.contour_points;
+    
+    for (let i = 0; i < pointsToDraw.length; i++) {
+        const point = pointsToDraw[i];
         // Use the same coordinate normalization as drawAllRegions
         const x = point.x * scaleX;
         const y = point.y * scaleY;
@@ -1127,6 +1131,8 @@ function addRegion() {
     if (!tempRegion) return;
     
     tempRegion.visible = true;
+    tempRegion.original_contour_points = [...tempRegion.contour_points];
+    tempRegion.smoothing = 100; // 100% retention initially
     detectedRegions.push(tempRegion);
     currentRegionIndex++;
     
@@ -1193,6 +1199,16 @@ function updateRegionsList() {
                         <span>${pointCount} points</span>
                     </div>
                 </div>
+                <div class="region-reduction" style="margin: 10px 0; padding: 0 5px;">
+                    <label style="display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 5px; color: var(--text-secondary);">
+                        <span><i class="fas fa-compress-arrows-alt"></i> Node Retention</span>
+                        <span id="smoothing-val-${index}">${region.smoothing !== undefined ? region.smoothing : 100}%</span>
+                    </label>
+                    <input type="range" min="1" max="100" value="${region.smoothing !== undefined ? region.smoothing : 100}" 
+                           oninput="document.getElementById('smoothing-val-${index}').textContent = this.value + '%'"
+                           onchange="applyRegionSmoothing(${index}, this.value)"
+                           style="width: 100%;">
+                </div>
                 <div class="region-actions">
                     <button class="region-btn toggle" 
                             onclick="toggleRegion(${index})" 
@@ -1216,6 +1232,25 @@ function updateRegionsList() {
             </div>
         `;
     }).join('');
+}
+
+function applyRegionSmoothing(index, value) {
+    if (index < 0 || index >= detectedRegions.length) return;
+    
+    const region = detectedRegions[index];
+    const targetPercentage = parseFloat(value);
+    
+    region.smoothing = targetPercentage;
+    
+    if (targetPercentage < 100) {
+        region.contour_points = simplifyRegionContour(region.original_contour_points, targetPercentage);
+    } else {
+        region.contour_points = [...region.original_contour_points];
+    }
+    
+    // Update the UI
+    updateRegionsList();
+    redrawCanvas();
 }
 
 function toggleRegion(index) {
@@ -1491,7 +1526,7 @@ function toggleRefineMode() {
         canvas.style.cursor = 'crosshair';
         showFloatingNotification('Refinement mode activated. Click and drag to add/remove areas. Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.', 'info');
         
-        // Actualizar las instrucciones para incluir información sobre el zoom y pan
+        // Update instructions to include information about zoom and pan
         const refineInstructions = document.querySelector('.refine-instructions .refine-text');
         if (refineInstructions) {
             refineInstructions.innerHTML = '<i class="fas fa-info-circle"></i> Click to add areas (+) or hold Shift to remove (-). Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.';
@@ -1499,7 +1534,7 @@ function toggleRefineMode() {
     } else {
         refineControls.style.display = 'none';
         toggleBtn.classList.remove('active');
-        toggleBtn.innerHTML = '<i class="fas fa-edit"></i><span>Refinar Selección</span>';
+        toggleBtn.innerHTML = '<i class="fas fa-edit"></i><span>Refine Selection</span>';
         canvas.style.cursor = 'pointer';
         resetRefineState();
         showFloatingNotification('Refinement mode deactivated.', 'info');
@@ -1844,3 +1879,92 @@ loadImage = function(url) {
         refineModeToggle.disabled = false;
     }
 };
+
+// Update boundary reduction
+function updateBoundaryReduction(value) {
+    document.getElementById('boundaryReductionValue').textContent = (value / 10).toFixed(1) + '%';
+    redrawCanvas(); // Update canvas real-time when slider changes
+}
+
+// ===== CONTOUR SIMPLIFICATION (DOUGLAS-PEUCKER) =====
+
+function simplifyRegionContour(points, targetPercentage) {
+    if (targetPercentage >= 100 || points.length <= 3) return points;
+    
+    const targetPointsCount = Math.max(3, Math.floor(points.length * (targetPercentage / 100)));
+    const arcLen = calculateArcLength(points);
+    
+    // Binary search to find optimal epsilon for Douglas-Peucker
+    let low = 0;
+    let high = arcLen;
+    let bestPoints = points;
+    let bestDiff = points.length;
+    
+    for (let i = 0; i < 20; i++) {
+        let mid = (low + high) / 2;
+        let simplified = douglasPeucker(points, mid);
+        
+        let diff = Math.abs(simplified.length - targetPointsCount);
+        if (diff < bestDiff) {
+            bestDiff = diff;
+            bestPoints = simplified;
+        }
+        
+        if (simplified.length > targetPointsCount) {
+            low = mid;
+        } else if (simplified.length < targetPointsCount) {
+            high = mid;
+        } else {
+            break; // hit exact match
+        }
+    }
+    
+    return bestPoints;
+}
+
+function calculateArcLength(points) {
+    let length = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        length += Math.sqrt(Math.pow(points[i+1].x - points[i].x, 2) + Math.pow(points[i+1].y - points[i].y, 2));
+    }
+    if (points.length > 0) {
+        length += Math.sqrt(Math.pow(points[points.length-1].x - points[0].x, 2) + Math.pow(points[points.length-1].y - points[0].y, 2));
+    }
+    return length;
+}
+
+function douglasPeucker(points, epsilon) {
+    if (points.length <= 2) return points;
+    
+    let dmax = 0;
+    let index = 0;
+    const end = points.length - 1;
+    
+    const p1 = points[0];
+    const p2 = points[end];
+    
+    const lineLength = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+    
+    for (let i = 1; i < end; i++) {
+        const p = points[i];
+        let d = 0;
+        if (lineLength === 0) {
+            d = Math.sqrt(Math.pow(p.x - p1.x, 2) + Math.pow(p.y - p1.y, 2));
+        } else {
+            d = Math.abs((p2.y - p1.y) * p.x - (p2.x - p1.x) * p.y + p2.x * p1.y - p2.y * p1.x) / lineLength;
+        }
+        
+        if (d > dmax) {
+            index = i;
+            dmax = d;
+        }
+    }
+    
+    if (dmax > epsilon) {
+        const recResults1 = douglasPeucker(points.slice(0, index + 1), epsilon);
+        const recResults2 = douglasPeucker(points.slice(index), epsilon);
+        return recResults1.slice(0, -1).concat(recResults2);
+    } else {
+        return [points[0], points[end]];
+    }
+}

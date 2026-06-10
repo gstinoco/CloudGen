@@ -172,16 +172,14 @@ def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float 
         
         # Tertiary: Cloud size based (if available) - this is the most reliable metric for Regular clouds
         if cloud_size_based_refinement:
-            # cloud_size_based_refinement was cloud_size * 0.5
-            # We want something slightly larger to be robust, e.g. 0.6 * cloud_size
-            # Since cloud_size_based_refinement is 0.5 * cloud_size, we multiply by 1.2
-            refinement_candidates.append(cloud_size_based_refinement * 1.2)
+            # We want to be extremely strict with boundary distance. Since boundary nodes are placed
+            # exactly on the contour, distance should be close to 0. Use 5% of cloud_size to prevent
+            # interior nodes (which are typically ~0.5 * cloud_size away) from being marked as boundary.
+            refinement_candidates.append(cloud_size * 0.05)
         
         # Use a weighted approach or median, but favor the cloud_size if available
-        if cloud_size and cloud_size_based_refinement:
-             # If we have cloud_size, it's the ground truth for spacing.
-             # Use a tolerance that is a fraction of cloud_size, e.g. 0.6
-             dynamic_refinement = cloud_size * 0.6
+        if cloud_size:
+            dynamic_refinement = cloud_size * 0.05
         else:
              # Fallback to median of candidates
              dynamic_refinement = np.median(refinement_candidates)
@@ -189,8 +187,8 @@ def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float 
         # Apply reasonable bounds
         min_refinement = 0.0001  # Minimum threshold
         if cloud_size:
-            # Ensure we don't go below half the cloud size
-            min_refinement = max(min_refinement, cloud_size * 0.4)
+            # Ensure we don't go too low, but allow our 0.05*cloud_size target
+            min_refinement = max(min_refinement, cloud_size * 0.01)
             
         max_refinement = min(domain_width, domain_height) * 0.02
         

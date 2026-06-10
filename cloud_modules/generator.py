@@ -47,7 +47,7 @@ from cloud_modules.export import export_to_csv
 setup_logging()
 
 def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main_region_strategy: callable, interior_regions_strategy: callable, 
-                         inside_regions: bool = False, contour_reduction: bool = False, reduction_percentage: int = 10, cloud_size: float = None) -> dict:
+                         inside_regions: bool = False, cloud_size: float = None, density_multiplier: float = 1.0) -> dict:
     """
     Core function for cloud generation to strictly follow DRY principle.
     Encapsulates common logic for Natural and Regular distribution methods.
@@ -58,32 +58,12 @@ def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main
         logging.info(f"Input file: {csv_file}")
         logging.info(f"Output file: {output_file}")
         logging.info(f"Interior regions: {inside_regions}")
-        logging.info(f"Reduce contour: {contour_reduction}")
+        logging.info(f"Interior regions: {inside_regions}")
         
         working_csv_file = csv_file
         
-        if contour_reduction and reduction_percentage > 0:
-            multiplier = max(1, int(reduction_percentage / 10))
-            # Fix: use tempfile properly
-            temp_fd, temp_reduced_file = tempfile.mkstemp(suffix='.csv')
-            os.close(temp_fd)
-            
-            logging.info(f"Applying contour reduction with {reduction_percentage}% reduction (multiplier: {multiplier})")
-            result_df = reduce_points.reduce_points_by_region(csv_file, temp_reduced_file, multiplier)
-            
-            if result_df is not None:
-                working_csv_file = temp_reduced_file
-                logging.info(f"Contour reduction completed successfully")
-            else:
-                logging.warning("Contour reduction failed, using original file")
-                if os.path.exists(temp_reduced_file):
-                    os.remove(temp_reduced_file)
-                temp_reduced_file = None
-        
         regions = load_regions(working_csv_file)
         if not regions:
-            if temp_reduced_file and os.path.exists(temp_reduced_file):
-                os.remove(temp_reduced_file)
             return {"success": False, "error": "Failed to load regions from CSV"}
         
         logging.info(f"Loaded {len(regions)} region(s)")
@@ -91,6 +71,14 @@ def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main
         main_region = regions[0]
         hole_regions = regions[1:] if len(regions) > 1 else []
         
+        # Calculate explicit cloud size with density multiplier
+        from cloud_modules.utils import calculate_cloud_size
+        if cloud_size is None:
+            base_cloud_size = calculate_cloud_size(main_region)
+            # Higher density multiplier = smaller cloud size = more points
+            cloud_size = base_cloud_size / density_multiplier
+            logging.info(f"Calculated base cloud size: {base_cloud_size}, final with multiplier: {cloud_size}")
+            
         # Execute Main Region Strategy
         # Pass inside_regions to control hole boundary generation
         main_boundary, main_interior, actual_cloud_size = main_region_strategy(main_region, hole_regions, cloud_size, inside_regions)
@@ -160,12 +148,11 @@ def _generate_cloud_core(csv_file: str, output_file: str, method_name: str, main
     except Exception as e:
         error_msg = f"Error in cloud generation with {method_name} Distribution: {str(e)}"
         logging.error(error_msg)
-        if temp_reduced_file and os.path.exists(temp_reduced_file):
-            os.remove(temp_reduced_file)
+        logging.error(error_msg)
         return {"success": False, "error": error_msg}
 
-def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
-                           reduction_percentage: int = 10, cloud_size: float = None) -> dict:
+def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool = False,
+                           cloud_size: float = None, density_multiplier: float = 1.0) -> dict:
     """
     Generate point cloud using Natural Distribution algorithm with Poisson Disk Sampling.
     
@@ -180,10 +167,7 @@ def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool
                           Generated files: .csv (coordinates), .png (visualization), .svg (vector).
         inside_regions (bool, optional): Enable multi-region processing for interior holes.
                                         If True, processes regions 2+ as interior holes. Default: False.
-        contour_reduction (bool, optional): Apply point reduction to boundary contours.
-                                         Reduces computational complexity. Default: False.
-        reduction_percentage (int, optional): Percentage of points to reduce from contours.
-                                            Valid range: 1-90. Default: 10.
+
         cloud_size (float, optional): Override automatic cloud size calculation.
                                      If None, calculates adaptive size based on geometry.
     
@@ -198,7 +182,7 @@ def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool
         return _generate_cloud_core(
             csv_file, output_file, "Natural",
             main_strategy, interior_strategy,
-            inside_regions, contour_reduction, reduction_percentage, cloud_size
+            inside_regions, cloud_size, density_multiplier
         )
         
     except Exception as e:
@@ -206,8 +190,8 @@ def generate_cloud_natural(csv_file: str, output_file: str, inside_regions: bool
         logging.error(error_msg)
         return {"success": False, "error": error_msg}
 
-def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool = False, contour_reduction: bool = False, 
-                           reduction_percentage: int = 10, cloud_size: float = None) -> dict:
+def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool = False,
+                           cloud_size: float = None, density_multiplier: float = 1.0) -> dict:
     """
     Generate point cloud using Regular Distribution algorithm with grid-based approach.
     
@@ -222,10 +206,7 @@ def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool
                           Generated files: .csv (coordinates), .png (visualization), .svg (vector).
         inside_regions (bool, optional): Enable multi-region processing for interior holes.
                                         If True, processes regions 2+ as interior holes. Default: False.
-        contour_reduction (bool, optional): Apply point reduction to boundary contours.
-                                         Reduces computational complexity. Default: False.
-        reduction_percentage (int, optional): Percentage of points to reduce from contours.
-                                            Valid range: 1-90. Default: 10.
+
         cloud_size (float, optional): Override automatic cloud size calculation.
                                      If None, calculates adaptive size based on geometry.
     
@@ -240,7 +221,7 @@ def generate_cloud_regular(csv_file: str, output_file: str, inside_regions: bool
         return _generate_cloud_core(
             csv_file, output_file, "Regular",
             main_strategy, interior_strategy,
-            inside_regions, contour_reduction, reduction_percentage, cloud_size
+            inside_regions, cloud_size, density_multiplier
         )
         
     except Exception as e:

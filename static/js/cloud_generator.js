@@ -904,9 +904,8 @@ function generateCloud() {
     }
     
     const regionesInside = document.getElementById('regionesInsideOption').checked;
-    const reducePointsValue = parseInt(document.getElementById('reducePointsOption').value);
-    const reducePoints = reducePointsValue > 0;
     const generationMethod = document.getElementById('generationMethodOption').value;
+    const densityMultiplier = document.getElementById('densityMultiplierOption') ? parseFloat(document.getElementById('densityMultiplierOption').value) : 1.0;
     
     // Reset and initialize progress tracking
     progressStartTime = Date.now();
@@ -944,8 +943,7 @@ function generateCloud() {
         body: JSON.stringify({
             csv_filename: currentFilename,
             regiones_inside: regionesInside,
-            reduce_points: reducePoints,
-            reduce_points_multiplier: reducePointsValue
+            density_multiplier: densityMultiplier
         })
     })
     .then(response => response.json())

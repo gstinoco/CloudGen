@@ -283,3 +283,128 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
+
+/* Member Social Links */
+.member-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.member-social a {
+    color: #64748b;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.member-social a:hover {
+    color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.team-member.researcher .member-social a:hover {
+    color: #10b981;
+}
+
+/* Citation Section */
+.citation-section {
+    padding: 5rem 0;
+}
+
+.citation-grid-single {
+    margin-top: 3rem;
+    width: 100%;
+}
+
+.citation-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.citation-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.citation-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.citation-header h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.citation-text {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 3px solid #e2e8f0;
+}
+
+.code-block-container {
+    position: relative;
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+.code-block-container pre {
+    margin: 0;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #cbd5e1;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.copy-btn.copied {
+    background: #10b981;
+    color: white;
+}
+
+.doi-link-container {
+    margin-top: 1.5rem;
+}

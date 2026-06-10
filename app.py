@@ -1132,6 +1132,23 @@ def export_single_region():
             # Transform coordinate with scaling and clamping
             final_x, inverted_y = transform_coordinate(point, scale_x, scale_y)
             coordinates.append([final_x, inverted_y, region_number])
+            
+        # Normalize all coordinates exactly to [0,1]x[0,1]
+        if coordinates:
+            min_x = min(c[0] for c in coordinates)
+            max_x = max(c[0] for c in coordinates)
+            min_y = min(c[1] for c in coordinates)
+            max_y = max(c[1] for c in coordinates)
+            
+            range_x = max_x - min_x
+            range_y = max_y - min_y
+            max_range = max(range_x, range_y)
+            if max_range == 0:
+                max_range = 1.0
+            
+            for c in coordinates:
+                c[0] = (c[0] - min_x) / max_range
+                c[1] = (c[1] - min_y) / max_range
         
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1237,6 +1254,22 @@ def save_all_coordinates():
         
         if not all_coordinates:
             return jsonify({'success': False, 'error': 'No coordinates to save'})
+            
+        # Normalize all coordinates exactly to [0,1]x[0,1]
+        min_x = min(c[0] for c in all_coordinates)
+        max_x = max(c[0] for c in all_coordinates)
+        min_y = min(c[1] for c in all_coordinates)
+        max_y = max(c[1] for c in all_coordinates)
+        
+        range_x = max_x - min_x
+        range_y = max_y - min_y
+        max_range = max(range_x, range_y)
+        if max_range == 0:
+            max_range = 1.0
+        
+        for c in all_coordinates:
+            c[0] = (c[0] - min_x) / max_range
+            c[1] = (c[1] - min_y) / max_range
         
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1483,6 +1516,7 @@ def generate_cloud_api():
     regiones_inside = data.get('regiones_inside', False)
     reduce_points_flag = data.get('reduce_points', False)
     reduce_points_multiplier = data.get('reduce_points_multiplier', 2)
+    density_multiplier = float(data.get('density_multiplier', 1.0))
     
     if not csv_filename:
         return jsonify({'error': 'No CSV file specified'}), 400
@@ -1497,29 +1531,6 @@ def generate_cloud_api():
         
         input_file = filepath
         
-        # Apply point reduction if requested
-        if reduce_points_flag:
-            try:
-                
-                app.logger.info(f"Applying point reduction to {csv_filename}")
-                
-                with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as temp_file:
-                    temp_reduced_file = temp_file.name
-                
-                # Apply standard reduction without filtering - let cloud_generation_delaunay handle filtering
-                result = reduce_points_by_region(filepath, temp_reduced_file, reduce_points_multiplier)
-                
-                if result is not None:
-                    input_file = temp_reduced_file
-                    app.logger.info("Point reduction applied successfully")
-                else:
-                    app.logger.warning("Point reduction failed, using original file")
-                    
-            except ImportError:
-                app.logger.warning("Point reduction module not available, using original file")
-            except Exception as e:
-                app.logger.error(f"Error in point reduction: {str(e)}, using original file")
-        
         # Generate point cloud using Regular Distribution
         app.logger.info(f"Starting cloud generation for {csv_filename}")
         
@@ -1531,19 +1542,11 @@ def generate_cloud_api():
             csv_file=input_file,
             output_file=output_file,
             inside_regions=regiones_inside,
-            contour_reduction=reduce_points_flag,  # Use the actual reduce_points flag from frontend
-            reduction_percentage=reduce_points_multiplier * 5,  # Convert multiplier to percentage
-            cloud_size=None
+            cloud_size=None,
+            density_multiplier=density_multiplier
         )
         
         success = result.get('success', False) if result else False
-        
-        # Clean up temporary file if it was created
-        if reduce_points_flag and input_file != filepath:
-            try:
-                os.remove(input_file)
-            except:
-                pass
         
         if success:
             # Get generated files from result
@@ -1649,6 +1652,7 @@ def generate_cloud_natural_api():
     regiones_inside = data.get('regiones_inside', False)
     reduce_points_flag = data.get('reduce_points', False)
     reduce_points_multiplier = data.get('reduce_points_multiplier', 2)
+    density_multiplier = float(data.get('density_multiplier', 1.0))
     
     if not csv_filename:
         return jsonify({'error': 'No CSV file specified'}), 400
@@ -1663,27 +1667,6 @@ def generate_cloud_natural_api():
         
         input_file = filepath
         
-        # Apply point reduction if requested
-        if reduce_points_flag:
-            try:
-                app.logger.info(f"Applying point reduction to {csv_filename} for Natural Distribution")
-                
-                with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as temp_file:
-                    temp_reduced_file = temp_file.name
-                
-                result = reduce_points_by_region(filepath, temp_reduced_file, reduce_points_multiplier)
-                
-                if result is not None:
-                    input_file = temp_reduced_file
-                    app.logger.info("Point reduction applied successfully for Natural Distribution")
-                else:
-                    app.logger.warning("Point reduction failed, using original file for Natural Distribution")
-                    
-            except ImportError:
-                app.logger.warning("Point reduction module not available, using original file for Natural Distribution")
-            except Exception as e:
-                app.logger.error(f"Error in point reduction for Natural Distribution: {str(e)}, using original file")
-        
         # Generate point cloud using Natural Distribution
         app.logger.info(f"Starting Natural Distribution cloud generation for {csv_filename}")
         
@@ -1695,19 +1678,11 @@ def generate_cloud_natural_api():
             csv_file=input_file,
             output_file=output_file,
             inside_regions=regiones_inside,
-            contour_reduction=reduce_points_flag,
-            reduction_percentage=reduce_points_multiplier * 5,
-            cloud_size=None
+            cloud_size=None,
+            density_multiplier=density_multiplier
         )
         
         success = result.get('success', False) if result else False
-        
-        # Clean up temporary file if it was created
-        if reduce_points_flag and input_file != filepath:
-            try:
-                os.remove(input_file)
-            except:
-                pass
         
         if success:
             # Get generated files from result
