@@ -188,7 +188,7 @@ def calculate_dynamic_boundary_refinement(points: np.ndarray, cloud_size: float 
         min_refinement = 0.0001  # Minimum threshold
         if cloud_size:
             # Ensure we don't go too low, but allow our 0.05*cloud_size target
-            min_refinement = max(min_refinement, cloud_size * 0.01)
+            min_refinement = max(min_refinement, cloud_size * 0.005)
             
         max_refinement = min(domain_width, domain_height) * 0.02
         

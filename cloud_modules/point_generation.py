@@ -35,9 +35,24 @@ from shapely.geometry import Point, Polygon
 import cv2
 import logging
 import random
+from scipy.spatial import Voronoi
 import os
 from concurrent.futures import ProcessPoolExecutor
+from matplotlib.path import Path
 from .utils import calculate_cloud_size, create_closed_contour
+
+def create_fast_polygon_checker(polygon: Polygon):
+    """Returns a fast point-in-polygon checker function using matplotlib Path."""
+    ext_path = Path(np.array(polygon.exterior.coords))
+    hole_paths = [Path(np.array(interior.coords)) for interior in polygon.interiors]
+    
+    def contains(x, y):
+        pt = (x, y)
+        if not ext_path.contains_point(pt): return False
+        for hp in hole_paths:
+            if hp.contains_point(pt): return False
+        return True
+    return contains
 
 def generate_boundary_points(contour: list[tuple[float, float]], cloud_size: float) -> np.ndarray:
     """
@@ -143,147 +158,94 @@ def generate_interior_points(polygon: Polygon, cloud_size: float) -> np.ndarray:
         
     except Exception as e:
         logging.error(f"Error in vectorized point generation: {e}")
-        # Fallback to Shapely iterative method
-        logging.info("Falling back to Shapely iterative method")
+        # Fallback to Path based iterative method
+        logging.info("Falling back to Path iterative method")
         points = []
         # Re-generate grid points if needed (though they are local in try block)
         x_range = np.arange(x_min, x_max + cloud_size, cloud_size)
         y_range = np.arange(y_min, y_max + cloud_size, cloud_size)
+        fast_contains = create_fast_polygon_checker(polygon)
+        
         for x in x_range:
             for y in y_range:
-                if polygon.contains(Point(x, y)):
+                if fast_contains(x, y):
                     points.append([x, y])
         return np.array(points) if points else np.empty((0, 2))
 
-def is_valid_poisson_point(x: float, y: float, minx: float, miny: float, cell_size: float, grid: np.ndarray, points: list[tuple[float, float]], radius: float) -> bool:
-    """
-    Check if a point is valid for Poisson disk sampling.
-    
-    Args:
-        x, y (float): Coordinates of the point to check
-        minx, miny (float): Minimum bounds of the region
-        cell_size (float): Size of grid cells
-        grid (np.array): Spatial grid for fast lookup
-        points (list): List of existing points
-        radius (float): Minimum distance between points
-    
-    Returns:
-        bool: True if point is valid, False otherwise
-    """
-    # Convert to grid coordinates
-    grid_x = int((x - minx) / cell_size)
-    grid_y = int((y - miny) / cell_size)
-    
-    # Check neighboring cells
-    for dy in range(-2, 3):
-        for dx in range(-2, 3):
-            neighbor_x = grid_x + dx
-            neighbor_y = grid_y + dy
-            
-            if (neighbor_x < 0 or neighbor_x >= grid.shape[1] or 
-                neighbor_y < 0 or neighbor_y >= grid.shape[0]):
-                continue
-            
-            point_idx = grid[neighbor_y, neighbor_x]
-            if point_idx != -1:
-                px, py = points[point_idx]
-                distance = np.sqrt((x - px)**2 + (y - py)**2)
-                if distance < radius:
-                    return False
-    
-    return True
+from scipy.stats.qmc import PoissonDisk
+from scipy.spatial import cKDTree
 
 def poisson_disk_sampling(polygon: Polygon, radius: float, k: int = 30, boundary_points: list[tuple[float, float]] = None) -> list[tuple[float, float]]:
     """
-    Generate points using Poisson Disk Sampling algorithm for natural point distribution.
+    Generate points using Poisson Disk Sampling algorithm via SciPy QMC engine for extreme speed.
     
     Args:
         polygon (shapely.geometry.Polygon): Target polygon to fill with points
         radius (float): Minimum distance between any two generated points
-        k (int, optional): Number of attempts to generate points around each active point.
-                          Higher values increase density but also computation time. Default: 30
-        boundary_points (list, optional): Pre-existing boundary points to incorporate.
-                                        If provided, these points are added to the grid first.
+        k (int, optional): Ignored in SciPy version, kept for API compatibility
+        boundary_points (list, optional): Pre-existing boundary points to check distances against.
     
     Returns:
         list: List of (x, y) coordinate tuples representing generated points
     """
     minx, miny, maxx, maxy = polygon.bounds
     
-    cell_size = radius / np.sqrt(2)
+    # SciPy PoissonDisk operates in [0, 1] space.
+    # We must scale our dimensions and the radius down to [0, 1].
+    width = maxx - minx
+    height = maxy - miny
     
-    grid_width = int(np.ceil((maxx - minx) / cell_size))
-    grid_height = int(np.ceil((maxy - miny) / cell_size))
+    # If the polygon is just a point or a line, we can't fill it
+    if width <= 0 or height <= 0:
+        return []
+        
+    scale_factor = max(width, height)
+    scaled_radius = radius / scale_factor
     
-    grid = np.full((grid_height, grid_width), -1, dtype=int)
-    
-    points = []
-    active_list = []
-    
-    if boundary_points:
-        for i, (x, y) in enumerate(boundary_points):
-            if polygon.contains(Point(x, y)) or polygon.boundary.contains(Point(x, y)):
-                points.append((x, y))
-                grid_x = int((x - minx) / cell_size)
-                grid_y = int((y - miny) / cell_size)
-                if 0 <= grid_x < grid_width and 0 <= grid_y < grid_height:
-                    grid[grid_y, grid_x] = len(points) - 1
-    
-    if not points:
-        for _ in range(100):
-            x = random.uniform(minx, maxx)
-            y = random.uniform(miny, maxy)
-            if polygon.contains(Point(x, y)):
-                points.append((x, y))
-                active_list.append(len(points) - 1)
-                grid_x = int((x - minx) / cell_size)
-                grid_y = int((y - miny) / cell_size)
-                if 0 <= grid_x < grid_width and 0 <= grid_y < grid_height:
-                    grid[grid_y, grid_x] = len(points) - 1
-                break
-    else:
-        for i in range(min(5, len(points))):
-            active_list.append(i)
+    try:
+        # Initialize SciPy engine
+        engine = PoissonDisk(d=2, radius=scaled_radius)
+        # Generate samples in [0, 1]^2
+        samples = engine.fill_space()
+    except Exception as e:
+        logging.error(f"SciPy PoissonDisk failed: {e}. Falling back to random uniform points.")
+        # Very rough fallback if radius is too large for the bounding box
+        return []
 
-    while active_list:
-        active_idx = random.randint(0, len(active_list) - 1)
-        point_idx = active_list[active_idx]
-        center_x, center_y = points[point_idx]
-        
-        found_valid = False
-        for _ in range(k):
-            angle = random.uniform(0, 2 * np.pi)
-            distance = random.uniform(radius, 2 * radius)
-            
-            new_x = center_x + distance * np.cos(angle)
-            new_y = center_y + distance * np.sin(angle)
-            
-            if not polygon.contains(Point(new_x, new_y)):
-                continue
-            
-            if is_valid_poisson_point(new_x, new_y, minx, miny, cell_size, grid, points, radius):
-                points.append((new_x, new_y))
-                active_list.append(len(points) - 1)
-                
-                grid_x = int((new_x - minx) / cell_size)
-                grid_y = int((new_y - miny) / cell_size)
-                if 0 <= grid_x < grid_width and 0 <= grid_y < grid_height:
-                    grid[grid_y, grid_x] = len(points) - 1
-                
-                found_valid = True
-                break
-        
-        if not found_valid:
-            # Optimized removal: Swap with last element and pop (O(1)) instead of pop(idx) (O(N))
-            active_list[active_idx] = active_list[-1]
-            active_list.pop()
+    # Scale back to world coordinates
+    samples[:, 0] = samples[:, 0] * scale_factor + minx
+    samples[:, 1] = samples[:, 1] * scale_factor + miny
     
-    if boundary_points:
-        boundary_set = set(boundary_points)
-        interior_points = [p for p in points if p not in boundary_set]
-        return interior_points
+    # Filter points inside polygon
+    fast_contains = create_fast_polygon_checker(polygon)
     
-    return points
+    # We use list comprehension with fast_contains
+    interior_points = [
+        (x, y) for x, y in samples 
+        if fast_contains(x, y)
+    ]
+    
+    if not interior_points:
+        return []
+        
+    if boundary_points and len(boundary_points) > 0:
+        # Filter points that are too close to the boundary points using cKDTree
+        boundary_array = np.array(boundary_points)
+        interior_array = np.array(interior_points)
+        
+        # Build KDTree for boundary points
+        tree = cKDTree(boundary_array)
+        
+        # Query distances. k=1 gets the closest boundary point to each interior point
+        distances, _ = tree.query(interior_array, k=1)
+        
+        # Keep only interior points that are at least `radius` away from any boundary
+        valid_indices = distances >= (radius * 0.8) # Relaxing the radius slightly to avoid extreme culling near edges
+        
+        final_points = interior_array[valid_indices].tolist()
+        return [(p[0], p[1]) for p in final_points]
+        
+    return interior_points
 
 def generate_interior_points_poisson(polygon: Polygon, cloud_size: float) -> list[tuple[float, float]]:
     """
@@ -367,6 +329,82 @@ def generate_region_cloud_with_uniform_density(region_points: list[tuple[float, 
         logging.error(f"Error generating region cloud with uniform density: {e}")
         return None, None, None
 
+def lloyd_relaxation(interior_points: np.ndarray, boundary_points: np.ndarray, polygon: Polygon, iterations: int = 5, tolerance: float = 1e-4) -> np.ndarray:
+    """
+    Applies Lloyd's relaxation using Voronoi diagrams to regularize the point cloud into a honeycomb-like pattern.
+    Only interior points are moved; boundary points are fixed.
+    
+    Args:
+        interior_points: Array of interior (x, y) points.
+        boundary_points: Array of boundary (x, y) points.
+        polygon: Shapely polygon to restrict the points.
+        iterations: Number of relaxation steps.
+        tolerance: Minimum movement threshold for early stopping.
+    
+    Returns:
+        Relaxed interior points.
+    """
+    if len(interior_points) == 0:
+        return interior_points
+
+    # To avoid boundary issues in Voronoi, add dummy points far away (bounding box corners)
+    minx, miny, maxx, maxy = polygon.bounds
+    dx, dy = maxx - minx, maxy - miny
+    dummy_points = np.array([
+        [minx - dx, miny - dy], [maxx + dx, miny - dy],
+        [maxx + dx, maxy + dy], [minx - dx, maxy + dy]
+    ])
+
+    int_pts = np.array(interior_points)
+    bnd_pts = np.array(boundary_points) if len(boundary_points) > 0 else np.empty((0, 2))
+    
+    fast_contains = create_fast_polygon_checker(polygon)
+
+    for step in range(iterations):
+        # Combine all points: [interior, boundary, dummy]
+        pts = np.vstack([int_pts, bnd_pts, dummy_points]) if len(bnd_pts) > 0 else np.vstack([int_pts, dummy_points])
+        
+        try:
+            vor = Voronoi(pts)
+        except Exception as e:
+            logging.warning(f"Voronoi computation failed during Lloyd relaxation: {e}")
+            break
+            
+        new_int_pts = []
+        max_movement = 0.0
+        
+        # Update only interior points (indices 0 to len(int_pts)-1)
+        for i in range(len(int_pts)):
+            region_index = vor.point_region[i]
+            region = vor.regions[region_index]
+            
+            if -1 in region or len(region) == 0:
+                new_int_pts.append(int_pts[i])
+                continue
+                
+            # Get vertices of this Voronoi region
+            cell_vertices = vor.vertices[region]
+            
+            # Simple centroid of the polygon formed by vertices
+            centroid = np.mean(cell_vertices, axis=0)
+            
+            # Ensure centroid is strictly inside polygon using fast checker
+            if fast_contains(centroid[0], centroid[1]):
+                new_int_pts.append(centroid)
+                dist = np.sqrt((centroid[0] - int_pts[i][0])**2 + (centroid[1] - int_pts[i][1])**2)
+                if dist > max_movement:
+                    max_movement = dist
+            else:
+                new_int_pts.append(int_pts[i]) # keep original
+                
+        int_pts = np.array(new_int_pts)
+        
+        if max_movement < tolerance:
+            logging.info(f"Lloyd relaxation converged early after {step+1} iterations (max movement: {max_movement:.6f})")
+            break
+
+    return int_pts
+
 def generate_region_cloud_poisson(region_points: list[tuple[float, float]], cloud_size: float) -> tuple[np.ndarray, np.ndarray, float] | tuple[None, None, None]:
     """
     Generate a complete cloud for a single region using Poisson Disk Sampling for more natural distribution.
@@ -385,6 +423,10 @@ def generate_region_cloud_poisson(region_points: list[tuple[float, float]], clou
         
         # Generate interior points using Poisson Disk Sampling
         interior_points = generate_interior_points_poisson(polygon, cloud_size)
+        
+        # Apply Lloyd's relaxation to regularize the mesh (Honeycomb effect)
+        if len(interior_points) > 0:
+            interior_points = lloyd_relaxation(np.array(interior_points), np.array(boundary_points), polygon, iterations=5).tolist()
         
         logging.info(f"Generated {len(boundary_points)} boundary points and {len(interior_points)} interior points using Poisson Disk Sampling")
         
@@ -518,6 +560,10 @@ def generate_region_cloud_with_holes_poisson(main_region_points: list[tuple[floa
         
         # Generate interior points avoiding holes using Poisson Disk Sampling
         interior_points = generate_interior_points_poisson(polygon_with_holes, cloud_size)
+        
+        # Apply Lloyd's relaxation
+        if len(interior_points) > 0:
+            interior_points = lloyd_relaxation(np.array(interior_points), np.array(boundary_points), polygon_with_holes, iterations=5).tolist()
         
         logging.info(f"Generated main region with holes using Poisson: {len(boundary_points)} boundary points and {len(interior_points)} interior points")
         logging.info(f"Excluded {len(hole_polygons)} hole regions from main region")

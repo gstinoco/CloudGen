@@ -89,7 +89,7 @@ from cloud_modules.generator import generate_cloud_regular, generate_cloud_natur
 from cloud_modules.reduction import reduce_points_by_region
 from contour_modules import detection as contour_detection
 from cloud_modules.data_processing import load_cloud_data
-from cloud_modules.visualization import create_visualization
+from cloud_modules.visualization import create_visualization, render_neighbors_graph
 from analysis_modules.neighbors import compute_neighbors_from_file
 
 app = Flask(__name__, static_url_path='/static')
@@ -357,25 +357,15 @@ def upload_viewer():
             if not points:
                 return jsonify({'success': False, 'error': 'Failed to load points from CSV or file is empty'})
                 
-            # Convert to numpy array for visualization
-            points_array = np.array(points)
+            # Retrieve points data for interactive editing
+            return jsonify({
+                'success': True,
+                'points': points,
+                'regions': regions,
+                'classifications': classifications,
+                'total_points': len(points)
+            })
             
-            # Create visualization
-            if create_visualization(points_array, regions, output_base, classifications):
-                # Generate URLs
-                filename_base = os.path.basename(output_base)
-                image_url = url_for('uploaded_file', filename=f"{filename_base}.png")
-                svg_url = url_for('uploaded_file', filename=f"{filename_base}.svg")
-                
-                return jsonify({
-                    'success': True,
-                    'image_url': image_url,
-                    'svg_url': svg_url,
-                    'total_points': len(points)
-                })
-            else:
-                return jsonify({'success': False, 'error': 'Visualization generation failed'})
-                
         else:
             return jsonify({'success': False, 'error': 'Invalid file type. Please upload a CSV file.'})
             
@@ -449,7 +439,10 @@ def upload_neighbors():
             filename_base = os.path.basename(output_base)
             neighbors_csv_url = url_for('uploaded_file', filename=f"{filename_base}_neighbors.csv")
             
-            return jsonify({
+            # Generate Graph Visualization
+            graph_generated = render_neighbors_graph(points, neighbors_indices, regions, output_base)
+            
+            response_data = {
                 'success': True,
                 'neighbors_csv_url': neighbors_csv_url,
                 'stats': {
@@ -458,7 +451,13 @@ def upload_neighbors():
                     'avg_neighbors': round(avg_neighbors, 2),
                     'max_neighbors': neighbors_indices.shape[1]
                 }
-            })
+            }
+            
+            if graph_generated:
+                response_data['png_url'] = url_for('uploaded_file', filename=f"{filename_base}.png")
+                response_data['svg_url'] = url_for('uploaded_file', filename=f"{filename_base}.svg")
+            
+            return jsonify(response_data)
                 
         else:
             return jsonify({'success': False, 'error': 'Invalid file type. Please upload a CSV file.'})
@@ -1099,6 +1098,7 @@ def export_single_region():
         region_name = data.get('region_name', f'region_{datetime.now().strftime("%Y%m%d_%H%M%S")}')
         filename = data.get('filename', '')
         scaling_config = data.get('scaling_config', {})
+        normalize = data.get('normalize', True)
         
         if not contour_points or len(contour_points) == 0:
             return jsonify({'success': False, 'error': 'No contour points to export'})
@@ -1134,7 +1134,7 @@ def export_single_region():
             coordinates.append([final_x, inverted_y, region_number])
             
         # Normalize all coordinates exactly to [0,1]x[0,1]
-        if coordinates:
+        if coordinates and normalize:
             min_x = min(c[0] for c in coordinates)
             max_x = max(c[0] for c in coordinates)
             min_y = min(c[1] for c in coordinates)
@@ -1210,8 +1210,9 @@ def save_all_coordinates():
             return jsonify({'success': False, 'error': 'No regions provided'})
         
         regions = data['regions']
-        filename = data.get('filename', 'regions')
+        filename = data.get('filename', '')
         scaling_config = data.get('scaling_config', {})
+        normalize = data.get('normalize', True)
         
         if not regions or len(regions) == 0:
             return jsonify({'success': False, 'error': 'No regions to save'})
@@ -1256,20 +1257,21 @@ def save_all_coordinates():
             return jsonify({'success': False, 'error': 'No coordinates to save'})
             
         # Normalize all coordinates exactly to [0,1]x[0,1]
-        min_x = min(c[0] for c in all_coordinates)
-        max_x = max(c[0] for c in all_coordinates)
-        min_y = min(c[1] for c in all_coordinates)
-        max_y = max(c[1] for c in all_coordinates)
-        
-        range_x = max_x - min_x
-        range_y = max_y - min_y
-        max_range = max(range_x, range_y)
-        if max_range == 0:
-            max_range = 1.0
-        
-        for c in all_coordinates:
-            c[0] = (c[0] - min_x) / max_range
-            c[1] = (c[1] - min_y) / max_range
+        if normalize:
+            min_x = min(c[0] for c in all_coordinates)
+            max_x = max(c[0] for c in all_coordinates)
+            min_y = min(c[1] for c in all_coordinates)
+            max_y = max(c[1] for c in all_coordinates)
+            
+            range_x = max_x - min_x
+            range_y = max_y - min_y
+            max_range = max(range_x, range_y)
+            if max_range == 0:
+                max_range = 1.0
+            
+            for c in all_coordinates:
+                c[0] = (c[0] - min_x) / max_range
+                c[1] = (c[1] - min_y) / max_range
         
         # Generate filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

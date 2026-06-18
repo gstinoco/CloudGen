@@ -333,6 +333,18 @@ function calculateNeighbors() {
                 downloadBtn.setAttribute('download', 'neighbors.csv');
             }
             
+            // Handle Graph Visualization Display
+            const graphContainer = document.getElementById('graphContainer');
+            const graphImage = document.getElementById('graphImage');
+            
+            if (graphContainer && graphImage && (data.svg_url || data.png_url)) {
+                // Prefer SVG if available for sharpness
+                graphImage.src = data.svg_url || data.png_url;
+                graphContainer.classList.remove('hidden');
+            } else if (graphContainer) {
+                graphContainer.classList.add('hidden');
+            }
+            
             // Scroll to result
             resultSection.scrollIntoView({ behavior: 'smooth' });
         } else {

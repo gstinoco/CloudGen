@@ -1142,7 +1142,12 @@ function addRegion() {
     // Clear temporary region
     tempRegion = null;
     document.getElementById('addRegionBtn').disabled = true;
-    document.getElementById('saveBtn').disabled = detectedRegions.length === 0;
+    
+    const hasRegions = detectedRegions.length > 0;
+    document.getElementById('saveBtn').disabled = !hasRegions;
+    
+    const clearBtn = document.getElementById('clearBtn');
+    if (clearBtn) clearBtn.disabled = !hasRegions;
     
     // Exit refinement mode automatically to allow detecting new regions
     if (isRefineMode) {
@@ -1186,47 +1191,34 @@ function updateRegionsList() {
         const pointCount = region.contour_points ? region.contour_points.length : 0;
         
         return `
-            <div class="region-item" style="--region-color: ${region.color}">
-                <div class="region-header">
-                    <div class="region-info">
-                        <div class="region-color-indicator" style="background-color: ${region.color}"></div>
-                        <h4 class="region-name">${region.name}</h4>
+            <div class="region-card" style="--rc: ${region.color}">
+                <div class="rc-header">
+                    <div class="rc-color-dot" style="background: ${region.color}; box-shadow: 0 0 10px ${region.color}80;"></div>
+                    <h4 class="rc-title">${region.name}</h4>
+                    <span class="rc-points">${pointCount} pts</span>
+                </div>
+                
+                <div class="rc-body">
+                    <div class="rc-retention">
+                        <div class="rc-retention-header">
+                            <span><i class="fas fa-compress-arrows-alt"></i> Node Retention</span>
+                            <span id="smoothing-val-${index}" class="rc-retention-val">${region.smoothing !== undefined ? region.smoothing : 100}%</span>
+                        </div>
+                        <input type="range" class="rc-slider" min="1" max="100" value="${region.smoothing !== undefined ? region.smoothing : 100}" 
+                               oninput="document.getElementById('smoothing-val-${index}').textContent = this.value + '%'"
+                               onchange="applyRegionSmoothing(${index}, this.value)">
                     </div>
                 </div>
-                <div class="region-stats">
-                    <div class="region-stat">
-                        <i class="fas fa-vector-square"></i>
-                        <span>${pointCount} points</span>
-                    </div>
-                </div>
-                <div class="region-reduction" style="margin: 10px 0; padding: 0 5px;">
-                    <label style="display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 5px; color: var(--text-secondary);">
-                        <span><i class="fas fa-compress-arrows-alt"></i> Node Retention</span>
-                        <span id="smoothing-val-${index}">${region.smoothing !== undefined ? region.smoothing : 100}%</span>
-                    </label>
-                    <input type="range" min="1" max="100" value="${region.smoothing !== undefined ? region.smoothing : 100}" 
-                           oninput="document.getElementById('smoothing-val-${index}').textContent = this.value + '%'"
-                           onchange="applyRegionSmoothing(${index}, this.value)"
-                           style="width: 100%;">
-                </div>
-                <div class="region-actions">
-                    <button class="region-btn toggle" 
-                            onclick="toggleRegion(${index})" 
-                            title="${region.visible ? 'Hide' : 'Show'} region">
+                
+                <div class="rc-actions">
+                    <button class="rc-btn rc-toggle ${region.visible ? 'active' : ''}" onclick="toggleRegion(${index})" title="${region.visible ? 'Hide' : 'Show'} region">
                         <i class="fas ${region.visible ? 'fa-eye' : 'fa-eye-slash'}"></i>
-                        ${region.visible ? 'Hide' : 'Show'}
                     </button>
-                    <button class="region-btn export" 
-                            onclick="exportSingleRegion(${index})" 
-                            title="Export this region">
+                    <button class="rc-btn rc-export" onclick="exportSingleRegion(${index})" title="Export region">
                         <i class="fas fa-download"></i>
-                        Export
                     </button>
-                    <button class="region-btn delete" 
-                            onclick="deleteRegion(${index})" 
-                            title="Delete region">
-                        <i class="fas fa-trash"></i>
-                        Delete
+                    <button class="rc-btn rc-delete" onclick="deleteRegion(${index})" title="Delete region">
+                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             </div>
@@ -1268,7 +1260,11 @@ function deleteRegion(index) {
         updateRegionsList();
         redrawCanvas();
         
-        document.getElementById('saveBtn').disabled = detectedRegions.length === 0;
+        const hasRegions = detectedRegions.length > 0;
+        document.getElementById('saveBtn').disabled = !hasRegions;
+        const clearBtn = document.getElementById('clearBtn');
+        if (clearBtn) clearBtn.disabled = !hasRegions;
+        
         showFloatingNotification(`Region "${regionName}" deleted.`, 'info');
     }
 }
@@ -1283,6 +1279,8 @@ function clearAllRegions() {
     
     document.getElementById('addRegionBtn').disabled = true;
     document.getElementById('saveBtn').disabled = true;
+    const clearBtn = document.getElementById('clearBtn');
+    if (clearBtn) clearBtn.disabled = true;
     
     showFloatingNotification('All regions have been cleared.', 'info');
 }
@@ -1343,11 +1341,7 @@ function exportSingleRegion(index) {
     }
     
     // Prepare data for export
-    const exportData = {
-        filename: currentFilename,
-        region_name: region.name,
-        contour_points: region.contour_points
-    };
+    const normalizeSetting = getNormalizeSetting();
     
     // Show loading notification
     showFloatingNotification('Exporting region...', 'info', 2000);
@@ -1357,7 +1351,12 @@ function exportSingleRegion(index) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(exportData)
+        body: JSON.stringify({
+            contour_points: region.contour_points,
+            region_name: region.name,
+            filename: window.currentFilename,
+            normalize: normalizeSetting
+        })
     })
     .then(response => response.json())
     .then(data => {
@@ -1387,15 +1386,13 @@ function saveAllCoordinates() {
         return;
     }
     
-    // Prepare data for export
-    const exportData = {
-        filename: currentFilename,
-        regions: detectedRegions.map(region => ({
-            name: region.name,
-            color: region.color,
-            contour_points: region.contour_points
-        }))
-    };
+    const normalizeSetting = getNormalizeSetting();
+
+    // Convert regions to required format
+    const regionsData = detectedRegions.map(r => ({
+        region_name: r.name,
+        contour_points: r.contour_points
+    }));
     
     // Show loading notification
     showFloatingNotification('Saving all regions...', 'info', 2000);
@@ -1405,7 +1402,11 @@ function saveAllCoordinates() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(exportData)
+        body: JSON.stringify({
+            regions: regionsData,
+            filename: window.currentFilename,
+            normalize: normalizeSetting
+        })
     })
     .then(response => response.json())
     .then(data => {
@@ -1967,4 +1968,9 @@ function douglasPeucker(points, epsilon) {
     } else {
         return [points[0], points[end]];
     }
+}
+
+function getNormalizeSetting() {
+    const cb = document.getElementById('normalizeCoords');
+    return cb ? cb.checked : true;
 }

@@ -55,16 +55,14 @@ def detect_region_at_point(image, click_x, click_y, tolerance=30):
     try:
         # 1. Preprocessing
         if len(image.shape) == 3:
-            # Work in a color space that separates luma/chroma might be better, 
-            # but for consistency with previous code, we'll check if we need grayscale 
-            # or if we apply floodFill on color (which is supported and often better).
-            # We will use the input image directly for floodFill to leverage color info.
-            work_image = image.copy()
+            # Edge-preserving smoothing: removes noise but keeps edges sharp
+            work_image = cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)
             # For statistics, grayscale is easier
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(work_image, cv2.COLOR_BGR2GRAY)
         else:
-            work_image = image.copy()
-            gray = image.copy()
+            # If it's already grayscale, apply bilateral filter directly
+            work_image = cv2.bilateralFilter(image, d=9, sigmaColor=75, sigmaSpace=75)
+            gray = work_image.copy()
 
         h, w = work_image.shape[:2]
         mask = np.zeros((h + 2, w + 2), np.uint8) # FloodFill needs mask +2 pixels

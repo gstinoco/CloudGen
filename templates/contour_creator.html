@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
+
     <!-- SEO Meta Tags -->
     <title>ContourCreator | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Create precise contours from images for point cloud generation. Advanced image processing tools for boundary detection.">
-    <meta name="keywords" content="contour creator, image processing, boundary detection, point cloud, mGFD, scientific tools">
+    <meta name="description"
+        content="Create precise contours from images for point cloud generation. Advanced image processing tools for boundary detection.">
+    <meta name="keywords"
+        content="contour creator, image processing, boundary detection, point cloud, mGFD, scientific tools">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
+    <meta property="og:description"
+        content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
+    <meta property="twitter:description"
+        content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ request.url }}">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/contour_creator.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -50,7 +57,7 @@
                     <span class="logo-subtitle">v2.0</span>
                 </div>
             </a>
-            
+
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ url_for('home') }}" class="nav-link">
@@ -78,21 +85,21 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
+                                <i class="fas fa-draw-polygon"></i>
+                                ContourCreator
+                            </a></li>
                         <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
+                                <i class="fas fa-cloud"></i>
+                                CloudGenerator
+                            </a></li>
                         <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
+                                <i class="fas fa-eye"></i>
+                                CloudViewer
+                            </a></li>
                         <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
+                                <i class="fas fa-users"></i>
+                                NeighborsCalculator
+                            </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -108,14 +115,14 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="nav-actions">
                 <a href="{{ url_for('contour_creator') }}" class="nav-cta">
                     <i class="fas fa-rocket"></i>
                     <span>Get Started</span>
                 </a>
             </div>
-            
+
             <div class="nav-toggle">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -130,10 +137,13 @@
             <div class="hero-content">
                 <div class="hero-main">
                     <div class="hero-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
+                            class="logo-image">
                     </div>
                     <h1 class="hero-title">ContourCreator</h1>
-                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic segmentation algorithms. Perfect for computational modeling and point cloud generation workflows.</p>
+                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic
+                        segmentation algorithms. Perfect for computational modeling and point cloud generation
+                        workflows.</p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-magic"></i>
@@ -152,7 +162,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Main Application Section -->
     <section class="section-dark">
         <div class="container">
@@ -196,7 +206,8 @@
                         <div class="upload-progress" id="uploadProgress" style="display: none;">
                             <div class="progress-circle">
                                 <svg class="progress-ring" width="60" height="60">
-                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                                    <circle class="progress-ring-circle" stroke="#3b82f6" stroke-width="4"
+                                        fill="transparent" r="26" cx="30" cy="30" />
                                 </svg>
                                 <span class="progress-text" id="progressText">0%</span>
                             </div>
@@ -221,7 +232,8 @@
                             </button>
                         </div>
                     </div>
-                    <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp" style="display: none;">
+                    <input type="file" id="fileInput"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp" style="display: none;">
                 </div>
                 <div class="upload-actions">
                     <button class="btn btn-secondary" id="clearButton" onclick="clearUpload()" style="display: none;">
@@ -244,20 +256,18 @@
                                     <i class="fas fa-plus-circle"></i>
                                     <span>Add Region</span>
                                 </button>
-                                <button class="control-btn refine" onclick="toggleRefineMode()" id="refineModeToggle" disabled>
-                            <i class="fas fa-edit"></i>
-                            <span>Refine Selection</span>
-                        </button>
-                                <button class="control-btn secondary" onclick="clearAllRegions()">
+                                <button class="control-btn refine" onclick="toggleRefineMode()" id="refineModeToggle"
+                                    disabled>
+                                    <i class="fas fa-edit"></i>
+                                    <span>Refine Selection</span>
+                                </button>
+                                <button class="control-btn warning" onclick="clearAllRegions()" id="clearBtn" disabled>
                                     <i class="fas fa-trash-alt"></i>
                                     <span>Clear All</span>
                                 </button>
-                                <button class="control-btn success" onclick="saveAllCoordinates()" id="saveBtn" disabled>
-                                    <i class="fas fa-download"></i>
-                                    <span>Export All Regions</span>
-                                </button>
+
                             </div>
-                            
+
                             <div class="zoom-controls">
                                 <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">
                                     <i class="fas fa-search-minus"></i>
@@ -271,7 +281,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Refine Controls -->
                         <div class="refine-controls-bar" id="refineControls" style="display: none;">
                             <div class="refine-instructions">
@@ -280,38 +290,40 @@
                                     Click to add areas (+) or hold Shift to remove (-)
                                 </span>
                             </div>
-                            
+
                             <div class="refine-tools">
                                 <div class="brush-size-control">
                                     <label>
                                         <i class="fas fa-paint-brush"></i>
-                                        <input type="range" id="refineBrushSize" min="5" max="50" value="20" onchange="updateBrushSize(this.value)">
+                                        <input type="range" id="refineBrushSize" min="5" max="50" value="20"
+                                            onchange="updateBrushSize(this.value)">
                                         <span id="brushSizeValue">20px</span>
                                     </label>
                                 </div>
-                                
+
                                 <button class="refine-btn undo" onclick="undoLastStroke()" id="undoLastBtn" disabled>
-                    <i class="fas fa-undo-alt"></i>
-                    <span>Undo Last</span>
-                </button>
-                
-                <button class="refine-btn clear" onclick="clearAllRefinements()">
-                    <i class="fas fa-undo"></i>
-                    <span>Clear All</span>
-                </button>
-                
-                <button class="refine-btn apply" onclick="applyRefinements()" id="applyRefineBtn" disabled>
-                    <i class="fas fa-check"></i>
-                    <span>Apply</span>
-                </button>
-                                
+                                    <i class="fas fa-undo-alt"></i>
+                                    <span>Undo Last</span>
+                                </button>
+
+                                <button class="refine-btn clear" onclick="clearAllRefinements()">
+                                    <i class="fas fa-undo"></i>
+                                    <span>Clear All</span>
+                                </button>
+
+                                <button class="refine-btn apply" onclick="applyRefinements()" id="applyRefineBtn"
+                                    disabled>
+                                    <i class="fas fa-check"></i>
+                                    <span>Apply</span>
+                                </button>
+
                                 <button class="refine-btn cancel" onclick="exitRefineMode()">
                                     <i class="fas fa-times"></i>
                                     <span>Exit</span>
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Canvas Area -->
                         <div class="canvas-container">
                             <canvas id="imageCanvas"></canvas>
@@ -321,23 +333,41 @@
 
                 <!-- Detected Regions Section -->
                 <div id="regionsDisplay" class="app-card regions-card hidden">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <i class="fas fa-bullseye"></i>
+                    <div class="card-header"
+                        style="justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div class="card-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div class="card-title">
+                                <h3 style="margin: 0; padding: 0;">Detected Regions</h3>
+                                <p style="margin: 0; padding: 0;">Review and manage your contours</p>
+                            </div>
                         </div>
-                        <div class="card-title">
-                            <h3>Detected Regions</h3>
-                            <p>Review and manage your contours</p>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div class="toggle-container" title="Scale coordinates to [0, 1] range">
+                                <span class="toggle-label">Normalize Results</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="normalizeCoords" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <button class="control-btn success" onclick="saveAllCoordinates()" id="saveBtn" disabled
+                                style="height: 42px;">
+                                <i class="fas fa-download"></i>
+                                <span>Export All</span>
+                            </button>
                         </div>
                     </div>
                     <div id="regionsList" class="regions-list-enhanced"></div>
                 </div>
 
             </div>
-            
+
             <!-- Floating Notifications Container -->
             <div id="floatingNotifications" class="floating-notifications"></div>
-            
+
             <div id="alertContainer" class="alert-container"></div>
         </div>
     </section>
@@ -351,16 +381,20 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
+                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
+                        Differences (mGFD) method.
+                    </p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                    <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('contour_creator') }}"><i
+                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
+                        </li>
                         <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
+                        </li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
@@ -380,15 +414,18 @@
                     <h3>Sponsored by</h3>
                     <div class="sponsor-logos">
                         <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
+                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
                             <span class="sponsor-name">SIIIA MATH</span>
                         </a>
                         <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
+                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
                             <span class="sponsor-name">UMSNH</span>
                         </a>
                         <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
+                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
                             <span class="sponsor-name">SECIHTI</span>
                         </a>
                     </div>
@@ -396,7 +433,8 @@
             </div>
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.
+                    </p>
                     <div class="footer-links">
                         <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
                     </div>
@@ -413,4 +451,5 @@
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/contour_creator.js') }}"></script>
 </body>
+
 </html>

@@ -30,6 +30,7 @@ Dependencies:
 import matplotlib
 matplotlib.use('Agg') # Set non-interactive backend for server environments
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 import numpy as np
 import logging
 
@@ -137,6 +138,98 @@ def create_visualization(points: np.ndarray, regions_list: list[int], output_bas
     except Exception as e:
         logging.error(f"Error creating visualization: {e}")
         # Close plot in case of error to free memory
+        try:
+            plt.close()
+        except:
+            pass
+        return False
+
+def render_neighbors_graph(points, neighbors_indices, regions, output_base: str) -> bool:
+    """
+    Renders the connectivity graph of neighbors using LineCollection for performance.
+    
+    Args:
+        points: Array of (x, y) coordinates
+        neighbors_indices: NxK array of neighbor indices. -1 indicates no neighbor.
+        regions: Array of region identifiers for coloring
+        output_base: Base path for output files
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        points = np.array(points)
+        regions = np.array(regions)
+        neighbors_indices = np.array(neighbors_indices)
+        
+        plt.figure(figsize=(10, 8), dpi=300)
+        ax = plt.gca()
+        ax.set_aspect('equal')
+        
+        # Configure axes
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_xlabel('X Coordinate')
+        ax.set_ylabel('Y Coordinate')
+        
+        # Define base colors (simplified for lines)
+        region_colors = [
+            (51/255, 153/255, 255/255),    # Light Blue
+            (77/255, 230/255, 77/255),     # Bright Green  
+            (255/255, 179/255, 51/255),    # Bright Orange
+            (204/255, 77/255, 255/255),    # Bright Purple
+            (230/255, 153/255, 51/255),    # Golden Brown
+            (255/255, 128/255, 204/255),   # Bright Pink
+            (179/255, 179/255, 179/255)    # Light Gray
+        ]
+        
+        unique_regions = sorted(list(set(regions)))
+        
+        # Build line segments and scatter points per region
+        for region_id in unique_regions:
+            region_mask = (regions == region_id)
+            indices_in_region = np.where(region_mask)[0]
+            
+            if len(indices_in_region) == 0:
+                continue
+                
+            color_idx = (region_id - 1) % len(region_colors)
+            base_color = region_colors[color_idx]
+            
+            segments = []
+            
+            for i in indices_in_region:
+                p1 = points[i]
+                for j in neighbors_indices[i]:
+                    if j != -1:
+                        p2 = points[j]
+                        segments.append([p1, p2])
+            
+            if segments:
+                lc = LineCollection(segments, colors=[base_color], linewidths=0.5, alpha=0.6)
+                ax.add_collection(lc)
+            
+            # Plot the nodes on top
+            ax.scatter(points[indices_in_region, 0], points[indices_in_region, 1],
+                       c=[base_color], s=8, marker='.', edgecolors='none', label=f'Region {region_id}', zorder=5)
+                       
+        plt.title(f'Connectivity Graph\n{len(points)} Total Nodes', fontsize=14)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., fontsize='small')
+        
+        # Save PNG
+        png_file = f"{output_base}.png"
+        plt.savefig(png_file, format='png', bbox_inches='tight', dpi=300)
+        
+        # Save SVG
+        svg_file = f"{output_base}.svg"
+        plt.savefig(svg_file, format='svg', bbox_inches='tight')
+        
+        plt.close()
+        
+        logging.info(f"Graph visualization saved to {png_file} and {svg_file}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"Error creating graph visualization: {e}")
         try:
             plt.close()
         except:
