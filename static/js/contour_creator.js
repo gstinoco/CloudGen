@@ -1354,7 +1354,7 @@ function exportSingleRegion(index) {
         body: JSON.stringify({
             contour_points: region.contour_points,
             region_name: region.name,
-            filename: window.currentFilename,
+            filename: currentFilename,
             normalize: normalizeSetting
         })
     })
@@ -1404,7 +1404,7 @@ function saveAllCoordinates() {
         },
         body: JSON.stringify({
             regions: regionsData,
-            filename: window.currentFilename,
+            filename: currentFilename,
             normalize: normalizeSetting
         })
     })
@@ -1887,87 +1887,51 @@ function updateBoundaryReduction(value) {
     redrawCanvas(); // Update canvas real-time when slider changes
 }
 
-// ===== CONTOUR SIMPLIFICATION (DOUGLAS-PEUCKER) =====
+// ===== CONTOUR SIMPLIFICATION (EQUIDISTANT SAMPLING) =====
 
 function simplifyRegionContour(points, targetPercentage) {
     if (targetPercentage >= 100 || points.length <= 3) return points;
     
     const targetPointsCount = Math.max(3, Math.floor(points.length * (targetPercentage / 100)));
-    const arcLen = calculateArcLength(points);
     
-    // Binary search to find optimal epsilon for Douglas-Peucker
-    let low = 0;
-    let high = arcLen;
-    let bestPoints = points;
-    let bestDiff = points.length;
+    // Calculate segment lengths and total arc length
+    let totalLength = 0;
+    const segmentLengths = [];
+    for (let i = 0; i < points.length; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % points.length]; // Closed loop
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        segmentLengths.push(len);
+        totalLength += len;
+    }
     
-    for (let i = 0; i < 20; i++) {
-        let mid = (low + high) / 2;
-        let simplified = douglasPeucker(points, mid);
+    if (totalLength === 0) return points;
+    
+    const stepSize = totalLength / targetPointsCount;
+    const newPoints = [];
+    
+    let currentDist = 0;
+    let nextTarget = 0;
+    
+    for (let i = 0; i < points.length; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % points.length];
+        const segLen = segmentLengths[i];
         
-        let diff = Math.abs(simplified.length - targetPointsCount);
-        if (diff < bestDiff) {
-            bestDiff = diff;
-            bestPoints = simplified;
+        while (nextTarget <= currentDist + segLen && newPoints.length < targetPointsCount) {
+            const t = segLen === 0 ? 0 : (nextTarget - currentDist) / segLen;
+            newPoints.push({
+                x: p1.x + t * (p2.x - p1.x),
+                y: p1.y + t * (p2.y - p1.y)
+            });
+            nextTarget += stepSize;
         }
-        
-        if (simplified.length > targetPointsCount) {
-            low = mid;
-        } else if (simplified.length < targetPointsCount) {
-            high = mid;
-        } else {
-            break; // hit exact match
-        }
+        currentDist += segLen;
     }
     
-    return bestPoints;
-}
-
-function calculateArcLength(points) {
-    let length = 0;
-    for (let i = 0; i < points.length - 1; i++) {
-        length += Math.sqrt(Math.pow(points[i+1].x - points[i].x, 2) + Math.pow(points[i+1].y - points[i].y, 2));
-    }
-    if (points.length > 0) {
-        length += Math.sqrt(Math.pow(points[points.length-1].x - points[0].x, 2) + Math.pow(points[points.length-1].y - points[0].y, 2));
-    }
-    return length;
-}
-
-function douglasPeucker(points, epsilon) {
-    if (points.length <= 2) return points;
-    
-    let dmax = 0;
-    let index = 0;
-    const end = points.length - 1;
-    
-    const p1 = points[0];
-    const p2 = points[end];
-    
-    const lineLength = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-    
-    for (let i = 1; i < end; i++) {
-        const p = points[i];
-        let d = 0;
-        if (lineLength === 0) {
-            d = Math.sqrt(Math.pow(p.x - p1.x, 2) + Math.pow(p.y - p1.y, 2));
-        } else {
-            d = Math.abs((p2.y - p1.y) * p.x - (p2.x - p1.x) * p.y + p2.x * p1.y - p2.y * p1.x) / lineLength;
-        }
-        
-        if (d > dmax) {
-            index = i;
-            dmax = d;
-        }
-    }
-    
-    if (dmax > epsilon) {
-        const recResults1 = douglasPeucker(points.slice(0, index + 1), epsilon);
-        const recResults2 = douglasPeucker(points.slice(index), epsilon);
-        return recResults1.slice(0, -1).concat(recResults2);
-    } else {
-        return [points[0], points[end]];
-    }
+    return newPoints;
 }
 
 function getNormalizeSetting() {

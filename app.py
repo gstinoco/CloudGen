@@ -727,8 +727,8 @@ def detect_region():
         algorithm_used = 'floodfill'
         
         if mask is not None:
-            # Find contours in the mask
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # Find contours in the thresholded image
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             
             if contours:
                 # Select the best contour (the largest one)
@@ -812,7 +812,7 @@ def interactive_segmentation():
         
         if mask is not None:
             # Find contours
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             
             if contours:
                 # Select best contour
@@ -891,7 +891,7 @@ def grabcut_segmentation():
         
         if mask is not None:
             # Find contours
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             
             if contours:
                 # Select the best contour
@@ -980,8 +980,8 @@ def refine_with_brush():
         refined_mask = contour_detection.refine_mask_with_brush(current_mask, brush_strokes_px)
         
         if refined_mask is not None:
-            # Find contours
-            contours, _ = cv2.findContours(refined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # Get refined contour
+            contours, _ = cv2.findContours(refined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             
             if contours:
                 # Select the best contour
