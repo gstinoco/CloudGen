@@ -1,44 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
+
     <!-- SEO Meta Tags -->
     <title>NeighborsCalculator | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists and visualize data.">
+    <meta name="description"
+        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists and visualize data.">
     <meta name="keywords" content="neighbors calculation, point cloud, mGFD, region isolation, csv processing">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
+    <meta property="og:description"
+        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
+    <meta property="twitter:description"
+        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ request.url }}">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/neighbors.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -50,7 +60,7 @@
                     <span class="logo-subtitle">v2.0</span>
                 </div>
             </a>
-            
+
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ url_for('home') }}" class="nav-link">
@@ -78,21 +88,21 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
+                                <i class="fas fa-draw-polygon"></i>
+                                ContourCreator
+                            </a></li>
                         <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
+                                <i class="fas fa-cloud"></i>
+                                CloudGenerator
+                            </a></li>
                         <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
+                                <i class="fas fa-eye"></i>
+                                CloudViewer
+                            </a></li>
                         <li><a href="{{ url_for('neighbors') }}" class="dropdown-link active">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
+                                <i class="fas fa-users"></i>
+                                NeighborsCalculator
+                            </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -108,14 +118,14 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="nav-actions">
                 <a href="{{ url_for('contour_creator') }}" class="nav-cta">
                     <i class="fas fa-rocket"></i>
                     <span>Get Started</span>
                 </a>
             </div>
-            
+
             <div class="nav-toggle">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -130,11 +140,13 @@
             <div class="hero-content">
                 <div class="hero-main">
                     <div class="hero-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
+                            class="logo-image">
                     </div>
                     <h1 class="hero-title">NeighborsCalculator</h1>
                     <p class="hero-subtitle">
-                        Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to generate neighbor lists and visualize the results.
+                        Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to
+                        generate neighbor lists and visualize the results.
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
@@ -158,7 +170,58 @@
     <!-- Main Content -->
     <section class="section-dark">
         <div class="container">
-            
+            <!-- Module Information -->
+            <div id="moduleInfoCard" class="app-card format-info-card" style="margin-bottom: 25px;">
+                <div class="card-header">
+                    <div class="card-icon gradient-icon">
+                        <i class="fas fa-square-root-alt"></i>
+                    </div>
+                    <div class="card-title">
+                        <h3>Mathematical Foundations</h3>
+                        <p>Understanding the topological requirements for the mGFD method</p>
+                    </div>
+                </div>
+
+                <div class="format-content" style="padding: 20px;">
+                    <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
+                        The <strong>meshless Generalized Finite Difference (mGFD)</strong> method relies on a Taylor
+                        polynomial expansion to approximate derivatives over a cloud of points.
+                    </p>
+
+                    <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
+                        To ensure that the resulting system of equations is algebraically determined and
+                        well-conditioned, it is crucial to select a sufficient number of nearest neighbors, denoted as
+                        \( n \), based on the chosen polynomial degree \( m \).
+                    </p>
+
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 20px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.4); padding: 12px 25px; border-radius: 8px; margin: 20px auto; max-width: 600px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);">
+                        <p style="color: #ffffff; font-size: 1rem; font-weight: 500; margin: 0;">Minimum recommended neighbors:</p>
+                        <div style="font-size: 1.25rem; font-weight: 600; color: #93c5fd; background: rgba(0, 0, 0, 0.4); padding: 5px 15px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                            \[ n \ge \frac{(m+1)(m+2)}{2} \]
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                        <div
+                            style="flex: 1; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent-blue);">
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px; font-size: 1rem;"><i
+                                    class="fas fa-info-circle"
+                                    style="color: var(--accent-blue); margin-right: 8px;"></i>For \( m = 2 \)</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">A second-degree
+                                polynomial requires at least \( n = 6 \) neighbors.</p>
+                        </div>
+                        <div
+                            style="flex: 1; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent-blue);">
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px; font-size: 1rem;"><i
+                                    class="fas fa-info-circle"
+                                    style="color: var(--accent-blue); margin-right: 8px;"></i>For \( m = 3 \)</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">A third-degree
+                                polynomial requires at least \( n = 10 \) neighbors.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Upload Section -->
             <div class="app-card upload-card">
                 <div class="card-header">
@@ -170,7 +233,24 @@
                         <p>Select a CSV file with x, y, classification, region columns</p>
                     </div>
                 </div>
-                
+
+                <div class="configuration-panel" style="padding: 15px 25px; margin: 0 20px 25px 20px; background: rgba(30, 41, 59, 0.7); border-radius: 10px; border-left: 5px solid #3b82f6; border-top: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                        <div style="flex: 2; min-width: 300px;">
+                            <h4 style="color: #ffffff; font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-network-wired" style="color: #60a5fa;"></i> Neighborhood Settings
+                            </h4>
+                            <p style="color: #e2e8f0; font-size: 0.9rem; margin: 0;">Specify the exact number of nearest neighbors to connect for each node.</p>
+                        </div>
+                        <div style="flex: 1; min-width: 150px; max-width: 200px;">
+                            <div style="display: flex; align-items: center; background: rgba(15, 23, 42, 0.95); border: 2px solid rgba(59, 130, 246, 0.5); border-radius: 8px; overflow: hidden; transition: border-color 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);">
+                                <span style="padding: 10px 15px; background: rgba(59, 130, 246, 0.2); color: #ffffff; font-family: monospace; font-weight: 700; border-right: 2px solid rgba(59, 130, 246, 0.3);">\( n = \) </span>
+                                <input type="number" id="numNeighbors" value="9" min="3" max="100" style="width: 100%; background: transparent; border: none; color: #ffffff; padding: 10px 15px; font-family: monospace; font-size: 1.2rem; font-weight: 600; outline: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="upload-zone-container">
                     <div class="upload-zone" id="uploadZone">
                         <div class="upload-content" id="uploadContent">
@@ -220,31 +300,78 @@
             </div>
 
             <!-- Result Section -->
-            <div id="resultSection" class="app-card result-card hidden">
-                <div class="card-header">
-                    <div class="card-icon gradient-icon success">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="card-title">
-                        <h3>Calculation Complete</h3>
-                        <p>Neighbors computed successfully</p>
-                    </div>
+            <div id="resultSection" class="hidden">
+                <!-- Stats Container Row -->
+                <div id="statsContainer" class="stats-container" style="margin-bottom: 20px;">
+                    <!-- Stats will be inserted here by JS -->
                 </div>
-                
-                <div class="results-content">
-                    <div id="statsContainer" class="stats-container">
-                        <!-- Stats will be inserted here by JS -->
-                    </div>
-                    
-                    <div class="download-actions">
-                        <a id="downloadNeighbors" href="#" class="control-btn primary" download>
-                            <i class="fas fa-download"></i>
-                            <span>Download Neighbors CSV</span>
-                        </a>
+
+                <!-- Full Width Workspace Layout -->
+                <div class="workspace-fullwidth">
+                    <div class="app-card workspace-unified">
+                        <!-- Horizontal Controls Bar -->
+                        <div class="controls-bar"
+                            style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(15, 23, 42, 0.3);">
+                            <div class="controls-group" style="display: flex; gap: 10px; align-items: center;">
+                                <div class="card-icon gradient-icon success"
+                                    style="width: 32px; height: 32px; font-size: 0.9rem; padding: 0;">
+                                    <i class="fas fa-check-circle" style="margin: 0; padding: 0;"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; margin: 0; color: var(--text-primary);">Neighbors
+                                    Visualization</h3>
+                            </div>
+                            <div class="zoom-controls">
+                                <button id="btnResetView" class="control-btn success small" title="Reset View">
+                                    <i class="fas fa-expand-arrows-alt"></i> Reset View
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Main Canvas Area -->
+                        <div class="canvas-area">
+                            <div class="canvas-wrapper interactive-canvas"
+                                style="position: relative; height: 70vh; width: 100%; background: #1a1f24; border-bottom-left-radius: 0; border-bottom-right-radius: 0; overflow: hidden;">
+
+                                <!-- Floating Metrics Overlay -->
+                                <div class="canvas-metrics-overlay"
+                                    style="position: absolute; top: 15px; right: 15px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px; color: #e2e8f0; font-family: monospace; font-size: 0.9rem; z-index: 10; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Center ID:</span>
+                                        <strong id="centerIdDisplay" style="color: #ef4444;">None</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Region:</span>
+                                        <strong id="regionDisplay" style="color: #60a5fa;">-</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Neighbors Found:</span>
+                                        <strong id="neighborsFoundDisplay" style="color: #10b981;">0</strong>
+                                    </div>
+                                    <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; gap: 20px; font-size: 0.85rem;">
+                                        <span style="color: #94a3b8;">Cursor:</span>
+                                        <strong id="coordinatesDisplay">X: 0.00, Y: 0.00</strong>
+                                    </div>
+                                </div>
+
+                                <canvas id="cloudCanvas" style="display: block; cursor: crosshair;"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Options Bar (Export) -->
+                        <div class="bottom-options-bar"
+                            style="display: flex; justify-content: center; padding: 15px 20px; background: rgba(15, 23, 42, 0.4); border-top: 1px solid rgba(255,255,255,0.05); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                            <a id="downloadNeighbors" href="#" class="control-btn primary" download
+                                style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                                <i class="fas fa-download"></i>
+                                Download Neighbors CSV
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
             <div id="errorSection" class="alert alert-error hidden"></div>
         </div>
     </section>
@@ -258,16 +385,20 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
+                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
+                        Differences (mGFD) method.
+                    </p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('contour_creator') }}"><i
+                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
+                        </li>
                         <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
+                        </li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                     </ul>
@@ -285,15 +416,18 @@
                     <h3>Sponsored by</h3>
                     <div class="sponsor-logos">
                         <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
+                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
                             <span class="sponsor-name">SIIIA MATH</span>
                         </a>
                         <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
+                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
                             <span class="sponsor-name">UMSNH</span>
                         </a>
                         <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
+                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
                             <span class="sponsor-name">SECIHTI</span>
                         </a>
                     </div>
@@ -302,7 +436,8 @@
             <div class="footer-bottom">
                 <div class="container">
                     <div class="footer-bottom-content">
-                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless
+                            methods.</p>
                         <div class="footer-links">
                             <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
                         </div>
@@ -313,8 +448,12 @@
     </footer>
 
     <!-- JavaScript Files -->
+    <script>
+        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
+    </script>
     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/neighbors.js') }}"></script>
 </body>
+
 </html>

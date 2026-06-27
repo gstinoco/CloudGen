@@ -406,10 +406,16 @@ def upload_neighbors():
             input_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             output_base = os.path.splitext(input_path)[0]
             
+            nvec_str = request.form.get('nvec', '9')
+            try:
+                nvec = int(nvec_str)
+            except ValueError:
+                nvec = 9
+            
             file.save(input_path)
             
             # Calculate neighbors
-            neighbors_indices = compute_neighbors_from_file(input_path)
+            neighbors_indices = compute_neighbors_from_file(input_path, nvec=nvec)
             
             if neighbors_indices is None:
                 return jsonify({'success': False, 'error': 'Failed to compute neighbors'})
@@ -445,6 +451,10 @@ def upload_neighbors():
             response_data = {
                 'success': True,
                 'neighbors_csv_url': neighbors_csv_url,
+                'points': points.tolist() if isinstance(points, np.ndarray) else points,
+                'regions': regions.tolist() if isinstance(regions, np.ndarray) else regions,
+                'classifications': classifications.tolist() if isinstance(classifications, np.ndarray) else classifications,
+                'neighbors_indices': neighbors_indices.tolist() if isinstance(neighbors_indices, np.ndarray) else neighbors_indices,
                 'stats': {
                     'total_points': total_points,
                     'total_regions': unique_regions,

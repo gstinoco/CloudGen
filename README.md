@@ -73,11 +73,14 @@
 - **Adaptive tolerance** using local texture statistics for robust segmentation.
 - **Positive/negative seed refinement** for add/subtract workflows.
 - **Brush editing** to manually correct masks and boundaries.
+- **Equidistant Contour Sampling**: advanced node retention algorithm ensuring mathematically uniform spacing along complex boundaries.
 - **Export single or multi-region contours** as normalized CSV coordinates.
 
 ### :cloud: CloudGenerator
 - **Regular Distribution**: uniform grid-style generation inside polygonal regions.
 - **Natural Distribution**: Poisson disk sampling for organic point spacing.
+- **Adaptive Density**: dynamic bounding-box scaling to guarantee appropriate grid spacing for narrow or intricate subregions.
+- **Topological Fallbacks**: guaranteed interior node placement via representative points to prevent mathematically empty sub-domains.
 - **Contour reduction** to simplify boundaries before generation (optional).
 - **Multi-region support**: main region + interior regions (holes) handled explicitly.
 - **Node classification** written to CSV (`boundary`, `interior`, and region-aware classes).

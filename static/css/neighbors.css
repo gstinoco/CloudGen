@@ -14,7 +14,8 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1rem;
-    perspective: 1000px; /* For 3D card effects */
+    perspective: 1000px;
+    /* For 3D card effects */
 }
 
 /* Stat Card Styling */
@@ -25,8 +26,8 @@
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 
-                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(226, 232, 240, 0.8);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -37,15 +38,26 @@
 }
 
 /* Staggered animation delays for cards */
-.stat-card:nth-child(1) { animation-delay: 0.1s; }
-.stat-card:nth-child(2) { animation-delay: 0.2s; }
-.stat-card:nth-child(3) { animation-delay: 0.3s; }
-.stat-card:nth-child(4) { animation-delay: 0.4s; }
+.stat-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.stat-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.stat-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 .stat-card:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
     border-color: rgba(59, 130, 246, 0.3);
 }
 
@@ -70,22 +82,26 @@
 }
 
 /* Specific colors for different stats */
-.stat-card:nth-child(1) .stat-icon { /* Total Points */
+.stat-card:nth-child(1) .stat-icon {
+    /* Total Points */
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     color: #2563eb;
 }
 
-.stat-card:nth-child(2) .stat-icon { /* Regions */
+.stat-card:nth-child(2) .stat-icon {
+    /* Regions */
     background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
     color: #16a34a;
 }
 
-.stat-card:nth-child(3) .stat-icon { /* Avg Neighbors */
+.stat-card:nth-child(3) .stat-icon {
+    /* Avg Neighbors */
     background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
     color: #ca8a04;
 }
 
-.stat-card:nth-child(4) .stat-icon { /* Max Neighbors */
+.stat-card:nth-child(4) .stat-icon {
+    /* Max Neighbors */
     background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
     color: #9333ea;
 }
@@ -122,7 +138,8 @@
     display: flex;
     justify-content: center;
     margin-top: 1rem;
-    animation: fadeIn 0.5s ease-out 0.6s forwards; /* Delay to appear after cards */
+    animation: fadeIn 0.5s ease-out 0.6s forwards;
+    /* Delay to appear after cards */
     opacity: 0;
 }
 
@@ -132,6 +149,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -139,8 +157,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Responsive adjustments */
@@ -148,15 +171,15 @@
     .stats-container {
         grid-template-columns: 1fr;
     }
-    
+
     .stat-card {
         padding: 1.25rem;
     }
-    
+
     .stat-value {
         font-size: 1.75rem;
     }
-    
+
     .stat-icon {
         width: 56px;
         height: 56px;

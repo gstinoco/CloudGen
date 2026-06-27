@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
+
     <!-- SEO Meta Tags -->
     <title>CloudViewer | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Interactive viewer for analyzing and visualizing generated point clouds. Inspect node distributions and boundary conditions.">
-    <meta name="keywords" content="point cloud viewer, data visualization, mGFD, node inspection, scientific plotting, interactive viewer">
+    <meta name="description"
+        content="Interactive viewer for analyzing and visualizing generated point clouds. Inspect node distributions and boundary conditions.">
+    <meta name="keywords"
+        content="point cloud viewer, data visualization, mGFD, node inspection, scientific plotting, interactive viewer">
     <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="CloudViewer | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Visualize generated point clouds and contours instantly. Upload CSV files to inspect your data.">
+    <meta property="og:description"
+        content="Visualize generated point clouds and contours instantly. Upload CSV files to inspect your data.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
     <meta property="og:site_name" content="mGFD CloudGenerator">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.url }}">
     <meta property="twitter:title" content="CloudViewer | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Visualize generated point clouds and contours instantly. Upload CSV files to inspect your data.">
+    <meta property="twitter:description"
+        content="Visualize generated point clouds and contours instantly. Upload CSV files to inspect your data.">
     <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ request.url }}">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cloud_generator.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contour_creator.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/viewer.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -51,7 +59,7 @@
                     <span class="logo-subtitle">v2.0</span>
                 </div>
             </a>
-            
+
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ url_for('home') }}" class="nav-link">
@@ -79,21 +87,21 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
+                                <i class="fas fa-draw-polygon"></i>
+                                ContourCreator
+                            </a></li>
                         <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
+                                <i class="fas fa-cloud"></i>
+                                CloudGenerator
+                            </a></li>
                         <li><a href="{{ url_for('viewer') }}" class="dropdown-link active">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
+                                <i class="fas fa-eye"></i>
+                                CloudViewer
+                            </a></li>
                         <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
+                                <i class="fas fa-users"></i>
+                                NeighborsCalculator
+                            </a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -109,14 +117,14 @@
                     </a>
                 </li>
             </ul>
-            
+
             <div class="nav-actions">
                 <a href="{{ url_for('contour_creator') }}" class="nav-cta">
                     <i class="fas fa-rocket"></i>
                     <span>Get Started</span>
                 </a>
             </div>
-            
+
             <div class="nav-toggle">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -131,11 +139,13 @@
             <div class="hero-content">
                 <div class="hero-main">
                     <div class="hero-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
+                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
+                            class="logo-image">
                     </div>
                     <h1 class="hero-title">CloudViewer</h1>
                     <p class="hero-subtitle">
-                        Instantly visualize your point clouds and contour data. Upload CSV files to inspect geometries and verify distributions before simulation.
+                        Instantly visualize your point clouds and contour data. Upload CSV files to inspect geometries
+                        and verify distributions before simulation.
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
@@ -159,7 +169,7 @@
     <!-- Main Content -->
     <section class="section-dark">
         <div class="container">
-            
+
             <!-- Upload Section -->
             <div class="app-card upload-card">
                 <div class="card-header">
@@ -171,7 +181,7 @@
                         <p>Select a CSV file containing point cloud or contour data</p>
                     </div>
                 </div>
-                
+
                 <div class="upload-zone-container">
                     <div class="upload-zone" id="uploadZone">
                         <div class="upload-content" id="uploadContent">
@@ -221,35 +231,125 @@
             </div>
 
             <!-- Result Section -->
-            <div id="resultSection" class="app-card result-card hidden">
-                <div class="card-header">
-                    <div class="card-icon gradient-icon success">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="card-title">
-                        <h3>Visualization Result</h3>
-                        <p>Data successfully plotted</p>
-                    </div>
-                </div>
-                
-                <div class="results-content">
-                    <div class="image-container">
-                        <img id="resultImage" src="" alt="Cloud Visualization" class="result-img">
-                    </div>
-                    
-                    <div class="download-actions">
-                        <a id="downloadPng" href="#" class="control-btn success" download>
-                            <i class="fas fa-file-image"></i>
-                            <span>Download PNG</span>
-                        </a>
-                        <a id="downloadSvg" href="#" class="control-btn interactive" download>
-                            <i class="fas fa-file-code"></i>
-                            <span>Download SVG</span>
-                        </a>
+            <div id="resultSection" class="hidden">
+                <!-- Full Width Workspace Layout -->
+                <div class="workspace-fullwidth">
+                    <!-- Unified Workspace Container -->
+                    <div class="app-card workspace-unified">
+                        <!-- Horizontal Controls Bar -->
+                        <div class="controls-bar">
+                            <div class="controls-group">
+                                <button id="toolPan" class="control-btn primary active" title="Pan (Click and drag)">
+                                    <i class="fas fa-hand-paper"></i>
+                                </button>
+                                <button id="toolMove" class="control-btn interactive"
+                                    title="Move Point (Click point and drag)">
+                                    <i class="fas fa-arrows-alt"></i>
+                                </button>
+                                <button id="toolAdd" class="control-btn success" title="Add Point (Click empty space)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button id="toolDelete" class="control-btn warning" title="Delete Point (Click point)">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+
+                                <div style="width: 1px; height: 24px; background: rgba(59,130,246,0.2); margin: 0 4px;">
+                                </div>
+
+                                <button id="btnUndo" class="control-btn" title="Undo (Ctrl+Z)" disabled
+                                    style="background: transparent; border: 1px solid rgba(59,130,246,0.3); color: #333;">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                <button id="btnRedo" class="control-btn" title="Redo (Ctrl+Y)" disabled
+                                    style="background: transparent; border: 1px solid rgba(59,130,246,0.3); color: #333;">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+
+                            <div class="zoom-controls">
+                                <button id="btnResetView" class="zoom-btn" title="Reset View"
+                                    style="padding: 0.5rem 1rem;">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- Display toggles moved to bottom -->
+                        </div>
+
+                        <!-- Main Canvas Area -->
+                        <div class="canvas-area">
+                            <div class="canvas-wrapper interactive-canvas"
+                                style="position: relative; height: 75vh; width: 100%; background: #1a1f24; overflow: hidden; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+
+                                <!-- Floating Metrics Overlay -->
+                                <div class="canvas-metrics-overlay"
+                                    style="position: absolute; top: 15px; right: 15px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px; color: #e2e8f0; font-family: monospace; font-size: 0.9rem; z-index: 10; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Total Points:</span>
+                                        <strong id="pointCountDisplay" style="color: #60a5fa;">0</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Min Dist:</span>
+                                        <strong id="minDistDisplay" style="color: #34d399;">0.000</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; gap: 20px;">
+                                        <span style="color: #94a3b8;">Avg Dist:</span>
+                                        <strong id="avgDistDisplay" style="color: #fbbf24;">0.000</strong>
+                                    </div>
+                                    <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; gap: 20px; font-size: 0.85rem;">
+                                        <span style="color: #94a3b8;">Cursor:</span>
+                                        <strong id="coordinatesDisplay">X: 0.00, Y: 0.00</strong>
+                                    </div>
+                                </div>
+
+                                <canvas id="cloudCanvas" style="display: block;"></canvas>
+                                <div id="nodeTooltip" class="canvas-tooltip hidden"
+                                    style="position: fixed; background: rgba(0,0,0,0.8); color: white; padding: 5px 10px; border-radius: 4px; pointer-events: none; font-size: 12px; z-index: 1000; white-space: pre-wrap;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Export Bar -->
+                        <div class="controls-bar"
+                            style="border-top: 1px solid rgba(59, 130, 246, 0.1); border-bottom: none; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); justify-content: space-between; padding: 1.5rem;">
+
+                            <div class="controls-group" style="margin: 0;">
+                                <label title="Toggle Print Mode (White Background)"
+                                    style="cursor: pointer; margin-right: 10px;">
+                                    <input type="checkbox" id="togglePrintMode" style="display: none;">
+                                    <span id="printModeBtn" class="control-btn refine"
+                                        style="background: white; border: 1px solid #cbd5e1; color: #333; padding: 0.75rem 1.5rem; font-size: 1rem;">
+                                        <i class="fas fa-print"></i> Print Mode
+                                    </span>
+                                </label>
+                                <label title="Toggle Region Colors" style="cursor: pointer;">
+                                    <input type="checkbox" id="toggleColorRegions" style="display: none;">
+                                    <span id="colorModeBtn" class="control-btn interactive"
+                                        style="border: 1px solid transparent; padding: 0.75rem 1.5rem; font-size: 1rem;">
+                                        <i class="fas fa-palette"></i> Colors
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="controls-group download-actions" style="margin: 0;">
+                                <a id="downloadModifiedCsv" href="#" class="control-btn refine"
+                                    style="text-decoration: none; padding: 0.75rem 1.5rem; font-size: 1.1rem;">
+                                    <i class="fas fa-file-csv"></i>
+                                    <span>Export CSV</span>
+                                </a>
+                                <a id="downloadCanvasPng" href="#" class="control-btn success"
+                                    style="text-decoration: none; padding: 0.75rem 1.5rem; font-size: 1.1rem;">
+                                    <i class="fas fa-file-image"></i>
+                                    <span>Export PNG</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
             <div id="errorSection" class="alert alert-error hidden"></div>
         </div>
     </section>
@@ -263,16 +363,20 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
                     </div>
                     <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
+                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
+                        Differences (mGFD) method.
+                    </p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
+                        <li><a href="{{ url_for('contour_creator') }}"><i
+                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
+                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
+                        </li>
                         <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
+                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
+                        </li>
                         <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
                         <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
                         <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
@@ -292,15 +396,18 @@
                     <h3>Sponsored by</h3>
                     <div class="sponsor-logos">
                         <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
+                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
                             <span class="sponsor-name">SIIIA MATH</span>
                         </a>
                         <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
+                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
                             <span class="sponsor-name">UMSNH</span>
                         </a>
                         <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
+                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
+                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
                             <span class="sponsor-name">SECIHTI</span>
                         </a>
                     </div>
@@ -309,7 +416,8 @@
             <div class="footer-bottom">
                 <div class="container">
                     <div class="footer-bottom-content">
-                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
+                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless
+                            methods.</p>
                         <div class="footer-links">
                             <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
                         </div>
@@ -320,8 +428,12 @@
     </footer>
 
     <!-- JavaScript Files -->
+    <script>
+        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
+    </script>
     <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
 </body>
+
 </html>

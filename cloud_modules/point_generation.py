@@ -581,9 +581,26 @@ def generate_region_task(region_points: list[tuple[float, float]], region_id: in
     Must be at top level for ProcessPoolExecutor (pickling).
     """
     try:
-        boundary_points, interior_points, _ = generate_region_cloud_with_uniform_density(region_points, main_cloud_size)
+        poly = Polygon(region_points)
+        minx, miny, maxx, maxy = poly.bounds
+        min_dim = min(maxx - minx, maxy - miny)
+        
+        # Shrink cloud size for very small regions
+        actual_cloud_size = main_cloud_size
+        if min_dim < main_cloud_size * 2:
+            actual_cloud_size = min_dim / 3.0
+            logging.info(f"Region {region_id} is small (min_dim={min_dim:.6f}). Adapted cloud size to {actual_cloud_size:.6f}")
+
+        boundary_points, interior_points, _ = generate_region_cloud_with_uniform_density(region_points, actual_cloud_size)
+        
+        # Fallback to representative point if interior is empty
+        if interior_points is not None and len(interior_points) == 0:
+            logging.warning(f"Region {region_id} has 0 interior points. Using representative point fallback.")
+            rep = poly.representative_point()
+            interior_points = np.array([[rep.x, rep.y]])
+
         if boundary_points is not None and interior_points is not None:
-            logging.info(f"Generated cloud for interior region {region_id} with uniform density (cloud_size: {main_cloud_size:.6f})")
+            logging.info(f"Generated cloud for interior region {region_id} with uniform density (cloud_size: {actual_cloud_size:.6f})")
             return (boundary_points, interior_points, region_id)
         else:
             logging.warning(f"Failed to generate cloud for interior region {region_id}")
@@ -625,11 +642,27 @@ def generate_interior_regions_clouds(regions: list[list[tuple[float, float]]], m
 def generate_region_task_poisson(region_points: list[tuple[float, float]], region_id: int, main_cloud_size: float) -> tuple[np.ndarray, np.ndarray, int] | None:
     """Helper for parallel Poisson interior regions."""
     try:
-        boundary_points, interior_points, _ = generate_region_cloud_poisson(region_points, main_cloud_size)
+        poly = Polygon(region_points)
+        minx, miny, maxx, maxy = poly.bounds
+        min_dim = min(maxx - minx, maxy - miny)
+        
+        actual_cloud_size = main_cloud_size
+        if min_dim < main_cloud_size * 2:
+            actual_cloud_size = min_dim / 3.0
+            logging.info(f"Region {region_id} is small (min_dim={min_dim:.6f}). Adapted Poisson cloud size to {actual_cloud_size:.6f}")
+            
+        boundary_points, interior_points, _ = generate_region_cloud_poisson(region_points, actual_cloud_size)
+        
+        if interior_points is not None and len(interior_points) == 0:
+            logging.warning(f"Region {region_id} has 0 Poisson interior points. Using representative point fallback.")
+            rep = poly.representative_point()
+            interior_points = np.array([[rep.x, rep.y]])
+            
         if boundary_points is not None and interior_points is not None:
             return (boundary_points, interior_points, region_id)
         return None
-    except Exception:
+    except Exception as e:
+        logging.error(f"Error in poisson interior task {region_id}: {e}")
         return None
 
 def generate_interior_regions_clouds_poisson(regions: list[list[tuple[float, float]]], main_cloud_size: float) -> list[tuple[np.ndarray, np.ndarray, int]]:

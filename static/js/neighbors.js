@@ -4,6 +4,35 @@
  * Implements drag-and-drop functionality consistent with CloudGenerator and CloudViewer.
  */
 
+// --- Canvas State ---
+let canvasData = {
+    points: [],
+    neighbors: [],
+    regions: [],
+    classifications: [],
+    scale: 1,
+    offsetX: 0,
+    offsetY: 0,
+    minX: 0, maxX: 0, minY: 0, maxY: 0,
+    hoverIdx: -1,
+    isDragging: false,
+    lastMouseX: 0,
+    lastMouseY: 0
+};
+
+function formatSci(val) {
+    if (val === 0) return "0.000";
+    if (Math.abs(val) < 0.01 || Math.abs(val) >= 10000) {
+        return val.toExponential(3);
+    }
+    return val.toFixed(4);
+}
+
+const REGION_COLORS = [
+    '#3399FF', '#4DE64D', '#FFB333', '#CC4DFF', 
+    '#E69933', '#FF80CC', '#B3B3B3'
+];
+
 let uploadZone = null;
 let fileInput = null;
 let uploadContent = null;
@@ -16,6 +45,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 document.addEventListener('DOMContentLoaded', () => {
     setupDragAndDrop();
+    
 });
 
 function setupDragAndDrop() {
@@ -265,8 +295,13 @@ function calculateNeighbors() {
 
     const formData = new FormData();
     formData.append('file', currentFile);
+    
+    const numNeighborsInput = document.getElementById('numNeighbors');
+    if (numNeighborsInput) {
+        formData.append('nvec', numNeighborsInput.value);
+    }
 
-    fetch('/upload_neighbors', {
+    fetch(`${BASE_URL}/upload_neighbors`, {
         method: 'POST',
         body: formData
     })
@@ -325,24 +360,21 @@ function calculateNeighbors() {
                 setTimeout(animateNumbers, 100);
             }
             
+            // Initialize canvas
+            if (data.points && data.neighbors_indices) {
+                canvasData.points = data.points;
+                canvasData.neighbors = data.neighbors_indices;
+                canvasData.regions = data.regions || [];
+                canvasData.classifications = data.classifications || [];
+                initCanvas();
+            }
+            
             // Setup download button
             const downloadBtn = document.getElementById('downloadNeighbors');
             if (downloadBtn) {
                 downloadBtn.href = data.neighbors_csv_url;
                 // Update filename for download attribute if possible, or let server handle it
                 downloadBtn.setAttribute('download', 'neighbors.csv');
-            }
-            
-            // Handle Graph Visualization Display
-            const graphContainer = document.getElementById('graphContainer');
-            const graphImage = document.getElementById('graphImage');
-            
-            if (graphContainer && graphImage && (data.svg_url || data.png_url)) {
-                // Prefer SVG if available for sharpness
-                graphImage.src = data.svg_url || data.png_url;
-                graphContainer.classList.remove('hidden');
-            } else if (graphContainer) {
-                graphContainer.classList.add('hidden');
             }
             
             // Scroll to result
@@ -402,3 +434,205 @@ function animateNumbers() {
 // Expose functions to global scope for onclick handlers
 window.resetUpload = resetUpload;
 window.clearUpload = resetUpload;
+
+// --- Canvas Logic ---
+function initCanvas() {
+    const canvas = document.getElementById('cloudCanvas');
+    if (!canvas) return;
+    
+    const wrapper = document.querySelector('.canvas-wrapper');
+    canvas.width = wrapper.clientWidth;
+    canvas.height = wrapper.clientHeight;
+    
+    if (canvasData.points.length > 0) {
+        let xs = canvasData.points.map(p => p[0]);
+        let ys = canvasData.points.map(p => p[1]);
+        canvasData.minX = Math.min(...xs);
+        canvasData.maxX = Math.max(...xs);
+        canvasData.minY = Math.min(...ys);
+        canvasData.maxY = Math.max(...ys);
+    }
+    
+    resetView();
+    setupCanvasEvents(canvas);
+    
+    const btnReset = document.getElementById('btnResetView');
+    if (btnReset) btnReset.addEventListener('click', resetView);
+}
+
+function resetView() {
+    const canvas = document.getElementById('cloudCanvas');
+    if (!canvas || canvasData.points.length === 0) return;
+    
+    const padding = 40;
+    const dataWidth = canvasData.maxX - canvasData.minX || 1;
+    const dataHeight = canvasData.maxY - canvasData.minY || 1;
+    
+    const scaleX = (canvas.width - padding * 2) / dataWidth;
+    const scaleY = (canvas.height - padding * 2) / dataHeight;
+    canvasData.scale = Math.min(scaleX, scaleY);
+    
+    const cx = (canvasData.minX + canvasData.maxX) / 2;
+    const cy = (canvasData.minY + canvasData.maxY) / 2;
+    
+    canvasData.offsetX = canvas.width / 2 - cx * canvasData.scale;
+    canvasData.offsetY = canvas.height / 2 + cy * canvasData.scale; 
+    
+    drawCanvas();
+}
+
+function drawCanvas() {
+    const canvas = document.getElementById('cloudCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const r = 3;
+    const hIdx = canvasData.hoverIdx;
+    
+    // Determine neighbors to highlight
+    let activeNeighbors = [];
+    if (hIdx !== -1) {
+        const row = canvasData.neighbors[hIdx];
+        if (row) {
+            activeNeighbors = row.filter(n => n !== -1);
+        }
+    }
+    
+    // Draw lines first so they are under points
+    if (hIdx !== -1 && activeNeighbors.length > 0) {
+        const centerPt = canvasData.points[hIdx];
+        const cx = centerPt[0] * canvasData.scale + canvasData.offsetX;
+        const cy = -centerPt[1] * canvasData.scale + canvasData.offsetY;
+        
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)'; // Green lines
+        ctx.lineWidth = 1.5;
+        
+        activeNeighbors.forEach(nIdx => {
+            const nPt = canvasData.points[nIdx];
+            const nx = nPt[0] * canvasData.scale + canvasData.offsetX;
+            const ny = -nPt[1] * canvasData.scale + canvasData.offsetY;
+            
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(nx, ny);
+            ctx.stroke();
+        });
+    }
+    
+    // Draw points
+    for (let i = 0; i < canvasData.points.length; i++) {
+        const pt = canvasData.points[i];
+        const screenX = pt[0] * canvasData.scale + canvasData.offsetX;
+        const screenY = -pt[1] * canvasData.scale + canvasData.offsetY;
+        
+        if (screenX < -10 || screenX > canvas.width + 10 || screenY < -10 || screenY > canvas.height + 10) continue;
+        
+        let fillColor = 'rgba(255, 255, 255, 0.3)';
+        let strokeColor = 'rgba(255, 255, 255, 0.1)';
+        let size = r;
+        
+        if (i === hIdx) {
+            fillColor = '#ef4444'; // Red center
+            strokeColor = '#fff';
+            size = r * 2;
+        } else if (activeNeighbors.includes(i)) {
+            fillColor = '#10b981'; // Green neighbor
+            strokeColor = '#fff';
+            size = r * 1.5;
+        }
+        
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, size, 0, 2 * Math.PI);
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+    
+    // Update Stats Display
+    if (hIdx !== -1) {
+        document.getElementById('centerIdDisplay').innerText = hIdx;
+        document.getElementById('regionDisplay').innerText = canvasData.regions[hIdx] || '-';
+        document.getElementById('neighborsFoundDisplay').innerText = activeNeighbors.length;
+    } else {
+        document.getElementById('centerIdDisplay').innerText = 'None';
+        document.getElementById('regionDisplay').innerText = '-';
+        document.getElementById('neighborsFoundDisplay').innerText = '0';
+    }
+}
+
+function getPointAt(screenX, screenY) {
+    const threshold = 10;
+    for (let i = 0; i < canvasData.points.length; i++) {
+        const pt = canvasData.points[i];
+        const px = pt[0] * canvasData.scale + canvasData.offsetX;
+        const py = -pt[1] * canvasData.scale + canvasData.offsetY;
+        
+        const dx = px - screenX;
+        const dy = py - screenY;
+        if (dx * dx + dy * dy <= threshold * threshold) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function setupCanvasEvents(canvas) {
+    canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        canvasData.lastMouseX = e.clientX - rect.left;
+        canvasData.lastMouseY = e.clientY - rect.top;
+        canvasData.isDragging = true;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Coordinates display
+        const mathX = (x - canvasData.offsetX) / canvasData.scale;
+        const mathY = -(y - canvasData.offsetY) / canvasData.scale;
+        const coordDisplay = document.getElementById('coordinatesDisplay');
+        if (coordDisplay) {
+            coordDisplay.innerText = `X: ${formatSci(mathX)}, Y: ${formatSci(mathY)}`;
+        }
+        
+        if (canvasData.isDragging) {
+            canvasData.offsetX += (x - canvasData.lastMouseX);
+            canvasData.offsetY += (y - canvasData.lastMouseY);
+            canvasData.lastMouseX = x;
+            canvasData.lastMouseY = y;
+            requestAnimationFrame(() => drawCanvas());
+        } else {
+            // Hover logic
+            const hovered = getPointAt(x, y);
+            if (hovered !== canvasData.hoverIdx) {
+                canvasData.hoverIdx = hovered;
+                requestAnimationFrame(() => drawCanvas());
+            }
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        canvasData.isDragging = false;
+    });
+
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+        
+        canvasData.offsetX = x - (x - canvasData.offsetX) * zoomFactor;
+        canvasData.offsetY = y - (y - canvasData.offsetY) * zoomFactor;
+        canvasData.scale *= zoomFactor;
+        
+        requestAnimationFrame(() => drawCanvas());
+    });
+}
