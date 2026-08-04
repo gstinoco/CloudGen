@@ -56,8 +56,7 @@
 
                 <div class="format-content" style="padding: 20px;">
                     <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
-                        {{ _('The') }} <strong>{{ _('meshless Generalized Finite Difference (mGFD)') }}</strong> {{ _('method relies on a Taylor
-                        polynomial expansion to approximate derivatives over a cloud of points.') }}
+                        {{ _('The <strong>meshless Generalized Finite Difference (mGFD)</strong> method relies on a Taylor polynomial expansion to approximate derivatives over a cloud of points.')|safe }}
                     </p>
 
                     <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
@@ -250,7 +249,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
         const BASE_URL = "{{ url_for('main.home', _external=True).rstrip('/') }}";
