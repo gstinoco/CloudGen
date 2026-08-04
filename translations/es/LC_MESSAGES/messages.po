@@ -1,0 +1,2283 @@
+# Spanish translations for mGFD CloudGenerator.
+# Copyright (C) 2025 SIIIA MATH
+# This file is distributed under the same license as the mGFD CloudGenerator project.
+# Gerardo Tinoco-Guerrero <gerardo.tinoco@umich.mx>, 2025.
+msgid ""
+msgstr ""
+"Project-Id-Version: mGFD CloudGenerator 2.1\n"
+"Report-Msgid-Bugs-To: gerardo.tinoco@umich.mx\n"
+"POT-Creation-Date: 2026-08-03 21:53-0600\n"
+"PO-Revision-Date: 2026-08-03 21:17-0600\n"
+"Last-Translator: Gerardo Tinoco-Guerrero <gerardo.tinoco@umich.mx>\n"
+"Language-Team: es <gerardo.tinoco@umich.mx>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: routes/main.py:47
+msgid "Lake Balkhash"
+msgstr "Lago Baljash"
+
+#: routes/main.py:48
+msgid ""
+"One of the largest lakes in Asia, located in southeastern Kazakhstan. "
+"Uniquely, its western part is fresh water while the eastern part is saline."
+msgstr ""
+"Uno de los lagos más grandes de Asia, ubicado en el sureste de Kazajstán. "
+"Curiosamente, su parte occidental es de agua dulce mientras que la parte "
+"oriental es salada."
+
+#: routes/main.py:57
+msgid "Caspian Sea"
+msgstr "Mar Caspio"
+
+#: routes/main.py:58
+msgid ""
+"The world's largest inland body of water, often described as the world's "
+"largest lake or a full-fledged sea. It lies between Europe and Asia."
+msgstr ""
+"La masa de agua interior más grande del mundo, a menudo descrita como el "
+"lago más grande del mundo o un mar en toda regla. Se encuentra entre Europa "
+"y Asia."
+
+#: routes/main.py:67
+msgid "Lake Catemaco"
+msgstr "Lago Catemaco"
+
+#: routes/main.py:68
+msgid ""
+"A freshwater lake located in south-central Veracruz, Mexico, formed by "
+"natural damming of volcanic origin."
+msgstr ""
+"Lago de agua dulce ubicado en el centro-sur de Veracruz, México, formado por"
+" represas naturales de origen volcánico."
+
+#: routes/main.py:77
+msgid "Lake Huron"
+msgstr "Lago Hurón"
+
+#: routes/main.py:78
+msgid ""
+"One of the five Great Lakes of North America, connecting to Lake Michigan by"
+" the Straits of Mackinac."
+msgstr ""
+"Uno de los cinco Grandes Lagos de América del Norte, que se conecta con el "
+"lago Michigan por el estrecho de Mackinac."
+
+#: routes/main.py:87
+msgid "Lake Malawi"
+msgstr "Lago Malaui"
+
+#: routes/main.py:88
+msgid ""
+"An African Great Lake and the southernmost lake in the East African Rift "
+"system, located between Malawi, Mozambique and Tanzania."
+msgstr ""
+"Un Gran Lago africano y el lago más al sur del sistema del Rift de África "
+"Oriental, ubicado entre Malawi, Mozambique y Tanzania."
+
+#: routes/main.py:97
+msgid "Lake Pátzcuaro"
+msgstr "Lago de Pátzcuaro"
+
+#: routes/main.py:98
+msgid ""
+"A lake in Michoacán, Mexico, famous for its cultural significance, islands, "
+"and traditional fishing."
+msgstr ""
+"Un lago en Michoacán, México, famoso por su importancia cultural, sus islas "
+"y su pesca tradicional."
+
+#: routes/main.py:107
+msgid "Lake Poopó"
+msgstr "Lago Poopó"
+
+#: routes/main.py:108
+msgid ""
+"A large saline lake in a shallow depression in the Altiplano Mountains in "
+"Bolivia, known for its fluctuating water levels."
+msgstr ""
+"Un gran lago salino en una depresión poco profunda en las montañas del "
+"Altiplano en Bolivia, conocido por sus niveles fluctuantes de agua."
+
+#: routes/main.py:117
+msgid "Santa María del Oro"
+msgstr "Santa María del Oro"
+
+#: routes/main.py:118
+msgid ""
+"A crater lake located in the crater of a volcano in the state of Nayarit, "
+"Mexico."
+msgstr ""
+"Un lago de cráter ubicado en el cráter de un volcán en el estado de Nayarit,"
+" México."
+
+#: routes/main.py:127
+msgid "Lake Titicaca"
+msgstr "Lago Titicaca"
+
+#: routes/main.py:128
+msgid ""
+"A large, deep, freshwater lake in the Andes on the border of Bolivia and "
+"Peru, often called the highest navigable lake in the world."
+msgstr ""
+"Un lago grande, profundo y de agua dulce en los Andes, en la frontera de "
+"Bolivia y Perú, a menudo llamado el lago navegable más alto del mundo."
+
+#: routes/main.py:137
+msgid "Lake Yuriria"
+msgstr "Lago Yuriria"
+
+#: routes/main.py:138
+msgid ""
+"A man-made lake in Guanajuato, Mexico, constructed in the 16th century, "
+"representing the first hydraulic work of the colonial period in America."
+msgstr ""
+"Un lago artificial en Guanajuato, México, construido en el siglo XVI, "
+"representando la primera obra hidráulica del período colonial en América."
+
+#: routes/main.py:147
+msgid "Lake Zirahuén"
+msgstr "Lago Zirahuén"
+
+#: routes/main.py:148
+msgid ""
+"A deep, endorheic basin lake in Michoacán, Mexico, known for its clear blue "
+"waters."
+msgstr ""
+"Un lago profundo de cuenca endorreica en Michoacán, México, conocido por sus"
+" claras aguas azules."
+
+#: templates/about.html:18 templates/home.html:149
+msgid "About the Project"
+msgstr "Acerca del proyecto"
+
+#: templates/about.html:20
+msgid ""
+"Meet the team behind mGFD CloudGenerator 2.1 - A complete platform for generating unstructured\n"
+"                        point clouds from images and geometric contours, designed for meshless Generalized Finite\n"
+"                        Difference Method (mGFD) applications and numerical simulations."
+msgstr ""
+"Conozca al equipo detrás de mGFD CloudGenerator 2.1: una plataforma completa para generar datos no estructurados\n"
+"                        Nubes de puntos a partir de imágenes y contornos geométricos, diseñadas para finitos generalizados sin malla.\n"
+"                        Aplicaciones del Método de Diferencias (mGFD) y simulaciones numéricas."
+
+#: templates/about.html:27
+msgid "Expert Team"
+msgstr "Equipo de expertos"
+
+#: templates/about.html:31 templates/about.html:102 templates/about.html:605
+#: templates/about.html:677 templates/home.html:158
+msgid "Open Source"
+msgstr "Código abierto"
+
+#: templates/about.html:35
+msgid "Research-Based"
+msgstr "Basado en la investigación"
+
+#: templates/about.html:47
+msgid "Project Overview"
+msgstr "Descripción general del proyecto"
+
+#: templates/about.html:58
+msgid "mGFD CloudGenerator 2.1"
+msgstr "mGFD CloudGenerator 2.1"
+
+#: templates/about.html:59
+msgid "Advanced Point Cloud Generation for Meshless Methods"
+msgstr "Generación avanzada de nubes de puntos para métodos sin malla"
+
+#: templates/about.html:67
+msgid "Production Ready"
+msgstr "Listo para producción"
+
+#: templates/about.html:74 templates/about.html:654
+msgid "Live Demo"
+msgstr "Demostración en vivo"
+
+#: templates/about.html:88
+msgid "Core Modules"
+msgstr "Módulos principales"
+
+#: templates/about.html:89
+msgid "Integrated tools for complete workflow"
+msgstr "Herramientas integradas para un flujo de trabajo completo"
+
+#: templates/about.html:103
+msgid "MIT licensed for collaboration"
+msgstr "Licencia del MIT para colaboración"
+
+#: templates/about.html:115 templates/base.html:52
+msgid "v2.1"
+msgstr "v2.1"
+
+#: templates/about.html:116
+msgid "Latest Version"
+msgstr "Última versión"
+
+#: templates/about.html:117
+msgid "Enhanced performance & features"
+msgstr "Rendimiento y funciones mejorados"
+
+#: templates/about.html:132 templates/base.html:84 templates/base.html:154
+#: templates/contour_creator.html:18 templates/home.html:35
+#: templates/home.html:60
+msgid "ContourCreator"
+msgstr "ContourCreator"
+
+#: templates/about.html:133
+msgid "Interactive contour generation with real-time visualization"
+msgstr "Generación de contornos interactiva con visualización en tiempo real."
+
+#: templates/about.html:142 templates/base.html:88 templates/base.html:155
+#: templates/cloud_generator.html:18 templates/home.html:39
+#: templates/home.html:83
+msgid "CloudGenerator"
+msgstr "CloudGenerator"
+
+#: templates/about.html:143
+msgid "Optimized point cloud generation for mGFD applications"
+msgstr "Generación de nube de puntos optimizada para aplicaciones mGFD"
+
+#: templates/about.html:152 templates/base.html:92 templates/base.html:156
+#: templates/home.html:105 templates/viewer.html:20
+msgid "CloudViewer"
+msgstr "CloudViewer"
+
+#: templates/about.html:153
+msgid "Visualize generated clouds with high-quality 2D plots"
+msgstr "Visualice las nubes generadas con gráficos 2D de alta calidad"
+
+#: templates/about.html:162 templates/base.html:96 templates/base.html:157
+#: templates/home.html:127 templates/neighbors.html:18
+msgid "NeighborsCalculator"
+msgstr "NeighborsCalculator"
+
+#: templates/about.html:163
+msgid "Calculate connectivity and K-nearest neighbors"
+msgstr "Calcular la conectividad y los K vecinos más cercanos"
+
+#: templates/about.html:172
+msgid "Advanced Analytics"
+msgstr "Análisis avanzado"
+
+#: templates/about.html:173
+msgid "Comprehensive visualization and analysis tools"
+msgstr "Herramientas integrales de visualización y análisis."
+
+#: templates/about.html:182 templates/cloud_generator.html:35
+msgid "Multiple Formats"
+msgstr "Múltiples formatos"
+
+#: templates/about.html:183
+msgid "Export in CSV, PNG, SVG and other standard formats"
+msgstr "Exportar en CSV, PNG, SVG y otros formatos estándar"
+
+#: templates/about.html:195
+msgid "Research Team"
+msgstr "Equipo de investigación"
+
+#: templates/about.html:200
+msgid "Researchers"
+msgstr "Investigadores"
+
+#: templates/about.html:208
+msgid "Gerardo Tinoco-Guerrero"
+msgstr "Gerardo Tinoco Guerrero"
+
+#: templates/about.html:209 templates/about.html:229 templates/about.html:269
+msgid "Ph.D. in Physical Engineering Sciences"
+msgstr "Doctor en Ciencias en Ingeniería Física"
+
+#: templates/about.html:212 templates/about.html:573
+#: templates/privacy_notice.html:60 templates/privacy_notice.html:157
+#: templates/privacy_notice.html:203
+msgid "gerardo.tinoco@umich.mx"
+msgstr "gerardo.tinoco@umich.mx"
+
+#: templates/about.html:215 templates/about.html:235 templates/about.html:255
+#: templates/about.html:275
+msgid "ORCID"
+msgstr "ORCID"
+
+#: templates/about.html:218 templates/about.html:238 templates/about.html:258
+#: templates/about.html:278
+msgid "ResearchGate"
+msgstr "ResearchGate"
+
+#: templates/about.html:228
+msgid "J. Alberto Guzmán-Torres"
+msgstr "J. Alberto Guzmán Torres"
+
+#: templates/about.html:232
+msgid "jose.alberto.guzman@umich.mx"
+msgstr "jose.alberto.guzman@umich.mx"
+
+#: templates/about.html:248
+msgid "Francisco J. Domínguez-Mota"
+msgstr "Francisco J. Domínguez-Mota"
+
+#: templates/about.html:249
+msgid "Ph.D. in Mathematical Sciences"
+msgstr "Doctor en Ciencias Matemáticas"
+
+#: templates/about.html:252
+msgid "francisco.mota@umich.mx"
+msgstr "francisco.mota@umich.mx"
+
+#: templates/about.html:268
+msgid "Heriberto Arias-Rojas"
+msgstr "Heriberto Arias Rojas"
+
+#: templates/about.html:272
+msgid "heriberto.arias@umich.mx"
+msgstr "heriberto.arias@umich.mx"
+
+#: templates/about.html:286
+msgid "Students"
+msgstr "Estudiantes"
+
+#: templates/about.html:294
+msgid "Gabriela Pedraza-Jimenez"
+msgstr "Gabriela Pedraza Jiménez"
+
+#: templates/about.html:295 templates/about.html:305
+msgid "Ph.D. candidate"
+msgstr "Candidato a Doctor"
+
+#: templates/about.html:304
+msgid "Eli Chagolla-Inzunza"
+msgstr "Eli Chagolla-Inzunza"
+
+#: templates/about.html:314
+msgid "Jorge L. González-Figueroa"
+msgstr "Jorge L. González-Figueroa"
+
+#: templates/about.html:315 templates/about.html:325
+msgid "M.Sc. student"
+msgstr "Estudiante de Maestría"
+
+#: templates/about.html:324
+msgid "C. Nolan Magaña-Barocio"
+msgstr "C. Nolan Magaña-Barocio"
+
+#: templates/about.html:334
+msgid "Maria Goretti Fraga-Lopez"
+msgstr "María Goretti Fraga-López"
+
+#: templates/about.html:335
+msgid "Undergraduate student"
+msgstr "Estudiante de Licenciatura"
+
+#: templates/about.html:346
+msgid "Technology Stack"
+msgstr "Pila de tecnología"
+
+#: templates/about.html:355
+msgid "Backend"
+msgstr "Backend"
+
+#: templates/about.html:360
+msgid "Python 3.8+"
+msgstr "Python 3.8+"
+
+#: templates/about.html:364
+msgid "Flask"
+msgstr "Flask"
+
+#: templates/about.html:368
+msgid "NumPy"
+msgstr "NumPy"
+
+#: templates/about.html:372
+msgid "Pandas"
+msgstr "pandas"
+
+#: templates/about.html:376
+msgid "OpenCV"
+msgstr "OpenCV"
+
+#: templates/about.html:386
+msgid "Frontend"
+msgstr "Interfaz"
+
+#: templates/about.html:391
+msgid "HTML5 & CSS3"
+msgstr "HTML5 y CSS3"
+
+#: templates/about.html:395
+msgid "JavaScript ES6+"
+msgstr "Javascript ES6+"
+
+#: templates/about.html:399
+msgid "Canvas API"
+msgstr "API de lienzo"
+
+#: templates/about.html:403
+msgid "Responsive Design"
+msgstr "Diseño Responsivo"
+
+#: templates/about.html:407
+msgid "Modern UI/UX"
+msgstr "UI/UX moderna"
+
+#: templates/about.html:417
+msgid "Scientific"
+msgstr "Científico"
+
+#: templates/about.html:422
+msgid "Matplotlib"
+msgstr "Matplotlib"
+
+#: templates/about.html:426
+msgid "SciPy"
+msgstr "SciPy"
+
+#: templates/about.html:430
+msgid "Adaptive Algorithms"
+msgstr "Algoritmos adaptativos"
+
+#: templates/about.html:434
+msgid "Computational Geometry"
+msgstr "Geometría computacional"
+
+#: templates/about.html:444 templates/base.html:78
+msgid "Tools"
+msgstr "Herramientas"
+
+#: templates/about.html:449
+msgid "Git"
+msgstr "Git"
+
+#: templates/about.html:453
+msgid "Cross-platform"
+msgstr "Multiplataforma"
+
+#: templates/about.html:457 templates/cloud_generator.html:183
+#: templates/home.html:363 templates/neighbors.html:140
+#: templates/viewer.html:74
+msgid "CSV"
+msgstr "CSV"
+
+#: templates/about.html:461
+msgid "PNG/SVG"
+msgstr "PNG/SVG"
+
+#: templates/about.html:473
+msgid "Participating Institutions"
+msgstr "Instituciones participantes"
+
+#: templates/about.html:474
+msgid "Collaborating organizations driving scientific innovation"
+msgstr "Organizaciones colaboradoras que impulsan la innovación científica"
+
+#: templates/about.html:515
+msgid "Citation & References"
+msgstr "Citas y referencias"
+
+#: templates/about.html:516
+msgid ""
+"If you use mGFD CloudGenerator in your research, please cite the software\n"
+"                    and related publications."
+msgstr ""
+"Si utiliza mGFD CloudGenerator en su investigación, cite el software\n"
+"                    y publicaciones relacionadas."
+
+#: templates/about.html:525
+msgid "Software Citation"
+msgstr "Citación de software"
+
+#: templates/about.html:528
+msgid ""
+"Tinoco-Guerrero, G., Domínguez-Mota, F. J., Guzmán-Torres, J. A., &\n"
+"                            Arias-Rojas, H. (2025). mGFD CloudGenerator 2.1: Web platform for generating 2D unstructured\n"
+"                            point clouds."
+msgstr ""
+"Tinoco-Guerrero, G., Domínguez-Mota, F. J., Guzmán-Torres, J. A., &\n"
+"                            Arias-Rojas, H. (2025). mGFD CloudGenerator 2.1: Web platform for generating 2D unstructured\n"
+"                            point clouds."
+
+#: templates/about.html:532
+msgid "Copy BibTeX"
+msgstr "Copiar BibTeX"
+
+#: templates/about.html:557
+msgid "Contact and Collaboration"
+msgstr "Contacto y Colaboración"
+
+#: templates/about.html:558
+msgid ""
+"Connect with our research team and contribute to the advancement of meshless\n"
+"                    computational methods"
+msgstr ""
+"Conéctese con nuestro equipo de investigación y contribuya al avance del meshless\n"
+"                    métodos computacionales"
+
+#: templates/about.html:567
+msgid "Research Collaboration"
+msgstr "Colaboración en investigación"
+
+#: templates/about.html:568
+msgid ""
+"Partner with us on academic research, algorithm development, and\n"
+"                        scientific applications."
+msgstr ""
+"Asóciese con nosotros en investigación académica, desarrollo de algoritmos y\n"
+"                        Aplicaciones científicas."
+
+#: templates/about.html:577
+msgid "Academic Partnerships"
+msgstr "Asociaciones Académicas"
+
+#: templates/about.html:581
+msgid "CFD Research"
+msgstr "Investigación de CFD"
+
+#: templates/about.html:582
+msgid "Algorithm Development"
+msgstr "Desarrollo de algoritmos"
+
+#: templates/about.html:583
+msgid "Publications"
+msgstr "Publicaciones"
+
+#: templates/about.html:591
+msgid "Development & Contributions"
+msgstr "Desarrollo y contribuciones"
+
+#: templates/about.html:592
+msgid ""
+"Join our open-source community. Contribute code, report bugs, suggest\n"
+"                        features, or help improve the platform."
+msgstr ""
+"Únase a nuestra comunidad de código abierto. Contribuir con código, informar errores, sugerir\n"
+"                        funciones o ayudar a mejorar la plataforma."
+
+#: templates/about.html:597
+msgid "GitHub Repository"
+msgstr "Repositorio GitHub"
+
+#: templates/about.html:601
+msgid "Issue Tracking"
+msgstr "Seguimiento de problemas"
+
+#: templates/about.html:606
+msgid "Bug Reports"
+msgstr "Informes de errores"
+
+#: templates/about.html:607
+msgid "Feature Requests"
+msgstr "Solicitudes de funciones"
+
+#: templates/about.html:615
+msgid "Documentation & Support"
+msgstr "Documentación y soporte"
+
+#: templates/about.html:616
+msgid ""
+"Help us improve documentation, create tutorials, share use cases, or\n"
+"                        get technical support for your projects."
+msgstr ""
+"Ayúdenos a mejorar la documentación, crear tutoriales, compartir casos de uso o\n"
+"                        Obtenga soporte técnico para sus proyectos."
+
+#: templates/about.html:621
+msgid "Technical Support"
+msgstr "Apoyo técnico"
+
+#: templates/about.html:625
+msgid "Documentation"
+msgstr "Documentación"
+
+#: templates/about.html:629
+msgid "Tutorials"
+msgstr "Tutoriales"
+
+#: templates/about.html:630
+msgid "Use Cases"
+msgstr "Casos de uso"
+
+#: templates/about.html:631
+msgid "Support"
+msgstr "Apoyo"
+
+#: templates/about.html:639
+msgid "Ready to Collaborate?"
+msgstr "¿Listo para colaborar?"
+
+#: templates/about.html:640
+msgid ""
+"Join our growing community of researchers, developers, and computational scientists working\n"
+"                            together to advance meshless methods."
+msgstr ""
+"Únase a nuestra creciente comunidad de investigadores, desarrolladores y científicos computacionales que trabajan\n"
+"                            juntos para avanzar en métodos sin malla."
+
+#: templates/about.html:646
+msgid "Get in Touch"
+msgstr "Ponte en contacto"
+
+#: templates/about.html:650
+msgid "View on GitHub"
+msgstr "Ver en GitHub"
+
+#: templates/about.html:666
+msgid "Open Source License"
+msgstr "Licencia de código abierto"
+
+#: templates/about.html:667
+msgid "This project is released under the"
+msgstr "Este proyecto se publica bajo el"
+
+#: templates/about.html:667
+msgid "MIT License"
+msgstr "Licencia MIT"
+
+#: templates/about.html:667
+msgid ""
+", ensuring freedom to use,\n"
+"                            modify, and distribute. We welcome contributions from the global research community."
+msgstr ""
+", garantizando la libertad de uso,\n"
+"                            modificar y distribuir. Agradecemos las contribuciones de la comunidad investigadora global."
+
+#: templates/about.html:673
+msgid "MIT Licensed"
+msgstr "Licencia MIT"
+
+#: templates/base.html:12
+msgid "mGFD: CloudGenerator 2.1 | Advanced Point Cloud Generation"
+msgstr "mGFD: CloudGenerator 2.1 | Generación avanzada de nubes de puntos"
+
+#: templates/base.html:51
+msgid "&nbsp;"
+msgstr "&nbsp;"
+
+#: templates/base.html:60
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/base.html:66 templates/base.html:158
+msgid "Features"
+msgstr "Características"
+
+#: templates/base.html:72 templates/base.html:159
+msgid "Workflow"
+msgstr "Flujo de trabajo"
+
+#: templates/base.html:103 templates/base.html:160
+msgid "Examples"
+msgstr "Ejemplos"
+
+#: templates/base.html:109 templates/base.html:161
+msgid "About"
+msgstr "Acerca de"
+
+#: templates/base.html:122
+msgid "Get Started"
+msgstr "Iniciar"
+
+#: templates/base.html:148
+msgid ""
+"Advanced tool for generating point clouds that can be used with the meshless"
+" Generalized Finite Differences (mGFD) method."
+msgstr ""
+"Herramienta avanzada para generar nubes de puntos que se puede utilizar con "
+"el método de Diferencias Finitas Generalizadas (mGFD) sin malla."
+
+#: templates/base.html:152
+msgid "Quick Links"
+msgstr "Enlaces rápidos"
+
+#: templates/base.html:165
+msgid "Research Areas"
+msgstr "Áreas de investigación"
+
+#: templates/base.html:167
+msgid "Meshless Methods"
+msgstr "Métodos sin Malla"
+
+#: templates/base.html:168
+msgid "Generalized Finite Difference Methods"
+msgstr "Métodos de diferencias finitas generalizadas"
+
+#: templates/base.html:169
+msgid "Scientific Computing"
+msgstr "Computación científica"
+
+#: templates/base.html:170
+msgid "Artificial Intelligence Applications"
+msgstr "Aplicaciones de inteligencia artificial"
+
+#: templates/base.html:174
+msgid "Sponsored by"
+msgstr "Financiado por"
+
+#: templates/base.html:178
+msgid "SIIIA MATH"
+msgstr "SIIIA MATH"
+
+#: templates/base.html:182
+msgid "UMSNH"
+msgstr "UMSNH"
+
+#: templates/base.html:186
+msgid "SECIHTI"
+msgstr "SECIHTI"
+
+#: templates/base.html:193
+msgid ""
+"&copy; 2025 mGFD CloudGenerator. Built for computational modeling research "
+"with Meshless methods."
+msgstr ""
+"&copy; 2025 mGFD CloudGenerator. Creado para la investigación de modelos "
+"computacionales con métodos Meshless."
+
+#: templates/base.html:195 templates/privacy_notice.html:16
+msgid "Privacy Notice"
+msgstr "Aviso de privacidad"
+
+#: templates/cloud_generator.html:20
+msgid ""
+"Generate unstructured point clouds from CSV files with contour coordinates for mGFD\n"
+"                        applications.\n"
+"                        Transform your geometric data into computational point clouds ready for scientific simulations."
+msgstr ""
+"Genere nubes de puntos no estructuradas a partir de archivos CSV con coordenadas de contorno para mGFD\n"
+"                        aplicaciones.\n"
+"                        Transforme sus datos geométricos en nubes de puntos computacionales listas para simulaciones científicas."
+
+#: templates/cloud_generator.html:27
+msgid "CSV Import"
+msgstr "Importación CSV"
+
+#: templates/cloud_generator.html:31
+msgid "Point Cloud Generation"
+msgstr "Generación de nube de puntos"
+
+#: templates/cloud_generator.html:54
+msgid "Required CSV File Format"
+msgstr "Formato de archivo CSV requerido"
+
+#: templates/cloud_generator.html:55
+msgid "Understand the expected data structure for point cloud generation"
+msgstr ""
+"Comprender la estructura de datos esperada para la generación de nubes de "
+"puntos."
+
+#: templates/cloud_generator.html:62
+msgid "Required Columns"
+msgstr "Columnas requeridas"
+
+#: templates/cloud_generator.html:67
+msgid "x"
+msgstr "incógnita"
+
+#: templates/cloud_generator.html:68 templates/cloud_generator.html:75
+msgid "float"
+msgstr "flotar"
+
+#: templates/cloud_generator.html:70
+msgid "Normalized X coordinate (0.0 - 1.0)"
+msgstr "Coordenada X normalizada (0,0 - 1,0)"
+
+#: templates/cloud_generator.html:74
+msgid "y"
+msgstr "y"
+
+#: templates/cloud_generator.html:77
+msgid "Normalized Y coordinate (0.0 - 1.0)"
+msgstr "Coordenada Y normalizada (0,0 - 1,0)"
+
+#: templates/cloud_generator.html:81
+msgid "region"
+msgstr "región"
+
+#: templates/cloud_generator.html:82
+msgid "int"
+msgstr "entero"
+
+#: templates/cloud_generator.html:84
+msgid "Region number (1, 2, 3, ...)"
+msgstr "Número de región (1, 2, 3, ...)"
+
+#: templates/cloud_generator.html:93
+msgid "Example Format"
+msgstr "Formato de ejemplo"
+
+#: templates/cloud_generator.html:95
+msgid "Here's how your CSV file should be structured"
+msgstr "Así es como debe estructurarse su archivo CSV"
+
+#: templates/cloud_generator.html:103
+msgid "example.csv"
+msgstr "example.csv"
+
+#: templates/cloud_generator.html:107
+msgid "Copy to clipboard"
+msgstr "Copiar al portapapeles"
+
+#: templates/cloud_generator.html:109
+msgid "Copy"
+msgstr "Copiar"
+
+#: templates/cloud_generator.html:120
+msgid "x,y,region"
+msgstr "x,y,region"
+
+#: templates/cloud_generator.html:136
+msgid "Perfect Compatibility:"
+msgstr "Compatibilidad perfecta:"
+
+#: templates/cloud_generator.html:136
+msgid ""
+"Use files generated by ContourCreator for\n"
+"                                seamless integration"
+msgstr ""
+"Utilice archivos generados por ContourCreator para\n"
+"                                integración perfecta"
+
+#: templates/cloud_generator.html:145
+msgid "Sample File:"
+msgstr "Archivo de muestra:"
+
+#: templates/cloud_generator.html:145
+msgid "Download our"
+msgstr "Descarga nuestro"
+
+#: templates/cloud_generator.html:149
+msgid "example_1.csv"
+msgstr "example_1.csv"
+
+#: templates/cloud_generator.html:151
+msgid "reference example"
+msgstr "ejemplo de referencia"
+
+#: templates/cloud_generator.html:165
+msgid "Upload CSV File"
+msgstr "Cargar archivo CSV"
+
+#: templates/cloud_generator.html:166
+msgid "Drag and drop your CSV file or click to browse"
+msgstr "Arrastre y suelte su archivo CSV o haga clic para explorar"
+
+#: templates/cloud_generator.html:180 templates/neighbors.html:137
+#: templates/viewer.html:71
+msgid "Drop your CSV file here"
+msgstr "Suelta tu archivo CSV aquí"
+
+#: templates/cloud_generator.html:181 templates/contour_creator.html:67
+#: templates/neighbors.html:138 templates/viewer.html:72
+msgid "or click to browse files"
+msgstr "o haga clic para buscar archivos"
+
+#: templates/cloud_generator.html:187 templates/contour_creator.html:74
+#: templates/neighbors.html:144 templates/viewer.html:78
+msgid "Maximum file size: 10MB"
+msgstr "Tamaño máximo de archivo: 10 MB"
+
+#: templates/cloud_generator.html:191 templates/contour_creator.html:78
+#: templates/neighbors.html:148 templates/viewer.html:82
+msgid "Browse Files"
+msgstr "Explorar archivos"
+
+#: templates/cloud_generator.html:202
+msgid "Uploading CSV..."
+msgstr "Subiendo CSV..."
+
+#: templates/cloud_generator.html:208 templates/contour_creator.html:95
+msgid "Upload Successful!"
+msgstr "¡Subida exitosa!"
+
+#: templates/cloud_generator.html:209
+msgid "CSV uploaded successfully"
+msgstr "CSV cargado exitosamente"
+
+#: templates/cloud_generator.html:215 templates/contour_creator.html:102
+msgid "Upload Error"
+msgstr "Error de carga"
+
+#: templates/cloud_generator.html:216 templates/contour_creator.html:103
+msgid "Please try again"
+msgstr "Por favor inténtalo de nuevo"
+
+#: templates/cloud_generator.html:219 templates/contour_creator.html:106
+msgid "Try Again"
+msgstr "Intentar otra vez"
+
+#: templates/cloud_generator.html:229 templates/contour_creator.html:116
+msgid "Clear"
+msgstr "Claro"
+
+#: templates/cloud_generator.html:241
+msgid "File Information"
+msgstr "Información del archivo"
+
+#: templates/cloud_generator.html:242
+msgid "Preview and analyze your uploaded CSV data"
+msgstr "Obtenga una vista previa y analice los datos CSV cargados"
+
+#: templates/cloud_generator.html:247
+msgid "Start Over"
+msgstr "Empezar de nuevo"
+
+#: templates/cloud_generator.html:256
+msgid "Data Statistics"
+msgstr "Estadísticas de datos"
+
+#: templates/cloud_generator.html:264
+msgid "Data Visualization"
+msgstr "Visualización de datos"
+
+#: templates/cloud_generator.html:270
+msgid "Data Points Visualization"
+msgstr "Visualización de puntos de datos"
+
+#: templates/cloud_generator.html:273
+msgid "Download Chart"
+msgstr "Descargar gráfico"
+
+#: templates/cloud_generator.html:275
+msgid "Download"
+msgstr "Descargar"
+
+#: templates/cloud_generator.html:284
+msgid "Could not load chart visualization"
+msgstr "No se pudo cargar la visualización del gráfico"
+
+#: templates/cloud_generator.html:285
+msgid "Please check your CSV file format"
+msgstr "Por favor verifique el formato de su archivo CSV"
+
+#: templates/cloud_generator.html:301
+msgid "Generation Options"
+msgstr "Opciones de generación"
+
+#: templates/cloud_generator.html:302
+msgid "Configure point cloud generation parameters"
+msgstr "Configurar los parámetros de generación de nubes de puntos"
+
+#: templates/cloud_generator.html:321
+msgid "Interior Point Clouds"
+msgstr "Nubes de puntos interiores"
+
+#: templates/cloud_generator.html:322
+msgid ""
+"Generate point clouds inside internal regions (holes).\n"
+"                                    Recommended for complex geometries with internal boundaries."
+msgstr ""
+"Generar nubes de puntos dentro de regiones internas (agujeros).\n"
+"                                    Recomendado para geometrías complejas con límites internos."
+
+#: templates/cloud_generator.html:327
+msgid "Better accuracy"
+msgstr "Mejor precisión"
+
+#: templates/cloud_generator.html:331
+msgid "Complex geometries"
+msgstr "Geometrías complejas"
+
+#: templates/cloud_generator.html:344
+msgid "0.1x (Lowest Density)"
+msgstr "0,1x (densidad más baja)"
+
+#: templates/cloud_generator.html:345
+msgid "0.25x (Lower Density)"
+msgstr "0,25x (menor densidad)"
+
+#: templates/cloud_generator.html:346
+msgid "0.5x (Lower Density)"
+msgstr "0,5x (menor densidad)"
+
+#: templates/cloud_generator.html:347
+msgid "1.0x (Normal Density)"
+msgstr "1,0x (densidad normal)"
+
+#: templates/cloud_generator.html:348
+msgid "1.5x (Higher Density)"
+msgstr "1,5x (mayor densidad)"
+
+#: templates/cloud_generator.html:349
+msgid "2.0x (Higher Density)"
+msgstr "2,0x (mayor densidad)"
+
+#: templates/cloud_generator.html:350
+msgid "3.0x (Extreme Density)"
+msgstr "3,0x (densidad extrema)"
+
+#: templates/cloud_generator.html:355
+msgid "Node Density"
+msgstr "Densidad de nodos"
+
+#: templates/cloud_generator.html:356
+msgid ""
+"Global density multiplier. Values greater than 1 will\n"
+"                                    generate more points and a denser cloud, reducing the distance between them."
+msgstr ""
+"Multiplicador de densidad global. Los valores mayores que 1\n"
+"                                    generan más puntos y una nube más densa, reduciendo la distancia entre ellos."
+
+#: templates/cloud_generator.html:361
+msgid "Resolution control"
+msgstr "Control de resolución"
+
+#: templates/cloud_generator.html:374
+msgid "Natural Distribution"
+msgstr "Distribución Natural"
+
+#: templates/cloud_generator.html:375
+msgid "Regular Distribution"
+msgstr "Distribución regular"
+
+#: templates/cloud_generator.html:380
+msgid "Generation Method"
+msgstr "Método de generación"
+
+#: templates/cloud_generator.html:381
+msgid ""
+"Choose how points are distributed in your cloud. Regular\n"
+"                                    distribution creates uniform, grid-like patterns, while Natural distribution creates\n"
+"                                    more organic, randomly spaced patterns."
+msgstr ""
+"Elige cómo se distribuyen los puntos en tu nube. regular\n"
+"                                    La distribución crea patrones uniformes en forma de cuadrícula, mientras que la distribución natural crea\n"
+"                                    Patrones más orgánicos y espaciados aleatoriamente."
+
+#: templates/cloud_generator.html:387
+msgid "Natural distribution"
+msgstr "Distribución natural"
+
+#: templates/cloud_generator.html:391
+msgid "Organic patterns"
+msgstr "Patrones orgánicos"
+
+#: templates/cloud_generator.html:395
+msgid "Better adaptation"
+msgstr "Mejor adaptación"
+
+#: templates/cloud_generator.html:405 templates/home.html:233
+msgid "Generate Point Cloud"
+msgstr "Generar nube de puntos"
+
+#: templates/cloud_generator.html:410
+msgid "Generation time depends on data complexity and selected options"
+msgstr ""
+"El tiempo de generación depende de la complejidad de los datos y de las "
+"opciones seleccionadas."
+
+#: templates/cloud_generator.html:423
+msgid "Generating Point Cloud"
+msgstr "Generando nube de puntos"
+
+#: templates/cloud_generator.html:424
+msgid "Please wait while we process your data..."
+msgstr "Espere mientras procesamos sus datos..."
+
+#: templates/cloud_generator.html:440
+msgid "Processing Data"
+msgstr "Procesamiento de datos"
+
+#: templates/cloud_generator.html:444
+msgid "Generating Points"
+msgstr "Generando puntos"
+
+#: templates/cloud_generator.html:448
+msgid "Finalizing"
+msgstr "Finalizando"
+
+#: templates/cloud_generator.html:461
+msgid "Generation Complete"
+msgstr "Generación completa"
+
+#: templates/cloud_generator.html:462
+msgid "Point cloud generated successfully"
+msgstr "Nube de puntos generada con éxito"
+
+#: templates/cloud_generator.html:474
+msgid "Processing Time"
+msgstr "Tiempo de procesamiento"
+
+#: templates/cloud_generator.html:483
+msgid "Points Generated"
+msgstr "Puntos Generados"
+
+#: templates/cloud_generator.html:492
+msgid "Output Files"
+msgstr "Archivos de salida"
+
+#: templates/cloud_generator.html:512
+msgid "Download Generated Files"
+msgstr "Descargar archivos generados"
+
+#: templates/cloud_generator.html:513
+msgid "Download the generated files in various formats"
+msgstr "Descarga los archivos generados en varios formatos."
+
+#: templates/cloud_generator.html:524
+msgid "Files are available for download for 24 hours"
+msgstr "Los archivos están disponibles para descargar durante 24 horas."
+
+#: templates/cloud_generator.html:528
+msgid "All files are automatically deleted after download period"
+msgstr ""
+"Todos los archivos se eliminan automáticamente después del período de "
+"descarga."
+
+#: templates/contour_creator.html:19
+msgid ""
+"Transform images into precise geometric contours using advanced automatic\n"
+"                        segmentation algorithms. Perfect for computational modeling and point cloud generation\n"
+"                        workflows."
+msgstr ""
+"Transforme imágenes en contornos geométricos precisos utilizando funciones automáticas avanzadas.\n"
+"                        Algoritmos de segmentación. Perfecto para modelado computacional y generación de nubes de puntos.\n"
+"                        flujos de trabajo."
+
+#: templates/contour_creator.html:25
+msgid "Automatic Segmentation"
+msgstr "Segmentación automática"
+
+#: templates/contour_creator.html:29
+msgid "Precise Contours"
+msgstr "Contornos precisos"
+
+#: templates/contour_creator.html:33
+msgid "Export Ready"
+msgstr "Listo para exportar"
+
+#: templates/contour_creator.html:51 templates/home.html:185
+msgid "Upload Image"
+msgstr "Subir imagen"
+
+#: templates/contour_creator.html:52
+msgid "Drag and drop your image or click to browse"
+msgstr "Arrastra y suelta tu imagen o haz clic para explorar"
+
+#: templates/contour_creator.html:66
+msgid "Drop your image here"
+msgstr "Deja tu imagen aquí"
+
+#: templates/contour_creator.html:69
+msgid "JPG"
+msgstr "JPG"
+
+#: templates/contour_creator.html:70
+msgid "PNG"
+msgstr "PNG"
+
+#: templates/contour_creator.html:89
+msgid "Uploading image..."
+msgstr "Subiendo imagen..."
+
+#: templates/contour_creator.html:96
+msgid "Image uploaded successfully"
+msgstr "Imagen cargada exitosamente"
+
+#: templates/contour_creator.html:132
+msgid "Add Region"
+msgstr "Agregar región"
+
+#: templates/contour_creator.html:137
+msgid "Refine Selection"
+msgstr "Refinar selección"
+
+#: templates/contour_creator.html:141 templates/contour_creator.html:186
+msgid "Clear All"
+msgstr "Borrar todo"
+
+#: templates/contour_creator.html:147
+msgid "Zoom Out"
+msgstr "Alejar"
+
+#: templates/contour_creator.html:151
+msgid "Zoom In"
+msgstr "Acercar"
+
+#: templates/contour_creator.html:154
+msgid "Reset Zoom"
+msgstr "Restablecer Zoom"
+
+#: templates/contour_creator.html:165
+msgid "Click to add areas (+) or hold Shift to remove (-)"
+msgstr ""
+"Haga clic para agregar áreas (+) o mantenga presionada la tecla Mayús para "
+"eliminar (-)"
+
+#: templates/contour_creator.html:175
+msgid "20px"
+msgstr "20px"
+
+#: templates/contour_creator.html:181
+msgid "Undo Last"
+msgstr "Deshacer último"
+
+#: templates/contour_creator.html:192
+msgid "Apply"
+msgstr "Aplicar"
+
+#: templates/contour_creator.html:197
+msgid "Exit"
+msgstr "Salida"
+
+#: templates/contour_creator.html:218
+msgid "Detected Regions"
+msgstr "Regiones detectadas"
+
+#: templates/contour_creator.html:219
+msgid "Review and manage your contours"
+msgstr "Revisa y gestiona tus contornos"
+
+#: templates/contour_creator.html:223
+msgid "Scale coordinates to [0, 1] range"
+msgstr "Escalar coordenadas al rango [0, 1]"
+
+#: templates/contour_creator.html:224
+msgid "Normalize Results"
+msgstr "Normalizar resultados"
+
+#: templates/contour_creator.html:234
+msgid "Export All"
+msgstr "Exportar todo"
+
+#: templates/examples.html:16
+msgid "Examples & Case Studies"
+msgstr "Ejemplos y casos de estudio"
+
+#: templates/examples.html:18
+msgid ""
+"Explore our collection of generated point clouds from diverse geographical "
+"regions. Download datasets and visualizations to test and validate your "
+"research."
+msgstr ""
+"Explore nuestra colección de nubes de puntos generadas en diversas regiones "
+"geográficas. Descargue conjuntos de datos y visualizaciones para probar y "
+"validar su investigación."
+
+#: templates/examples.html:29
+msgid "Case Studies"
+msgstr "Casos de estudio"
+
+#: templates/examples.html:30
+msgid "Real-world applications of mGFD CloudGenerator"
+msgstr "Aplicaciones del mundo real de mGFD CloudGenerator"
+
+#: templates/examples.html:39
+msgid "Original"
+msgstr "Original"
+
+#: templates/examples.html:43
+msgid "Point Cloud"
+msgstr "Nube de puntos"
+
+#: templates/examples.html:53
+msgid "Contours"
+msgstr "Contornos"
+
+#: templates/examples.html:56
+msgid "Cloud"
+msgstr "Nube"
+
+#: templates/examples.html:59 templates/home.html:341
+msgid "SVG"
+msgstr "SVG"
+
+#: templates/home.html:16
+msgid "mGFD: CloudGenerator 2.1"
+msgstr "mGFD: CloudGenerator 2.1"
+
+#: templates/home.html:17
+msgid ""
+"Advanced tool for generating point clouds that can be used with the meshless"
+" Generalized Finite Differences (mGFD) method"
+msgstr ""
+"Herramienta avanzada para generar nubes de puntos que se puede utilizar con "
+"el método de diferencias finitas generalizadas (mGFD) sin malla"
+
+#: templates/home.html:21
+msgid "High Precision"
+msgstr "Alta precisión"
+
+#: templates/home.html:25
+msgid "Fast Processing"
+msgstr "Procesamiento rápido"
+
+#: templates/home.html:29
+msgid "Secure & Private"
+msgstr "Seguro y privado"
+
+#: templates/home.html:51
+msgid "Powerful Tools for Scientific Computing"
+msgstr "Potentes herramientas para la informática científica"
+
+#: templates/home.html:52
+msgid "Everything you need to generate high-quality point clouds"
+msgstr "Todo lo que necesitas para generar nubes de puntos de alta calidad"
+
+#: templates/home.html:61
+msgid ""
+"Create geometric contours interactively from images. Uses advanced "
+"segmentation algorithms to automatically detect regions."
+msgstr ""
+"Cree contornos geométricos de forma interactiva a partir de imágenes. "
+"Utiliza algoritmos de segmentación avanzados para detectar regiones "
+"automáticamente."
+
+#: templates/home.html:65
+msgid "Auto Detection"
+msgstr "Detección automática"
+
+#: templates/home.html:69
+msgid "Interactive"
+msgstr "Interactivo"
+
+#: templates/home.html:74
+msgid "Try ContourCreator"
+msgstr "Pruebe ContourCreator"
+
+#: templates/home.html:79
+msgid "Most Popular"
+msgstr "Más Popular"
+
+#: templates/home.html:84
+msgid ""
+"Generate unstructured point clouds from CSV files. Automatically optimizes "
+"point distribution according to geometry for mGFD simulations."
+msgstr ""
+"Genere nubes de puntos no estructuradas a partir de archivos CSV. Optimiza "
+"automáticamente la distribución de puntos según la geometría para "
+"simulaciones de mGFD."
+
+#: templates/home.html:88
+msgid "High Performance"
+msgstr "Rendimiento alto"
+
+#: templates/home.html:92 templates/home.html:304
+msgid "Optimized"
+msgstr "Optimizado"
+
+#: templates/home.html:97
+msgid "Try CloudGenerator"
+msgstr "Pruebe CloudGenerator"
+
+#: templates/home.html:106
+msgid ""
+"Visualize your generated point clouds directly in the browser. Inspect node "
+"distribution, regions, and boundary classifications with high-quality 2D "
+"plots."
+msgstr ""
+"Visualice sus nubes de puntos generadas directamente en el navegador. "
+"Inspeccione la distribución de nodos, las regiones y las clasificaciones de "
+"límites con gráficos 2D de alta calidad."
+
+#: templates/home.html:110
+msgid "2D Plots"
+msgstr "Gráficos 2D"
+
+#: templates/home.html:114
+msgid "Inspect"
+msgstr "Inspeccionar"
+
+#: templates/home.html:119
+msgid "Try CloudViewer"
+msgstr "Pruebe CloudViewer"
+
+#: templates/home.html:128
+msgid ""
+"Calculate and analyze neighbor relationships within your point clouds. "
+"Essential for mGFD connectivity analysis and validation."
+msgstr ""
+"Calcule y analice las relaciones de vecinos dentro de sus nubes de puntos. "
+"Esencial para el análisis y validación de la conectividad de mGFD."
+
+#: templates/home.html:132
+msgid "Fast Calc"
+msgstr "Cálculo Rápido"
+
+#: templates/home.html:136
+msgid "Connectivity"
+msgstr "Conectividad"
+
+#: templates/home.html:141
+msgid "Try NeighborsCalculator"
+msgstr "Pruebe NeighborsCalculator"
+
+#: templates/home.html:150
+msgid ""
+"Learn more about the development team, methodology used, and research "
+"objectives of the project."
+msgstr ""
+"Obtenga más información sobre el equipo de desarrollo, la metodología "
+"utilizada y los objetivos de investigación del proyecto."
+
+#: templates/home.html:154
+msgid "Research"
+msgstr "Investigación"
+
+#: templates/home.html:162
+msgid "Learn More"
+msgstr "Más información"
+
+#: templates/home.html:174
+msgid "How It Works"
+msgstr "Cómo funciona"
+
+#: templates/home.html:175
+msgid "Complete process from image to unstructured point cloud"
+msgstr "Proceso completo desde imagen hasta nube de puntos no estructurada."
+
+#: templates/home.html:186
+msgid ""
+"Start by uploading your image containing regions of interest. Our system "
+"supports multiple formats and provides instant preview with quality "
+"validation."
+msgstr ""
+"Comience cargando su imagen que contenga regiones de interés. Nuestro "
+"sistema admite múltiples formatos y proporciona vista previa instantánea con"
+" validación de calidad."
+
+#: templates/home.html:188
+msgid "PNG/JPG"
+msgstr "PNG/JPG"
+
+#: templates/home.html:189
+msgid "Drag & Drop"
+msgstr "Arrastrar y soltar"
+
+#: templates/home.html:190
+msgid "Quality Check"
+msgstr "Control de calidad"
+
+#: templates/home.html:201
+msgid "Detect Contours"
+msgstr "Detectar contornos"
+
+#: templates/home.html:202
+msgid ""
+"Advanced computer vision algorithms automatically identify and extract "
+"geometric contours with sub-pixel precision, ensuring accurate boundary "
+"detection."
+msgstr ""
+"Los algoritmos avanzados de visión por computadora identifican y extraen "
+"automáticamente contornos geométricos con una precisión de subpíxeles, lo "
+"que garantiza una detección precisa de los límites."
+
+#: templates/home.html:204
+msgid "AI-Powered"
+msgstr "Impulsado por IA"
+
+#: templates/home.html:205
+msgid "Sub-pixel Accuracy"
+msgstr "Precisión de subpíxeles"
+
+#: templates/home.html:206
+msgid "Real-time Preview"
+msgstr "Vista previa en tiempo real"
+
+#: templates/home.html:217
+msgid "Export Coordinates"
+msgstr "Coordenadas de exportación"
+
+#: templates/home.html:218
+msgid ""
+"Extract and export contour coordinates in industry-standard CSV format, "
+"ready for integration with your computational workflow and analysis tools."
+msgstr ""
+"Extraiga y exporte coordenadas de contorno en formato CSV estándar de la "
+"industria, listo para la integración con su flujo de trabajo computacional y"
+" herramientas de análisis."
+
+#: templates/home.html:220 templates/home.html:356
+msgid "CSV Format"
+msgstr "Formato CSV"
+
+#: templates/home.html:221
+msgid "Structured Data"
+msgstr "Datos estructurados"
+
+#: templates/home.html:222
+msgid "Instant Download"
+msgstr "Descarga instantánea"
+
+#: templates/home.html:234
+msgid ""
+"Transform contours into optimized unstructured point clouds using advanced "
+"algorithms specifically designed for mGFD computational efficiency."
+msgstr ""
+"Transforme contornos en nubes de puntos no estructuradas optimizadas "
+"utilizando algoritmos avanzados diseñados específicamente para la eficiencia"
+" computacional de mGFD."
+
+#: templates/home.html:236
+msgid "mGFD Optimized"
+msgstr "mGFD optimizado"
+
+#: templates/home.html:237
+msgid "Adaptive Density"
+msgstr "Densidad adaptativa"
+
+#: templates/home.html:238
+msgid "Quality Metrics"
+msgstr "Métricas de calidad"
+
+#: templates/home.html:248
+msgid "Visualize & Analyze"
+msgstr "Visualizar y analizar"
+
+#: templates/home.html:249
+msgid ""
+"Detailed visualization of generated point clouds with comprehensive analysis"
+" tools, quality metrics, and multiple export formats for your research "
+"needs."
+msgstr ""
+"Visualización detallada de nubes de puntos generadas con herramientas de "
+"análisis integrales, métricas de calidad y múltiples formatos de exportación"
+" para sus necesidades de investigación."
+
+#: templates/home.html:251
+msgid "2D Visualization"
+msgstr "Visualización 2D"
+
+#: templates/home.html:252
+msgid "Quality Analysis"
+msgstr "Análisis de calidad"
+
+#: templates/home.html:253
+msgid "Multiple Exports"
+msgstr "Exportaciones múltiples"
+
+#: templates/home.html:265
+msgid "Key Features"
+msgstr "Características clave"
+
+#: templates/home.html:266
+msgid "Advanced capabilities that set our platform apart"
+msgstr "Capacidades avanzadas que distinguen nuestra plataforma"
+
+#: templates/home.html:279
+msgid "Interactive Contour Detection"
+msgstr "Detección interactiva de contornos"
+
+#: templates/home.html:280
+msgid "Click-Based"
+msgstr "Basado en clics"
+
+#: templates/home.html:282
+msgid ""
+"Advanced flood fill and equidistant contour sampling algorithms "
+"automatically identify geometric regions and guarantee mathematically "
+"uniform node spacing for complex boundaries."
+msgstr ""
+"Los algoritmos avanzados de relleno de inundaciones y muestreo de contornos "
+"equidistantes identifican automáticamente regiones geométricas y garantizan "
+"un espaciado de nodos matemáticamente uniforme para límites complejos."
+
+#: templates/home.html:285 templates/home.html:315
+msgid "Auto"
+msgstr "Auto"
+
+#: templates/home.html:286
+msgid "Detection"
+msgstr "Detección"
+
+#: templates/home.html:289
+msgid "Multi"
+msgstr "Multi"
+
+#: templates/home.html:290
+msgid "Region"
+msgstr "Región"
+
+#: templates/home.html:306
+msgid "Adaptive Point Cloud Generation"
+msgstr "Generación de nube de puntos adaptativa"
+
+#: templates/home.html:308
+msgid ""
+"Generates optimized point clouds with adaptive density based on geometric "
+"complexity. Preserves contour nodes and uses topological fallbacks to "
+"guarantee valid sub-domains."
+msgstr ""
+"Genera nubes de puntos optimizadas con densidad adaptativa basada en la "
+"complejidad geométrica. Conserva los nodos de contorno y utiliza "
+"alternativas topológicas para garantizar subdominios válidos."
+
+#: templates/home.html:311
+msgid "Adaptive"
+msgstr "Adaptativo"
+
+#: templates/home.html:312
+msgid "Sizing"
+msgstr "Tamaño"
+
+#: templates/home.html:316
+msgid "Classification"
+msgstr "Clasificación"
+
+#: templates/home.html:330
+msgid "Publication-Ready"
+msgstr "Listo para publicación"
+
+#: templates/home.html:332
+msgid "High-Quality Visualization"
+msgstr "Visualización de alta calidad"
+
+#: templates/home.html:334
+msgid ""
+"Generates detailed 2D visualizations with node classification, boundary "
+"highlighting, and quality analysis. Exports high-resolution images and SVG "
+"graphics suitable for scientific publications."
+msgstr ""
+"Genera visualizaciones 2D detalladas con clasificación de nodos, resaltado "
+"de límites y análisis de calidad. Exporta imágenes de alta resolución y "
+"gráficos SVG adecuados para publicaciones científicas."
+
+#: templates/home.html:338
+msgid "DPI"
+msgstr "PPP"
+
+#: templates/home.html:342
+msgid "Export"
+msgstr "Exportar"
+
+#: templates/home.html:358
+msgid "Flexible Data Export"
+msgstr "Exportación de datos flexible"
+
+#: templates/home.html:360
+msgid ""
+"Exports point cloud data in CSV format with comprehensive node "
+"classification including boundary, interface, and interior node types. "
+"Compatible with scientific computing workflows and mGFD solvers."
+msgstr ""
+"Exporta datos de nubes de puntos en formato CSV con una clasificación de "
+"nodos completa que incluye tipos de nodos interiores, de interfaz y de "
+"límites. Compatible con flujos de trabajo de informática científica y "
+"solucionadores de mGFD."
+
+#: templates/home.html:364
+msgid "Format"
+msgstr "Formato"
+
+#: templates/home.html:367
+msgid "mGFD"
+msgstr "mGFD"
+
+#: templates/home.html:368
+msgid "Ready"
+msgstr "Listo"
+
+#: templates/neighbors.html:20
+msgid ""
+"Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to\n"
+"                        generate neighbor lists and visualize the results."
+msgstr ""
+"Calcule vecinos para sus nubes de puntos con un aislamiento regional estricto. Sube archivos CSV a\n"
+"                        generar listas de vecinos y visualizar los resultados."
+
+#: templates/neighbors.html:26
+msgid "Region Aware"
+msgstr "Consciente de la región"
+
+#: templates/neighbors.html:30
+msgid "Global Indexing"
+msgstr "Indexación global"
+
+#: templates/neighbors.html:34
+msgid "CSV Export"
+msgstr "Exportación CSV"
+
+#: templates/neighbors.html:52
+msgid "Mathematical Foundations"
+msgstr "Fundamentos matemáticos"
+
+#: templates/neighbors.html:53
+msgid "Understanding the topological requirements for the mGFD method"
+msgstr "Comprender los requisitos topológicos del método mGFD"
+
+#: templates/neighbors.html:59
+msgid "The"
+msgstr "El"
+
+#: templates/neighbors.html:59
+msgid "meshless Generalized Finite Difference (mGFD)"
+msgstr "Diferencias Finitas Generalizadas sin Malla (mGFD)"
+
+#: templates/neighbors.html:59
+msgid ""
+"method relies on a Taylor\n"
+"                        polynomial expansion to approximate derivatives over a cloud of points."
+msgstr ""
+"El método se basa en un Taylor.\n"
+"                        expansión polinomial para aproximar derivadas sobre una nube de puntos."
+
+#: templates/neighbors.html:64
+msgid ""
+"To ensure that the resulting system of equations is algebraically determined and\n"
+"                        well-conditioned, it is crucial to select a sufficient number of nearest neighbors, denoted as\n"
+"                        \\( n \\), based on the chosen polynomial degree \\( m \\)."
+msgstr ""
+"Para asegurar que el sistema de ecuaciones resultante esté determinado algebraicamente y\n"
+"                        bien acondicionado, es crucial seleccionar un número suficiente de vecinos más cercanos, denotados como\n"
+"                        \\( n \\), basado en el grado del polinomio elegido \\( m \\)."
+
+#: templates/neighbors.html:70
+msgid "Minimum recommended neighbors:"
+msgstr "Vecinos mínimos recomendados:"
+
+#: templates/neighbors.html:81
+msgid "For \\( m = 2 \\)"
+msgstr "Para \\( m = 2 \\)"
+
+#: templates/neighbors.html:82
+msgid ""
+"A second-degree\n"
+"                                polynomial requires at least \\( n = 6 \\) neighbors."
+msgstr ""
+"Un polinomio de segundo grado\n"
+"                                requiere al menos \\( n = 6 \\) vecinos."
+
+#: templates/neighbors.html:89
+msgid "For \\( m = 3 \\)"
+msgstr "Para \\( m = 3 \\)"
+
+#: templates/neighbors.html:90
+msgid ""
+"A third-degree\n"
+"                                polynomial requires at least \\( n = 10 \\) neighbors."
+msgstr ""
+"Un polinomio de tercer grado\n"
+"                                requiere al menos \\( n = 10 \\) vecinos."
+
+#: templates/neighbors.html:104
+msgid "Upload Point Cloud"
+msgstr "Cargar nube de puntos"
+
+#: templates/neighbors.html:105
+msgid "Select a CSV file with x, y, classification, region columns"
+msgstr "Seleccione un archivo CSV con columnas x, y, clasificación y región"
+
+#: templates/neighbors.html:113
+msgid "Neighborhood Settings"
+msgstr "Configuración del vecindario"
+
+#: templates/neighbors.html:115
+msgid ""
+"Specify the exact number of nearest neighbors to connect for each node."
+msgstr ""
+"Especifique el número exacto de vecinos más cercanos a conectar para cada "
+"nodo."
+
+#: templates/neighbors.html:119
+msgid "\\( n = \\)"
+msgstr "\\( n = \\)"
+
+#: templates/neighbors.html:163
+msgid "Calculating Neighbors"
+msgstr "Calculando vecinos"
+
+#: templates/neighbors.html:164
+msgid "Processing regions and computing distances..."
+msgstr "Procesamiento de regiones y cálculo de distancias..."
+
+#: templates/neighbors.html:192
+msgid ""
+"Neighbors\n"
+"                                    Visualization"
+msgstr ""
+"Vecinos\n"
+"                                    Visualización"
+
+#: templates/neighbors.html:196 templates/neighbors.html:197
+#: templates/viewer.html:145
+msgid "Reset View"
+msgstr "Restablecer vista"
+
+#: templates/neighbors.html:211
+msgid "Center ID:"
+msgstr "Identificación del centro:"
+
+#: templates/neighbors.html:212
+msgid "None"
+msgstr "Ninguno"
+
+#: templates/neighbors.html:215
+msgid "Region:"
+msgstr "Región:"
+
+#: templates/neighbors.html:219
+msgid "Neighbors Found:"
+msgstr "Vecinos encontrados:"
+
+#: templates/neighbors.html:225 templates/viewer.html:177
+msgid "Cursor:"
+msgstr "Cursor:"
+
+#: templates/neighbors.html:226 templates/viewer.html:178
+msgid "X: 0.00, Y: 0.00"
+msgstr "X: 0,00, Y: 0,00"
+
+#: templates/neighbors.html:240
+msgid "Download Neighbors CSV"
+msgstr "Descargar Vecinos CSV"
+
+#: templates/privacy_notice.html:18
+msgid ""
+"Your privacy is important to us. This notice explains how mGFD "
+"CloudGenerator 2.0 collects, uses, and protects your personal information in"
+" compliance with applicable data protection laws."
+msgstr ""
+"Su privacidad es importante para nosotros. Este aviso explica cómo mGFD "
+"CloudGenerator 2.0 recopila, utiliza y protege su información personal de "
+"conformidad con las leyes de protección de datos aplicables."
+
+#: templates/privacy_notice.html:23
+msgid "Data Protection"
+msgstr "Protección de datos"
+
+#: templates/privacy_notice.html:27
+msgid "Secure Processing"
+msgstr "Procesamiento seguro"
+
+#: templates/privacy_notice.html:31
+msgid "Your Rights"
+msgstr "Tus derechos"
+
+#: templates/privacy_notice.html:43
+msgid "Data Controller Information"
+msgstr "Información del controlador de datos"
+
+#: templates/privacy_notice.html:44
+msgid "Who is responsible for your personal data"
+msgstr "Quién es el responsable de sus datos personales"
+
+#: templates/privacy_notice.html:49
+msgid "Institution"
+msgstr "Institución"
+
+#: templates/privacy_notice.html:50
+msgid ""
+"Universidad Michoacana de San Nicolás de Hidalgo (UMSNH), Faculty of "
+"Physical-Mathematical Sciences"
+msgstr ""
+"Universidad Michoacana de San Nicolás de Hidalgo (UMSNH), Facultad de "
+"Ciencias Físico-Matemáticas"
+
+#: templates/privacy_notice.html:54
+msgid "Responsible Person"
+msgstr "Persona Responsable"
+
+#: templates/privacy_notice.html:55
+msgid "Dr. Gerardo Tinoco-Guerrero, Principal Researcher and Project Lead"
+msgstr ""
+"Dr. Gerardo Tinoco-Guerrero, Investigador Principal y Líder del Proyecto"
+
+#: templates/privacy_notice.html:59 templates/privacy_notice.html:200
+msgid "Contact Information"
+msgstr "Información del contacto"
+
+#: templates/privacy_notice.html:60 templates/privacy_notice.html:203
+msgid "Email:"
+msgstr "Correo electrónico:"
+
+#: templates/privacy_notice.html:61
+msgid "Address: Morelia, Michoacán, México"
+msgstr "Dirección: Morelia, Michoacán, México"
+
+#: templates/privacy_notice.html:71
+msgid "Data We Collect"
+msgstr "Datos que recopilamos"
+
+#: templates/privacy_notice.html:72
+msgid "Information collected when you use our platform"
+msgstr "Información recopilada cuando utiliza nuestra plataforma"
+
+#: templates/privacy_notice.html:77
+msgid "1. Technical Data"
+msgstr "1. Datos técnicos"
+
+#: templates/privacy_notice.html:78
+msgid ""
+"We collect IP address, browser type, device information, and usage patterns "
+"for system optimization and security purposes. This information helps us "
+"maintain the stability and security of our services."
+msgstr ""
+"Recopilamos la dirección IP, el tipo de navegador, la información del "
+"dispositivo y los patrones de uso con fines de seguridad y optimización del "
+"sistema. Esta información nos ayuda a mantener la estabilidad y seguridad de"
+" nuestros servicios."
+
+#: templates/privacy_notice.html:82
+msgid "2. Uploaded Files"
+msgstr "2. Archivos cargados"
+
+#: templates/privacy_notice.html:83
+msgid ""
+"Images and data files you upload for processing are temporarily stored on "
+"our servers. These files are automatically deleted after processing is "
+"complete to protect your privacy."
+msgstr ""
+"Las imágenes y los archivos de datos que usted carga para su procesamiento "
+"se almacenan temporalmente en nuestros servidores. Estos archivos se "
+"eliminan automáticamente una vez finalizado el procesamiento para proteger "
+"su privacidad."
+
+#: templates/privacy_notice.html:87
+msgid "3. Usage Analytics"
+msgstr "3. Análisis de uso"
+
+#: templates/privacy_notice.html:88
+msgid ""
+"We collect anonymous usage statistics to improve our services and understand"
+" user behavior patterns. This data is aggregated and cannot be used to "
+"identify individual users."
+msgstr ""
+"Recopilamos estadísticas de uso anónimas para mejorar nuestros servicios y "
+"comprender los patrones de comportamiento de los usuarios. Estos datos son "
+"agregados y no se pueden utilizar para identificar a usuarios individuales."
+
+#: templates/privacy_notice.html:98
+msgid "How We Use Your Data"
+msgstr "Cómo utilizamos sus datos"
+
+#: templates/privacy_notice.html:99
+msgid "Legitimate purposes for data processing"
+msgstr "Fines legítimos del tratamiento de datos"
+
+#: templates/privacy_notice.html:104
+msgid "Service Provision"
+msgstr "Prestación de servicios"
+
+#: templates/privacy_notice.html:105
+msgid ""
+"We use your data to provide cloud generation and contour creation services "
+"as requested by users. This includes processing uploaded files and "
+"generating the requested outputs."
+msgstr ""
+"Utilizamos sus datos para proporcionar servicios de generación de nubes y "
+"creación de contornos según lo soliciten los usuarios. Esto incluye procesar"
+" archivos cargados y generar los resultados solicitados."
+
+#: templates/privacy_notice.html:109
+msgid "Service Improvement"
+msgstr "Mejora del servicio"
+
+#: templates/privacy_notice.html:110
+msgid ""
+"We analyze usage patterns to improve the performance and functionality of "
+"our tools. This helps us identify areas for enhancement and optimize user "
+"experience."
+msgstr ""
+"Analizamos patrones de uso para mejorar el rendimiento y la funcionalidad de"
+" nuestras herramientas. Esto nos ayuda a identificar áreas de mejora y "
+"optimizar la experiencia del usuario."
+
+#: templates/privacy_notice.html:114
+msgid "Security & Compliance"
+msgstr "Seguridad y cumplimiento"
+
+#: templates/privacy_notice.html:115
+msgid ""
+"We process data to ensure system security, prevent abuse, and comply with "
+"legal obligations. This includes monitoring for suspicious activities and "
+"maintaining audit logs."
+msgstr ""
+"Procesamos datos para garantizar la seguridad del sistema, evitar abusos y "
+"cumplir con las obligaciones legales. Esto incluye monitorear actividades "
+"sospechosas y mantener registros de auditoría."
+
+#: templates/privacy_notice.html:119
+msgid "Research Purposes"
+msgstr "Propósitos de la investigación"
+
+#: templates/privacy_notice.html:120
+msgid ""
+"With explicit consent, we may use anonymous data for academic research and "
+"scientific publications. Individual users cannot be identified from this "
+"research data."
+msgstr ""
+"Con consentimiento explícito, podemos utilizar datos anónimos para "
+"investigaciones académicas y publicaciones científicas. Los usuarios "
+"individuales no pueden ser identificados a partir de los datos de esta "
+"investigación."
+
+#: templates/privacy_notice.html:130
+msgid "Your Privacy Rights"
+msgstr "Sus derechos de privacidad"
+
+#: templates/privacy_notice.html:131
+msgid "Rights you have regarding your personal data"
+msgstr "Derechos que tienes respecto a tus datos personales"
+
+#: templates/privacy_notice.html:136
+msgid "Right of Access"
+msgstr "Derecho de acceso"
+
+#: templates/privacy_notice.html:137
+msgid ""
+"You have the right to know what personal data we have about you and how it's"
+" being used. You can request a copy of your personal data at any time."
+msgstr ""
+"Tiene derecho a saber qué datos personales tenemos sobre usted y cómo se "
+"utilizan. Puede solicitar una copia de sus datos personales en cualquier "
+"momento."
+
+#: templates/privacy_notice.html:141
+msgid "Right of Rectification"
+msgstr "Derecho de Rectificación"
+
+#: templates/privacy_notice.html:142
+msgid ""
+"You have the right to correct or update any inaccurate or incomplete "
+"personal data we hold about you."
+msgstr ""
+"Tiene derecho a corregir o actualizar cualquier dato personal inexacto o "
+"incompleto que tengamos sobre usted."
+
+#: templates/privacy_notice.html:146
+msgid "Right of Cancellation"
+msgstr "Derecho de Cancelación"
+
+#: templates/privacy_notice.html:147
+msgid ""
+"You have the right to request deletion of your personal data when it's no "
+"longer necessary for the purposes for which it was collected."
+msgstr ""
+"Tienes derecho a solicitar la eliminación de tus datos personales cuando ya "
+"no sean necesarios para los fines para los que fueron recogidos."
+
+#: templates/privacy_notice.html:151
+msgid "Right of Opposition"
+msgstr "Derecho de oposición"
+
+#: templates/privacy_notice.html:152
+msgid ""
+"You have the right to object to certain types of data processing for "
+"legitimate reasons, particularly for direct marketing purposes."
+msgstr ""
+"Tiene derecho a oponerse a determinados tipos de procesamiento de datos por "
+"motivos legítimos, en particular con fines de marketing directo."
+
+#: templates/privacy_notice.html:156
+msgid "Exercising Your Rights"
+msgstr "Ejercicio de sus derechos"
+
+#: templates/privacy_notice.html:157
+msgid "To exercise any of these rights, please contact us at"
+msgstr ""
+"Para ejercer cualquiera de estos derechos, por favor póngase en contacto con"
+" nosotros en"
+
+#: templates/privacy_notice.html:157
+msgid ". We will respond to your request within 30 days."
+msgstr ". Responderemos a su solicitud dentro de los 30 días."
+
+#: templates/privacy_notice.html:167
+msgid "Data Security & Retention"
+msgstr "Seguridad y retención de datos"
+
+#: templates/privacy_notice.html:168
+msgid "How we protect and manage your information"
+msgstr "Cómo protegemos y gestionamos su información"
+
+#: templates/privacy_notice.html:173
+msgid "Encryption and Security"
+msgstr "Cifrado y seguridad"
+
+#: templates/privacy_notice.html:174
+msgid ""
+"All data transmissions are encrypted using industry-standard SSL/TLS "
+"protocols to ensure secure communication. Our servers are protected by "
+"firewalls and regular security updates."
+msgstr ""
+"Todas las transmisiones de datos se cifran utilizando protocolos SSL/TLS "
+"estándar de la industria para garantizar una comunicación segura. Nuestros "
+"servidores están protegidos por firewalls y actualizaciones de seguridad "
+"periódicas."
+
+#: templates/privacy_notice.html:178
+msgid "Data Retention"
+msgstr "Retención de datos"
+
+#: templates/privacy_notice.html:179
+msgid ""
+"Uploaded files are automatically deleted after processing. Technical logs "
+"are retained for 90 days for security purposes. Anonymous usage statistics "
+"may be retained indefinitely for research purposes."
+msgstr ""
+"Los archivos cargados se eliminan automáticamente después del procesamiento."
+" Los registros técnicos se conservan durante 90 días por motivos de "
+"seguridad. Las estadísticas de uso anónimas pueden conservarse "
+"indefinidamente con fines de investigación."
+
+#: templates/privacy_notice.html:183
+msgid "Access Control"
+msgstr "Control de acceso"
+
+#: templates/privacy_notice.html:184
+msgid ""
+"Access to personal data is restricted to authorized personnel only and is "
+"granted on a need-to-know basis for legitimate business purposes."
+msgstr ""
+"El acceso a los datos personales está restringido únicamente al personal "
+"autorizado y se otorga según sea necesario para fines comerciales legítimos."
+
+#: templates/privacy_notice.html:194
+msgid "Contact & Updates"
+msgstr "Contacto y actualizaciones"
+
+#: templates/privacy_notice.html:195
+msgid "How to reach us and stay informed"
+msgstr "Cómo comunicarse con nosotros y mantenerse informado"
+
+#: templates/privacy_notice.html:201
+msgid ""
+"If you have any questions about this Privacy Notice or our data practices, "
+"please contact us:"
+msgstr ""
+"Si tiene alguna pregunta sobre este Aviso de Privacidad o nuestras prácticas"
+" de datos, por favor contáctenos:"
+
+#: templates/privacy_notice.html:204
+msgid "Institution: Universidad Michoacana de San Nicolás de Hidalgo"
+msgstr "Institución: Universidad Michoacana de San Nicolás de Hidalgo"
+
+#: templates/privacy_notice.html:205
+msgid "Faculty: Physical-Mathematical Sciences"
+msgstr "Facultad: Ciencias Físico-Matemáticas"
+
+#: templates/privacy_notice.html:206
+msgid "Location: Morelia, Michoacán, México"
+msgstr "Ubicación: Morelia, Michoacán, México"
+
+#: templates/privacy_notice.html:211
+msgid "Updates to This Notice"
+msgstr "Actualizaciones de este aviso"
+
+#: templates/privacy_notice.html:212
+msgid ""
+"We may update this Privacy Notice from time to time to reflect changes in "
+"our practices or legal requirements. The effective date at the top of this "
+"page indicates when the notice was last updated."
+msgstr ""
+"Podemos actualizar este Aviso de Privacidad de vez en cuando para reflejar "
+"cambios en nuestras prácticas o requisitos legales. La fecha de vigencia en "
+"la parte superior de esta página indica cuándo se actualizó el aviso por "
+"última vez."
+
+#: templates/privacy_notice.html:216
+msgid "Effective Date"
+msgstr "Fecha de vigencia"
+
+#: templates/privacy_notice.html:217
+msgid ""
+"This Privacy Notice is effective as of May 2025 and applies to all data "
+"collected from that date forward."
+msgstr ""
+"Este Aviso de Privacidad entra en vigor a partir de mayo de 2025 y se aplica"
+" a todos los datos recopilados a partir de esa fecha en adelante."
+
+#: templates/viewer.html:22
+msgid ""
+"Instantly visualize your point clouds and contour data. Upload CSV files to inspect geometries\n"
+"                        and verify distributions before simulation."
+msgstr ""
+"Visualice instantáneamente sus nubes de puntos y datos de contornos. Cargue archivos CSV para inspeccionar geometrías\n"
+"                        y verificar las distribuciones antes de la simulación."
+
+#: templates/viewer.html:28
+msgid "CSV Viewer"
+msgstr "Visor CSV"
+
+#: templates/viewer.html:32
+msgid "Instant Plot"
+msgstr "Gráfico Instantáneo"
+
+#: templates/viewer.html:36
+msgid "Export Plots"
+msgstr "Exportar Gráficos"
+
+#: templates/viewer.html:55
+msgid "Upload Data File"
+msgstr "Cargar archivo de datos"
+
+#: templates/viewer.html:56
+msgid "Select a CSV file containing point cloud or contour data"
+msgstr ""
+"Seleccione un archivo CSV que contenga nube de puntos o datos de contorno"
+
+#: templates/viewer.html:97
+msgid "Generating Visualization"
+msgstr "Generando visualización"
+
+#: templates/viewer.html:98
+msgid "Processing your data points..."
+msgstr "Procesando sus puntos de datos..."
+
+#: templates/viewer.html:117
+msgid "Pan (Click and drag)"
+msgstr "Panorámica (hacer clic y arrastrar)"
+
+#: templates/viewer.html:121
+msgid "Move Point (Click point and drag)"
+msgstr "Mover punto (haga clic en señalar y arrastre)"
+
+#: templates/viewer.html:124
+msgid "Add Point (Click empty space)"
+msgstr "Agregar punto (haga clic en el espacio vacío)"
+
+#: templates/viewer.html:127
+msgid "Delete Point (Click point)"
+msgstr "Eliminar punto (hacer clic en el punto)"
+
+#: templates/viewer.html:134
+msgid "Undo (Ctrl+Z)"
+msgstr "Deshacer (Ctrl+Z)"
+
+#: templates/viewer.html:138
+msgid "Redo (Ctrl+Y)"
+msgstr "Rehacer (Ctrl+Y)"
+
+#: templates/viewer.html:163
+msgid "Total Points:"
+msgstr "Puntos totales:"
+
+#: templates/viewer.html:167
+msgid "Min Dist:"
+msgstr "Dist mínima:"
+
+#: templates/viewer.html:171
+msgid "Avg Dist:"
+msgstr "Dist promedio:"
+
+#: templates/viewer.html:194
+msgid "Toggle Print Mode (White Background)"
+msgstr "Alternar modo de impresión (fondo blanco)"
+
+#: templates/viewer.html:199
+msgid "Print Mode"
+msgstr "Modo de impresión"
+
+#: templates/viewer.html:202
+msgid "Toggle Region Colors"
+msgstr "Alternar colores de región"
+
+#: templates/viewer.html:206
+msgid "Colors"
+msgstr "Colores"
+
+#: templates/viewer.html:215
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+#: templates/viewer.html:220
+msgid "Export PNG"
+msgstr "Exportar PNG"
+
+#~ msgid "EN"
+#~ msgstr "EN"
+
+#~ msgid "ES"
+#~ msgstr "ES"

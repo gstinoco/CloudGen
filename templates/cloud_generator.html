@@ -1,140 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cloud_generator.css') }}">
+{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-
-    <!-- SEO Meta Tags -->
-    <title>CloudGenerator | mGFD CloudGenerator 2.0</title>
-    <meta name="description"
-        content="Generate 2D point clouds with advanced control over distribution, density, and boundary conditions. Support for mGFD method requirements.">
-    <meta name="keywords"
-        content="point cloud generator, 2D points, mGFD, meshless method, node generation, scientific visualization">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="og:description"
-        content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="CloudGenerator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description"
-        content="Generate high-quality point clouds from images using advanced algorithms. Upload images, detect regions, and export precise coordinate data.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/cloud_generator.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                                <i class="fas fa-draw-polygon"></i>
-                                ContourCreator
-                            </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link active">
-                                <i class="fas fa-cloud"></i>
-                                CloudGenerator
-                            </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                                <i class="fas fa-eye"></i>
-                                CloudViewer
-                            </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                                <i class="fas fa-users"></i>
-                                NeighborsCalculator
-                            </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -143,24 +15,24 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
                             class="logo-image">
                     </div>
-                    <h1 class="hero-title">CloudGenerator</h1>
+                    <h1 class="hero-title">{{ _('CloudGenerator') }}</h1>
                     <p class="hero-subtitle">
-                        Generate unstructured point clouds from CSV files with contour coordinates for mGFD
+                        {{ _('Generate unstructured point clouds from CSV files with contour coordinates for mGFD
                         applications.
-                        Transform your geometric data into computational point clouds ready for scientific simulations.
+                        Transform your geometric data into computational point clouds ready for scientific simulations.') }}
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-file-csv"></i>
-                            <span>CSV Import</span>
+                            <span>{{ _('CSV Import') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-cloud"></i>
-                            <span>Point Cloud Generation</span>
+                            <span>{{ _('Point Cloud Generation') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-download"></i>
-                            <span>Multiple Formats</span>
+                            <span>{{ _('Multiple Formats') }}</span>
                         </div>
                     </div>
                 </div>
@@ -179,37 +51,37 @@
                         <i class="fas fa-file-csv"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Required CSV File Format</h3>
-                        <p>Understand the expected data structure for point cloud generation</p>
+                        <h3>{{ _('Required CSV File Format') }}</h3>
+                        <p>{{ _('Understand the expected data structure for point cloud generation') }}</p>
                     </div>
                 </div>
                 <div class="format-content">
                     <div class="format-requirements">
                         <h4 class="format-subtitle">
                             <i class="fas fa-table"></i>
-                            Required Columns
+                            {{ _('Required Columns') }}
                         </h4>
                         <div class="columns-grid">
                             <div class="column-item">
                                 <div class="column-header">
-                                    <span class="column-name">x</span>
-                                    <span class="column-type">float</span>
+                                    <span class="column-name">{{ _('x') }}</span>
+                                    <span class="column-type">{{ _('float') }}</span>
                                 </div>
-                                <p class="column-description">Normalized X coordinate (0.0 - 1.0)</p>
+                                <p class="column-description">{{ _('Normalized X coordinate (0.0 - 1.0)') }}</p>
                             </div>
                             <div class="column-item">
                                 <div class="column-header">
-                                    <span class="column-name">y</span>
-                                    <span class="column-type">float</span>
+                                    <span class="column-name">{{ _('y') }}</span>
+                                    <span class="column-type">{{ _('float') }}</span>
                                 </div>
-                                <p class="column-description">Normalized Y coordinate (0.0 - 1.0)</p>
+                                <p class="column-description">{{ _('Normalized Y coordinate (0.0 - 1.0)') }}</p>
                             </div>
                             <div class="column-item">
                                 <div class="column-header">
-                                    <span class="column-name">region</span>
-                                    <span class="column-type">int</span>
+                                    <span class="column-name">{{ _('region') }}</span>
+                                    <span class="column-type">{{ _('int') }}</span>
                                 </div>
-                                <p class="column-description">Region number (1, 2, 3, ...)</p>
+                                <p class="column-description">{{ _('Region number (1, 2, 3, ...)') }}</p>
                             </div>
                         </div>
                     </div>
@@ -218,9 +90,9 @@
                         <div class="example-header">
                             <h4 class="format-example-title">
                                 <i class="fas fa-code"></i>
-                                Example Format
+                                {{ _('Example Format') }}
                             </h4>
-                            <p class="example-description">Here's how your CSV file should be structured</p>
+                            <p class="example-description">{{ _('Here\'s how your CSV file should be structured') }}</p>
                         </div>
 
                         <div class="code-preview-container">
@@ -228,13 +100,13 @@
                                 <div class="code-header">
                                     <div class="file-info">
                                         <i class="fas fa-file-csv"></i>
-                                        <span class="file-name">example.csv</span>
+                                        <span class="file-name">{{ _('example.csv') }}</span>
                                     </div>
                                     <button class="copy-btn"
                                         onclick="copyToClipboard('x,y,region\n0.4571,0.8178,1\n0.4559,0.8166,1\n0.4547,0.8166,1')"
-                                        title="Copy to clipboard">
+                                        title="{{ _('Copy to clipboard') }}">
                                         <i class="fas fa-copy"></i>
-                                        <span class="copy-text">Copy</span>
+                                        <span class="copy-text">{{ _('Copy') }}</span>
                                     </button>
                                 </div>
                                 <div class="code-content">
@@ -245,7 +117,7 @@
                                         <span>4</span>
                                     </div>
                                     <div class="code-text">
-                                        <pre><code><span class="csv-header">x,y,region</span>
+                                        <pre><code><span class="csv-header">{{ _('x,y,region') }}</span>
 <span class="csv-data">0.4571,0.8178,1</span>
 <span class="csv-data">0.4559,0.8166,1</span>
 <span class="csv-data">0.4547,0.8166,1</span></code></pre>
@@ -261,8 +133,8 @@
                                 <i class="fas fa-lightbulb"></i>
                             </div>
                             <div class="tip-text">
-                                <strong>Perfect Compatibility:</strong> Use files generated by ContourCreator for
-                                seamless integration
+                                <strong>{{ _('Perfect Compatibility:') }}</strong> {{ _('Use files generated by ContourCreator for
+                                seamless integration') }}
                             </div>
                         </div>
                         <div class="tip-item">
@@ -270,13 +142,13 @@
                                 <i class="fas fa-download"></i>
                             </div>
                             <div class="tip-text">
-                                <strong>Sample File:</strong> Download our
+                                <strong>{{ _('Sample File:') }}</strong> {{ _('Download our') }}
                                 <a href="{{ url_for('static', filename='examples/example_1_contour.csv') }}"
                                     download="example_1_contour.csv" class="download-link">
                                     <i class="fas fa-file-csv"></i>
-                                    example_1.csv
+                                    {{ _('example_1.csv') }}
                                 </a>
-                                reference example
+                                {{ _('reference example') }}
                             </div>
                         </div>
                     </div>
@@ -290,8 +162,8 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Upload CSV File</h3>
-                        <p>Drag and drop your CSV file or click to browse</p>
+                        <h3>{{ _('Upload CSV File') }}</h3>
+                        <p>{{ _('Drag and drop your CSV file or click to browse') }}</p>
                     </div>
                 </div>
                 <div class="upload-zone-container">
@@ -305,18 +177,18 @@
                                     <div class="upload-pulse"></div>
                                 </div>
                             </div>
-                            <h4 class="upload-title" id="uploadTitle">Drop your CSV file here</h4>
-                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <h4 class="upload-title" id="uploadTitle">{{ _('Drop your CSV file here') }}</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">{{ _('or click to browse files') }}</p>
                             <div class="upload-formats">
-                                <span class="format-badge">CSV</span>
+                                <span class="format-badge">{{ _('CSV') }}</span>
                             </div>
                             <div class="upload-size-limit">
                                 <i class="fas fa-info-circle"></i>
-                                <span>Maximum file size: 10MB</span>
+                                <span>{{ _('Maximum file size: 10MB') }}</span>
                             </div>
                             <div class="upload-button">
                                 <i class="fas fa-folder-open"></i>
-                                <span>Browse Files</span>
+                                <span>{{ _('Browse Files') }}</span>
                             </div>
                         </div>
                         <div class="upload-progress" id="uploadProgress" style="display: none;">
@@ -327,24 +199,24 @@
                                 </svg>
                                 <span class="progress-text" id="progressText">0%</span>
                             </div>
-                            <p class="progress-message" id="progressMessage">Uploading CSV...</p>
+                            <p class="progress-message" id="progressMessage">{{ _('Uploading CSV...') }}</p>
                         </div>
                         <div class="upload-success" id="uploadSuccess" style="display: none;">
                             <div class="success-icon">
                                 <i class="fas fa-check-circle"></i>
                             </div>
-                            <h4>Upload Successful!</h4>
-                            <p id="uploadedFileName">CSV uploaded successfully</p>
+                            <h4>{{ _('Upload Successful!') }}</h4>
+                            <p id="uploadedFileName">{{ _('CSV uploaded successfully') }}</p>
                         </div>
                         <div class="upload-error" id="uploadError" style="display: none;">
                             <div class="error-icon">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
-                            <h4>Upload Error</h4>
-                            <p id="errorMessage">Please try again</p>
+                            <h4>{{ _('Upload Error') }}</h4>
+                            <p id="errorMessage">{{ _('Please try again') }}</p>
                             <button class="btn btn-secondary btn-small" onclick="resetUpload()">
                                 <i class="fas fa-redo"></i>
-                                Try Again
+                                {{ _('Try Again') }}
                             </button>
                         </div>
                     </div>
@@ -354,7 +226,7 @@
                     <button class="btn btn-secondary" id="resetUploadButton" onclick="clearUpload()"
                         style="display: none;">
                         <i class="fas fa-times"></i>
-                        <span>Clear</span>
+                        <span>{{ _('Clear') }}</span>
                     </button>
                 </div>
             </div>
@@ -366,13 +238,13 @@
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="card-title">
-                        <h3>File Information</h3>
-                        <p>Preview and analyze your uploaded CSV data</p>
+                        <h3>{{ _('File Information') }}</h3>
+                        <p>{{ _('Preview and analyze your uploaded CSV data') }}</p>
                     </div>
                     <div class="card-actions">
                         <button class="control-btn secondary" id="startOverButton" onclick="clearUpload()">
                             <i class="fas fa-redo"></i>
-                            <span>Start Over</span>
+                            <span>{{ _('Start Over') }}</span>
                         </button>
                     </div>
                 </div>
@@ -381,7 +253,7 @@
                     <div class="file-stats-section">
                         <h4 class="section-subtitle">
                             <i class="fas fa-database"></i>
-                            Data Statistics
+                            {{ _('Data Statistics') }}
                         </h4>
                         <div id="fileDetails" class="stats-grid"></div>
                     </div>
@@ -389,18 +261,18 @@
                     <div class="visualization-section">
                         <h4 class="section-subtitle">
                             <i class="fas fa-eye"></i>
-                            Data Visualization
+                            {{ _('Data Visualization') }}
                         </h4>
                         <div class="chart-container">
                             <div class="chart-controls">
                                 <div class="chart-title">
                                     <i class="fas fa-chart-scatter"></i>
-                                    Data Points Visualization
+                                    {{ _('Data Points Visualization') }}
                                 </div>
                                 <div class="chart-actions">
-                                    <button class="chart-btn" onclick="downloadChart()" title="Download Chart">
+                                    <button class="chart-btn" onclick="downloadChart()" title="{{ _('Download Chart') }}">
                                         <i class="fas fa-download"></i>
-                                        Download
+                                        {{ _('Download') }}
                                     </button>
                                 </div>
                             </div>
@@ -409,8 +281,8 @@
                                 <div id="chartFallback" class="chart-fallback hidden">
                                     <div class="fallback-content">
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        <p>Could not load chart visualization</p>
-                                        <small>Please check your CSV file format</small>
+                                        <p>{{ _('Could not load chart visualization') }}</p>
+                                        <small>{{ _('Please check your CSV file format') }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -426,8 +298,8 @@
                         <i class="fas fa-sliders-h"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Generation Options</h3>
-                        <p>Configure point cloud generation parameters</p>
+                        <h3>{{ _('Generation Options') }}</h3>
+                        <p>{{ _('Configure point cloud generation parameters') }}</p>
                     </div>
                 </div>
 
@@ -446,17 +318,17 @@
                                 </div>
                             </div>
                             <div class="option-content">
-                                <h4 class="option-title">Interior Point Clouds</h4>
-                                <p class="option-description">Generate point clouds inside internal regions (holes).
-                                    Recommended for complex geometries with internal boundaries.</p>
+                                <h4 class="option-title">{{ _('Interior Point Clouds') }}</h4>
+                                <p class="option-description">{{ _('Generate point clouds inside internal regions (holes).
+                                    Recommended for complex geometries with internal boundaries.') }}</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Better accuracy
+                                        {{ _('Better accuracy') }}
                                     </span>
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Complex geometries
+                                        {{ _('Complex geometries') }}
                                     </span>
                                 </div>
                             </div>
@@ -469,24 +341,24 @@
                                 </div>
                                 <div class="option-toggle">
                                     <select id="densityMultiplierOption" class="form-select">
-                                        <option value="0.1">0.1x (Lowest Density)</option>
-                                        <option value="0.25">0.25x (Lower Density)</option>
-                                        <option value="0.5">0.5x (Lower Density)</option>
-                                        <option value="1.0" selected>1.0x (Normal Density)</option>
-                                        <option value="1.5">1.5x (Higher Density)</option>
-                                        <option value="2.0">2.0x (Higher Density)</option>
-                                        <option value="3.0">3.0x (Extreme Density)</option>
+                                        <option value="0.1">{{ _('0.1x (Lowest Density)') }}</option>
+                                        <option value="0.25">{{ _('0.25x (Lower Density)') }}</option>
+                                        <option value="0.5">{{ _('0.5x (Lower Density)') }}</option>
+                                        <option value="1.0" selected>{{ _('1.0x (Normal Density)') }}</option>
+                                        <option value="1.5">{{ _('1.5x (Higher Density)') }}</option>
+                                        <option value="2.0">{{ _('2.0x (Higher Density)') }}</option>
+                                        <option value="3.0">{{ _('3.0x (Extreme Density)') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="option-content">
-                                <h4 class="option-title">Node Density</h4>
-                                <p class="option-description">Global density multiplier. Values greater than 1 will
-                                    generate more points and a denser cloud, reducing the distance between them.</p>
+                                <h4 class="option-title">{{ _('Node Density') }}</h4>
+                                <p class="option-description">{{ _('Global density multiplier. Values greater than 1 will
+                                    generate more points and a denser cloud, reducing the distance between them.') }}</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Resolution control
+                                        {{ _('Resolution control') }}
                                     </span>
                                 </div>
                             </div>
@@ -499,28 +371,28 @@
                                 </div>
                                 <div class="option-toggle">
                                     <select id="generationMethodOption" class="form-select">
-                                        <option value="natural">Natural Distribution</option>
-                                        <option value="regular">Regular Distribution</option>
+                                        <option value="natural">{{ _('Natural Distribution') }}</option>
+                                        <option value="regular">{{ _('Regular Distribution') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="option-content">
-                                <h4 class="option-title">Generation Method</h4>
-                                <p class="option-description">Choose how points are distributed in your cloud. Regular
+                                <h4 class="option-title">{{ _('Generation Method') }}</h4>
+                                <p class="option-description">{{ _('Choose how points are distributed in your cloud. Regular
                                     distribution creates uniform, grid-like patterns, while Natural distribution creates
-                                    more organic, randomly spaced patterns.</p>
+                                    more organic, randomly spaced patterns.') }}</p>
                                 <div class="option-benefits">
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Natural distribution
+                                        {{ _('Natural distribution') }}
                                     </span>
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Organic patterns
+                                        {{ _('Organic patterns') }}
                                     </span>
                                     <span class="benefit-tag">
                                         <i class="fas fa-check"></i>
-                                        Better adaptation
+                                        {{ _('Better adaptation') }}
                                     </span>
                                 </div>
                             </div>
@@ -530,12 +402,12 @@
                     <div class="generation-action">
                         <button onclick="generateCloud()" id="generateBtn" class="btn btn-primary btn-large">
                             <i class="fas fa-rocket"></i>
-                            <span>Generate Point Cloud</span>
+                            <span>{{ _('Generate Point Cloud') }}</span>
                             <div class="btn-shine"></div>
                         </button>
                         <p class="action-note">
                             <i class="fas fa-info-circle"></i>
-                            Generation time depends on data complexity and selected options
+                            {{ _('Generation time depends on data complexity and selected options') }}
                         </p>
                     </div>
                 </div>
@@ -548,8 +420,8 @@
                         <i class="fas fa-cog fa-spin"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Generating Point Cloud</h3>
-                        <p>Please wait while we process your data...</p>
+                        <h3>{{ _('Generating Point Cloud') }}</h3>
+                        <p>{{ _('Please wait while we process your data...') }}</p>
                     </div>
                 </div>
 
@@ -565,15 +437,15 @@
                     <div class="progress-steps">
                         <div class="step-item active" id="step1">
                             <div class="step-icon"><i class="fas fa-upload"></i></div>
-                            <span>Processing Data</span>
+                            <span>{{ _('Processing Data') }}</span>
                         </div>
                         <div class="step-item" id="step2">
                             <div class="step-icon"><i class="fas fa-cogs"></i></div>
-                            <span>Generating Points</span>
+                            <span>{{ _('Generating Points') }}</span>
                         </div>
                         <div class="step-item" id="step3">
                             <div class="step-icon"><i class="fas fa-check"></i></div>
-                            <span>Finalizing</span>
+                            <span>{{ _('Finalizing') }}</span>
                         </div>
                     </div>
                 </div>
@@ -586,8 +458,8 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Generation Complete</h3>
-                        <p>Point cloud generated successfully</p>
+                        <h3>{{ _('Generation Complete') }}</h3>
+                        <p>{{ _('Point cloud generated successfully') }}</p>
                     </div>
                 </div>
 
@@ -599,7 +471,7 @@
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div class="summary-info">
-                                    <span class="summary-label">Processing Time</span>
+                                    <span class="summary-label">{{ _('Processing Time') }}</span>
                                     <span class="summary-value" id="processingTime">--</span>
                                 </div>
                             </div>
@@ -608,7 +480,7 @@
                                     <i class="fas fa-dot-circle"></i>
                                 </div>
                                 <div class="summary-info">
-                                    <span class="summary-label">Points Generated</span>
+                                    <span class="summary-label">{{ _('Points Generated') }}</span>
                                     <span class="summary-value" id="pointsGenerated">--</span>
                                 </div>
                             </div>
@@ -617,7 +489,7 @@
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 <div class="summary-info">
-                                    <span class="summary-label">Output Files</span>
+                                    <span class="summary-label">{{ _('Output Files') }}</span>
                                     <span class="summary-value" id="outputFiles">--</span>
                                 </div>
                             </div>
@@ -637,8 +509,8 @@
                         <i class="fas fa-download"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Download Generated Files</h3>
-                        <p>Download the generated files in various formats</p>
+                        <h3>{{ _('Download Generated Files') }}</h3>
+                        <p>{{ _('Download the generated files in various formats') }}</p>
                     </div>
                 </div>
 
@@ -649,11 +521,11 @@
                     <div class="download-info">
                         <div class="info-item">
                             <i class="fas fa-info-circle"></i>
-                            <span>Files are available for download for 24 hours</span>
+                            <span>{{ _('Files are available for download for 24 hours') }}</span>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-shield-alt"></i>
-                            <span>All files are automatically deleted after download period</span>
+                            <span>{{ _('All files are automatically deleted after download period') }}</span>
                         </div>
                     </div>
                 </div>
@@ -663,85 +535,12 @@
             <div id="alertContainer"></div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
-                        Differences (mGFD) method.
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i
-                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
-                        </li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
-                        </li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
-                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
-                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
-                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.
-                    </p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript Files -->
-    <script>
-        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
+{% block scripts %}
+<script>
+        const BASE_URL = "{{ url_for('main.home', _external=True).rstrip('/') }}";
     </script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
-</body>
-
-</html>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cloud_generator.js') }}"></script>
+{% endblock %}

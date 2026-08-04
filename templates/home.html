@@ -1,129 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
-    <!-- SEO Meta Tags -->
-    <title>mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation</title>
-    <meta name="description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research, engineering, and data visualization.">
-    <meta name="keywords" content="point cloud, contour creation, image processing, scientific visualization, cloud generation, data analysis, engineering tools, research software">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation">
-    <meta property="og:description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research and engineering.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="mGFD: CloudGenerator 2.0 | Advanced Point Cloud Generation">
-    <meta property="twitter:description" content="Professional tool for generating point clouds and creating contours from images. Advanced algorithms for scientific research and engineering.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-            
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-            
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <!-- Hero Section -->
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -131,30 +13,30 @@
                     <div class="hero-logo">
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
                     </div>
-                    <h1 class="hero-title">mGFD: CloudGenerator 2.0</h1>
-                    <p class="hero-subtitle">Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method</p>
+                    <h1 class="hero-title">{{ _('mGFD: CloudGenerator 2.1') }}</h1>
+                    <p class="hero-subtitle">{{ _('Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method') }}</p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-bullseye"></i>
-                            <span>High Precision</span>
+                            <span>{{ _('High Precision') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-bolt"></i>
-                            <span>Fast Processing</span>
+                            <span>{{ _('Fast Processing') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-shield-alt"></i>
-                            <span>Secure & Private</span>
+                            <span>{{ _('Secure & Private') }}</span>
                         </div>
                     </div>
                     <div class="hero-buttons">
-                        <a href="{{ url_for('contour_creator') }}" class="btn btn-primary btn-large">
+                        <a href="{{ url_for('contour.contour_creator') }}" class="btn btn-primary btn-large">
                             <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
+                            {{ _('ContourCreator') }}
                         </a>
-                        <a href="{{ url_for('cloud_generator') }}" class="btn btn-secondary btn-large">
+                        <a href="{{ url_for('cloud.cloud_generator') }}" class="btn btn-secondary btn-large">
                             <i class="fas fa-cloud"></i>
-                            CloudGenerator
+                            {{ _('CloudGenerator') }}
                         </a>
                     </div>
                 </div>
@@ -166,8 +48,8 @@
     <section class="section-dark">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Powerful Tools for Scientific Computing</h2>
-                <p class="section-subtitle">Everything you need to generate high-quality point clouds</p>
+                <h2 class="section-title">{{ _('Powerful Tools for Scientific Computing') }}</h2>
+                <p class="section-subtitle">{{ _('Everything you need to generate high-quality point clouds') }}</p>
             </div>
             
             <div class="features-grid">
@@ -175,44 +57,44 @@
                     <div class="feature-icon">
                         <i class="fas fa-image"></i>
                     </div>
-                    <h3 class="feature-title">ContourCreator</h3>
-                    <p class="feature-description">Create geometric contours interactively from images. Uses advanced segmentation algorithms to automatically detect regions.</p>
+                    <h3 class="feature-title">{{ _('ContourCreator') }}</h3>
+                    <p class="feature-description">{{ _('Create geometric contours interactively from images. Uses advanced segmentation algorithms to automatically detect regions.') }}</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-magic"></i>
-                            <span>Auto Detection</span>
+                            <span>{{ _('Auto Detection') }}</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-mouse-pointer"></i>
-                            <span>Interactive</span>
+                            <span>{{ _('Interactive') }}</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('contour_creator') }}" class="feature-btn">
+                    <a href="{{ url_for('contour.contour_creator') }}" class="feature-btn">
                         <i class="fas fa-arrow-right"></i>
-                        Try ContourCreator
+                        {{ _('Try ContourCreator') }}
                     </a>
                 </div>
                 
                 <div class="feature-card featured">
-                    <div class="feature-badge">Most Popular</div>
+                    <div class="feature-badge">{{ _('Most Popular') }}</div>
                     <div class="feature-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <h3 class="feature-title">CloudGenerator</h3>
-                    <p class="feature-description">Generate unstructured point clouds from CSV files. Automatically optimizes point distribution according to geometry for mGFD simulations.</p>
+                    <h3 class="feature-title">{{ _('CloudGenerator') }}</h3>
+                    <p class="feature-description">{{ _('Generate unstructured point clouds from CSV files. Automatically optimizes point distribution according to geometry for mGFD simulations.') }}</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-tachometer-alt"></i>
-                            <span>High Performance</span>
+                            <span>{{ _('High Performance') }}</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-cogs"></i>
-                            <span>Optimized</span>
+                            <span>{{ _('Optimized') }}</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('cloud_generator') }}" class="feature-btn">
+                    <a href="{{ url_for('cloud.cloud_generator') }}" class="feature-btn">
                         <i class="fas fa-arrow-right"></i>
-                        Try CloudGenerator
+                        {{ _('Try CloudGenerator') }}
                     </a>
                 </div>
                 
@@ -220,21 +102,21 @@
                     <div class="feature-icon">
                         <i class="fas fa-eye"></i>
                     </div>
-                    <h3 class="feature-title">CloudViewer</h3>
-                    <p class="feature-description">Visualize your generated point clouds directly in the browser. Inspect node distribution, regions, and boundary classifications with high-quality 2D plots.</p>
+                    <h3 class="feature-title">{{ _('CloudViewer') }}</h3>
+                    <p class="feature-description">{{ _('Visualize your generated point clouds directly in the browser. Inspect node distribution, regions, and boundary classifications with high-quality 2D plots.') }}</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-image"></i>
-                            <span>2D Plots</span>
+                            <span>{{ _('2D Plots') }}</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-search-plus"></i>
-                            <span>Inspect</span>
+                            <span>{{ _('Inspect') }}</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('viewer') }}" class="feature-btn">
+                    <a href="{{ url_for('viewer.viewer') }}" class="feature-btn">
                         <i class="fas fa-arrow-right"></i>
-                        Try CloudViewer
+                        {{ _('Try CloudViewer') }}
                     </a>
                 </div>
 
@@ -242,21 +124,21 @@
                     <div class="feature-icon">
                         <i class="fas fa-project-diagram"></i>
                     </div>
-                    <h3 class="feature-title">NeighborsCalculator</h3>
-                    <p class="feature-description">Calculate and analyze neighbor relationships within your point clouds. Essential for mGFD connectivity analysis and validation.</p>
+                    <h3 class="feature-title">{{ _('NeighborsCalculator') }}</h3>
+                    <p class="feature-description">{{ _('Calculate and analyze neighbor relationships within your point clouds. Essential for mGFD connectivity analysis and validation.') }}</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-calculator"></i>
-                            <span>Fast Calc</span>
+                            <span>{{ _('Fast Calc') }}</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-network-wired"></i>
-                            <span>Connectivity</span>
+                            <span>{{ _('Connectivity') }}</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('neighbors') }}" class="feature-btn">
+                    <a href="{{ url_for('neighbors.neighbors') }}" class="feature-btn">
                         <i class="fas fa-arrow-right"></i>
-                        Try NeighborsCalculator
+                        {{ _('Try NeighborsCalculator') }}
                     </a>
                 </div>
 
@@ -264,20 +146,20 @@
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3 class="feature-title">About the Project</h3>
-                    <p class="feature-description">Learn more about the development team, methodology used, and research objectives of the project.</p>
+                    <h3 class="feature-title">{{ _('About the Project') }}</h3>
+                    <p class="feature-description">{{ _('Learn more about the development team, methodology used, and research objectives of the project.') }}</p>
                     <div class="feature-stats">
                         <div class="stat-item">
                             <i class="fas fa-graduation-cap"></i>
-                            <span>Research</span>
+                            <span>{{ _('Research') }}</span>
                         </div>
                         <div class="stat-item">
                             <i class="fas fa-code"></i>
-                            <span>Open Source</span>
+                            <span>{{ _('Open Source') }}</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('about') }}" class="feature-btn">
-                        <span>Learn More</span>
+                    <a href="{{ url_for('main.about') }}" class="feature-btn">
+                        <span>{{ _('Learn More') }}</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -289,8 +171,8 @@
     <section class="section-light" id="workflow">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">Complete process from image to unstructured point cloud</p>
+                <h2 class="section-title">{{ _('How It Works') }}</h2>
+                <p class="section-subtitle">{{ _('Complete process from image to unstructured point cloud') }}</p>
             </div>
             
             <div class="workflow-timeline">
@@ -300,12 +182,12 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-image"></i> Upload Image</h4>
-                        <p class="step-description">Start by uploading your image containing regions of interest. Our system supports multiple formats and provides instant preview with quality validation.</p>
+                        <h4 class="step-title"><i class="fas fa-image"></i> {{ _('Upload Image') }}</h4>
+                        <p class="step-description">{{ _('Start by uploading your image containing regions of interest. Our system supports multiple formats and provides instant preview with quality validation.') }}</p>
                         <div class="step-features">
-                            <span class="feature-tag">PNG/JPG</span>
-                            <span class="feature-tag">Drag & Drop</span>
-                            <span class="feature-tag">Quality Check</span>
+                            <span class="feature-tag">{{ _('PNG/JPG') }}</span>
+                            <span class="feature-tag">{{ _('Drag & Drop') }}</span>
+                            <span class="feature-tag">{{ _('Quality Check') }}</span>
                         </div>
                     </div>
                 </div>
@@ -316,12 +198,12 @@
                         <i class="fas fa-vector-square"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-magic"></i> Detect Contours</h4>
-                        <p class="step-description">Advanced computer vision algorithms automatically identify and extract geometric contours with sub-pixel precision, ensuring accurate boundary detection.</p>
+                        <h4 class="step-title"><i class="fas fa-magic"></i> {{ _('Detect Contours') }}</h4>
+                        <p class="step-description">{{ _('Advanced computer vision algorithms automatically identify and extract geometric contours with sub-pixel precision, ensuring accurate boundary detection.') }}</p>
                         <div class="step-features">
-                            <span class="feature-tag">AI-Powered</span>
-                            <span class="feature-tag">Sub-pixel Accuracy</span>
-                            <span class="feature-tag">Real-time Preview</span>
+                            <span class="feature-tag">{{ _('AI-Powered') }}</span>
+                            <span class="feature-tag">{{ _('Sub-pixel Accuracy') }}</span>
+                            <span class="feature-tag">{{ _('Real-time Preview') }}</span>
                         </div>
                     </div>
                 </div>
@@ -332,12 +214,12 @@
                         <i class="fas fa-table"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-download"></i> Export Coordinates</h4>
-                        <p class="step-description">Extract and export contour coordinates in industry-standard CSV format, ready for integration with your computational workflow and analysis tools.</p>
+                        <h4 class="step-title"><i class="fas fa-download"></i> {{ _('Export Coordinates') }}</h4>
+                        <p class="step-description">{{ _('Extract and export contour coordinates in industry-standard CSV format, ready for integration with your computational workflow and analysis tools.') }}</p>
                         <div class="step-features">
-                            <span class="feature-tag">CSV Format</span>
-                            <span class="feature-tag">Structured Data</span>
-                            <span class="feature-tag">Instant Download</span>
+                            <span class="feature-tag">{{ _('CSV Format') }}</span>
+                            <span class="feature-tag">{{ _('Structured Data') }}</span>
+                            <span class="feature-tag">{{ _('Instant Download') }}</span>
                         </div>
                     </div>
                 </div>
@@ -348,12 +230,12 @@
                         <i class="fas fa-cogs"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-cogs"></i> Generate Point Cloud</h4>
-                        <p class="step-description">Transform contours into optimized unstructured point clouds using advanced algorithms specifically designed for mGFD computational efficiency.</p>
+                        <h4 class="step-title"><i class="fas fa-cogs"></i> {{ _('Generate Point Cloud') }}</h4>
+                        <p class="step-description">{{ _('Transform contours into optimized unstructured point clouds using advanced algorithms specifically designed for mGFD computational efficiency.') }}</p>
                         <div class="step-features">
-                            <span class="feature-tag">mGFD Optimized</span>
-                            <span class="feature-tag">Adaptive Density</span>
-                            <span class="feature-tag">Quality Metrics</span>
+                            <span class="feature-tag">{{ _('mGFD Optimized') }}</span>
+                            <span class="feature-tag">{{ _('Adaptive Density') }}</span>
+                            <span class="feature-tag">{{ _('Quality Metrics') }}</span>
                         </div>
                     </div>
                 </div>
@@ -363,12 +245,12 @@
                         <i class="fas fa-chart-area"></i>
                     </div>
                     <div class="step-content">
-                        <h4 class="step-title"><i class="fas fa-eye"></i> Visualize & Analyze</h4>
-                        <p class="step-description">Detailed visualization of generated point clouds with comprehensive analysis tools, quality metrics, and multiple export formats for your research needs.</p>
+                        <h4 class="step-title"><i class="fas fa-eye"></i> {{ _('Visualize & Analyze') }}</h4>
+                        <p class="step-description">{{ _('Detailed visualization of generated point clouds with comprehensive analysis tools, quality metrics, and multiple export formats for your research needs.') }}</p>
                         <div class="step-features">
-                            <span class="feature-tag">2D Visualization</span>
-                            <span class="feature-tag">Quality Analysis</span>
-                            <span class="feature-tag">Multiple Exports</span>
+                            <span class="feature-tag">{{ _('2D Visualization') }}</span>
+                            <span class="feature-tag">{{ _('Quality Analysis') }}</span>
+                            <span class="feature-tag">{{ _('Multiple Exports') }}</span>
                         </div>
                     </div>
                 </div>
@@ -380,8 +262,8 @@
     <section class="section-dark" id="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Key Features</h2>
-                <p class="section-subtitle">Advanced capabilities that set our platform apart</p>
+                <h2 class="section-title">{{ _('Key Features') }}</h2>
+                <p class="section-subtitle">{{ _('Advanced capabilities that set our platform apart') }}</p>
             </div>
             
             <div class="key-features-grid">
@@ -394,18 +276,18 @@
                     </div>
                     <div class="key-feature-content">
                         <div class="key-feature-header">
-                            <h4 class="key-feature-title">Interactive Contour Detection</h4>
-                            <div class="key-feature-badge">Click-Based</div>
+                            <h4 class="key-feature-title">{{ _('Interactive Contour Detection') }}</h4>
+                            <div class="key-feature-badge">{{ _('Click-Based') }}</div>
                         </div>
-                        <p class="key-feature-description">Advanced flood fill and equidistant contour sampling algorithms automatically identify geometric regions and guarantee mathematically uniform node spacing for complex boundaries.</p>
+                        <p class="key-feature-description">{{ _('Advanced flood fill and equidistant contour sampling algorithms automatically identify geometric regions and guarantee mathematically uniform node spacing for complex boundaries.') }}</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
-                                <span class="metric-value">Auto</span>
-                                <span class="metric-label">Detection</span>
+                                <span class="metric-value">{{ _('Auto') }}</span>
+                                <span class="metric-label">{{ _('Detection') }}</span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-value">Multi</span>
-                                <span class="metric-label">Region</span>
+                                <span class="metric-value">{{ _('Multi') }}</span>
+                                <span class="metric-label">{{ _('Region') }}</span>
                             </div>
                         </div>
                     </div>
@@ -419,19 +301,19 @@
                         <div class="key-feature-pattern"></div>
                     </div>
                     <div class="key-feature-content">
-                        <div class="key-feature-badge">Optimized</div>
+                        <div class="key-feature-badge">{{ _('Optimized') }}</div>
                         <div class="key-feature-header">
-                            <h4 class="key-feature-title">Adaptive Point Cloud Generation</h4>
+                            <h4 class="key-feature-title">{{ _('Adaptive Point Cloud Generation') }}</h4>
                         </div>
-                        <p class="key-feature-description">Generates optimized point clouds with adaptive density based on geometric complexity. Preserves contour nodes and uses topological fallbacks to guarantee valid sub-domains.</p>
+                        <p class="key-feature-description">{{ _('Generates optimized point clouds with adaptive density based on geometric complexity. Preserves contour nodes and uses topological fallbacks to guarantee valid sub-domains.') }}</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
-                                <span class="metric-value">Adaptive</span>
-                                <span class="metric-label">Sizing</span>
+                                <span class="metric-value">{{ _('Adaptive') }}</span>
+                                <span class="metric-label">{{ _('Sizing') }}</span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-value">Auto</span>
-                                <span class="metric-label">Classification</span>
+                                <span class="metric-value">{{ _('Auto') }}</span>
+                                <span class="metric-label">{{ _('Classification') }}</span>
                             </div>
                         </div>
                     </div>
@@ -445,19 +327,19 @@
                         <div class="key-feature-pattern"></div>
                     </div>
                     <div class="key-feature-content">
-                        <div class="key-feature-badge">Publication-Ready</div>
+                        <div class="key-feature-badge">{{ _('Publication-Ready') }}</div>
                         <div class="key-feature-header">
-                            <h4 class="key-feature-title">High-Quality Visualization</h4>
+                            <h4 class="key-feature-title">{{ _('High-Quality Visualization') }}</h4>
                         </div>
-                        <p class="key-feature-description">Generates detailed 2D visualizations with node classification, boundary highlighting, and quality analysis. Exports high-resolution images and SVG graphics suitable for scientific publications.</p>
+                        <p class="key-feature-description">{{ _('Generates detailed 2D visualizations with node classification, boundary highlighting, and quality analysis. Exports high-resolution images and SVG graphics suitable for scientific publications.') }}</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
                                 <span class="metric-value">500</span>
-                                <span class="metric-label">DPI</span>
+                                <span class="metric-label">{{ _('DPI') }}</span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-value">SVG</span>
-                                <span class="metric-label">Export</span>
+                                <span class="metric-value">{{ _('SVG') }}</span>
+                                <span class="metric-label">{{ _('Export') }}</span>
                             </div>
                         </div>
                     </div>
@@ -471,19 +353,19 @@
                         <div class="key-feature-pattern"></div>
                     </div>
                     <div class="key-feature-content">
-                        <div class="key-feature-badge">CSV Format</div>
+                        <div class="key-feature-badge">{{ _('CSV Format') }}</div>
                         <div class="key-feature-header">
-                            <h4 class="key-feature-title">Flexible Data Export</h4>
+                            <h4 class="key-feature-title">{{ _('Flexible Data Export') }}</h4>
                         </div>
-                        <p class="key-feature-description">Exports point cloud data in CSV format with comprehensive node classification including boundary, interface, and interior node types. Compatible with scientific computing workflows and mGFD solvers.</p>
+                        <p class="key-feature-description">{{ _('Exports point cloud data in CSV format with comprehensive node classification including boundary, interface, and interior node types. Compatible with scientific computing workflows and mGFD solvers.') }}</p>
                         <div class="key-feature-metrics">
                             <div class="metric-item">
-                                <span class="metric-value">CSV</span>
-                                <span class="metric-label">Format</span>
+                                <span class="metric-value">{{ _('CSV') }}</span>
+                                <span class="metric-label">{{ _('Format') }}</span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-value">mGFD</span>
-                                <span class="metric-label">Ready</span>
+                                <span class="metric-value">{{ _('mGFD') }}</span>
+                                <span class="metric-label">{{ _('Ready') }}</span>
                             </div>
                         </div>
                     </div>
@@ -491,69 +373,4 @@
             </div>
         </div>
     </section>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-</body>
-</html>
+{% endblock %}

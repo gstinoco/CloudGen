@@ -1,131 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-    
-    <!-- SEO Meta Tags -->
-    <title>Examples & Case Studies | mGFD CloudGenerator 2.0</title>
-    <meta name="description" content="Explore case studies and examples of point clouds generated from real-world geographical regions using CloudGenerator 2.0.">
-    <meta name="keywords" content="point cloud generation examples, point cloud case studies, geographical data, lake contours, scientific visualization">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="Examples & Case Studies | mGFD CloudGenerator 2.0">
-    <meta property="og:description" content="Explore case studies and examples of point clouds generated from real-world geographical regions.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="Examples & Case Studies | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description" content="Explore case studies and examples of point clouds generated from real-world geographical regions.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/examples.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+{% extends 'base.html' %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/examples.css') }}">
+{% endblock %}
 
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                            <i class="fas fa-draw-polygon"></i>
-                            ContourCreator
-                        </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                            <i class="fas fa-cloud"></i>
-                            CloudGenerator
-                        </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                            <i class="fas fa-eye"></i>
-                            CloudViewer
-                        </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                            <i class="fas fa-users"></i>
-                            NeighborsCalculator
-                        </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-            
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-            
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -133,9 +13,9 @@
                     <div class="hero-logo">
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo" class="logo-image">
                     </div>
-                    <h1 class="hero-title">Examples & Case Studies</h1>
+                    <h1 class="hero-title">{{ _('Examples & Case Studies') }}</h1>
                     <p class="hero-subtitle">
-                        Explore our collection of generated point clouds from diverse geographical regions. Download datasets and visualizations to test and validate your research.
+                        {{ _('Explore our collection of generated point clouds from diverse geographical regions. Download datasets and visualizations to test and validate your research.') }}
                     </p>
                 </div>
             </div>
@@ -146,8 +26,8 @@
     <section class="section-light">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Case Studies</h2>
-                <p class="section-subtitle">Real-world applications of mGFD CloudGenerator</p>
+                <h2 class="section-title">{{ _('Case Studies') }}</h2>
+                <p class="section-subtitle">{{ _('Real-world applications of mGFD CloudGenerator') }}</p>
             </div>
             
             <div class="examples-grid">
@@ -156,11 +36,11 @@
                     <div class="example-visuals">
                         <div class="example-image-container">
                             <img src="{{ url_for('static', filename='examples/' + example.image) }}" alt="{{ example.title }} Original" loading="lazy">
-                            <div class="image-label">Original</div>
+                            <div class="image-label">{{ _('Original') }}</div>
                         </div>
                         <div class="example-image-container">
                             <img src="{{ url_for('static', filename='examples/' + example.cloud_image) }}" alt="{{ example.title }} Point Cloud" loading="lazy">
-                            <div class="image-label">Point Cloud</div>
+                            <div class="image-label">{{ _('Point Cloud') }}</div>
                         </div>
                     </div>
                     
@@ -170,13 +50,13 @@
                         
                         <div class="example-downloads">
                             <a href="{{ url_for('static', filename='examples/' + example.contours_csv) }}" class="download-btn contours" download>
-                                <i class="fas fa-file-csv"></i> Contours
+                                <i class="fas fa-file-csv"></i> {{ _('Contours') }}
                             </a>
                             <a href="{{ url_for('static', filename='examples/' + example.cloud_csv) }}" class="download-btn cloud" download>
-                                <i class="fas fa-file-csv"></i> Cloud
+                                <i class="fas fa-file-csv"></i> {{ _('Cloud') }}
                             </a>
                             <!--<a href="{{ url_for('static', filename='examples/' + example.cloud_svg) }}" class="download-btn svg" download>
-                                <i class="fas fa-vector-square"></i> SVG
+                                <i class="fas fa-vector-square"></i> {{ _('SVG') }}
                             </a>-->
                         </div>
                     </div>
@@ -185,72 +65,8 @@
             </div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                         Advanced tool for generating point clouds that can be used with the meshless Generalized Finite Differences (mGFD) method.
-                     </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a></li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a></li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}" alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}" alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}" alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.</p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/examples.js') }}"></script>
-</body>
-</html>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/examples.js') }}"></script>
+{% endblock %}

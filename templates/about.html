@@ -1,137 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-
-    <!-- SEO Meta Tags -->
-    <title>About | mGFD CloudGenerator 2.0</title>
-    <meta name="description"
-        content="Learn about mGFD CloudGenerator 2.0, a specialized tool for generating point clouds for the meshless Generalized Finite Differences method.">
-    <meta name="keywords"
-        content="about mGFD, point cloud generation, meshless methods, scientific computing, engineering tools, research software">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="About | mGFD CloudGenerator 2.0">
-    <meta property="og:description"
-        content="Learn about mGFD CloudGenerator 2.0, a cutting-edge research platform for point cloud generation and contour creation. Developed by leading researchers.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="About | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description"
-        content="Learn about mGFD CloudGenerator 2.0, a cutting-edge research platform for point cloud generation and contour creation. Developed by leading researchers.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                                <i class="fas fa-draw-polygon"></i>
-                                ContourCreator
-                            </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                                <i class="fas fa-cloud"></i>
-                                CloudGenerator
-                            </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                                <i class="fas fa-eye"></i>
-                                CloudViewer
-                            </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                                <i class="fas fa-users"></i>
-                                NeighborsCalculator
-                            </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -140,24 +15,24 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
                             class="logo-image">
                     </div>
-                    <h1 class="hero-title">About the Project</h1>
+                    <h1 class="hero-title">{{ _('About the Project') }}</h1>
                     <p class="hero-subtitle">
-                        Meet the team behind mGFD CloudGenerator 2.0 - A complete platform for generating unstructured
+                        {{ _('Meet the team behind mGFD CloudGenerator 2.1 - A complete platform for generating unstructured
                         point clouds from images and geometric contours, designed for meshless Generalized Finite
-                        Difference Method (mGFD) applications and numerical simulations.
+                        Difference Method (mGFD) applications and numerical simulations.') }}
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-users"></i>
-                            <span>Expert Team</span>
+                            <span>{{ _('Expert Team') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-code"></i>
-                            <span>Open Source</span>
+                            <span>{{ _('Open Source') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-graduation-cap"></i>
-                            <span>Research-Based</span>
+                            <span>{{ _('Research-Based') }}</span>
                         </div>
                     </div>
                 </div>
@@ -169,7 +44,7 @@
     <section class="section-dark features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Project Overview</h2>
+                <h2 class="section-title">{{ _('Project Overview') }}</h2>
             </div>
 
             <!-- Project Summary Dashboard -->
@@ -180,8 +55,8 @@
                             <i class="fas fa-cloud"></i>
                         </div>
                         <div class="project-info">
-                            <h3 class="project-name">mGFD CloudGenerator 2.0</h3>
-                            <p class="project-tagline">Advanced Point Cloud Generation for Meshless Methods</p>
+                            <h3 class="project-name">{{ _('mGFD CloudGenerator 2.1') }}</h3>
+                            <p class="project-tagline">{{ _('Advanced Point Cloud Generation for Meshless Methods') }}</p>
                         </div>
                     </div>
                     <div class="project-status">
@@ -189,14 +64,14 @@
                             <i class="fas fa-check-circle"></i>
                             <a href="https://github.com/gstinoco/CloudGen" target="_blank"
                                 style="color: inherit; text-decoration: none;">
-                                <span>Production Ready</span>
+                                <span>{{ _('Production Ready') }}</span>
                             </a>
                         </div>
                         <div class="status-badge live">
                             <i class="fas fa-globe"></i>
                             <a href="https://malla.umich.mx/CloudGenerator/" target="_blank"
                                 style="color: inherit; text-decoration: none;">
-                                <span>Live Demo</span>
+                                <span>{{ _('Live Demo') }}</span>
                             </a>
                         </div>
                     </div>
@@ -210,8 +85,8 @@
                         </div>
                         <div class="metric-content">
                             <div class="metric-number">4</div>
-                            <div class="metric-label">Core Modules</div>
-                            <div class="metric-description">Integrated tools for complete workflow</div>
+                            <div class="metric-label">{{ _('Core Modules') }}</div>
+                            <div class="metric-description">{{ _('Integrated tools for complete workflow') }}</div>
                         </div>
                         <div class="metric-progress">
                             <div class="progress-bar" style="width: 100%;"></div>
@@ -224,8 +99,8 @@
                         </div>
                         <div class="metric-content">
                             <div class="metric-number">100%</div>
-                            <div class="metric-label">Open Source</div>
-                            <div class="metric-description">MIT licensed for collaboration</div>
+                            <div class="metric-label">{{ _('Open Source') }}</div>
+                            <div class="metric-description">{{ _('MIT licensed for collaboration') }}</div>
                         </div>
                         <div class="metric-progress">
                             <div class="progress-bar" style="width: 100%;"></div>
@@ -237,9 +112,9 @@
                             <i class="fas fa-rocket"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-number">v2.0</div>
-                            <div class="metric-label">Latest Version</div>
-                            <div class="metric-description">Enhanced performance & features</div>
+                            <div class="metric-number">{{ _('v2.1') }}</div>
+                            <div class="metric-label">{{ _('Latest Version') }}</div>
+                            <div class="metric-description">{{ _('Enhanced performance & features') }}</div>
                         </div>
                         <div class="metric-progress">
                             <div class="progress-bar" style="width: 95%;"></div>
@@ -254,8 +129,8 @@
                             <i class="fas fa-draw-polygon"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>ContourCreator</h4>
-                            <p>Interactive contour generation with real-time visualization</p>
+                            <h4>{{ _('ContourCreator') }}</h4>
+                            <p>{{ _('Interactive contour generation with real-time visualization') }}</p>
                         </div>
                     </div>
 
@@ -264,8 +139,8 @@
                             <i class="fas fa-cloud"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>CloudGenerator</h4>
-                            <p>Optimized point cloud generation for mGFD applications</p>
+                            <h4>{{ _('CloudGenerator') }}</h4>
+                            <p>{{ _('Optimized point cloud generation for mGFD applications') }}</p>
                         </div>
                     </div>
 
@@ -274,8 +149,8 @@
                             <i class="fas fa-eye"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>CloudViewer</h4>
-                            <p>Visualize generated clouds with high-quality 2D plots</p>
+                            <h4>{{ _('CloudViewer') }}</h4>
+                            <p>{{ _('Visualize generated clouds with high-quality 2D plots') }}</p>
                         </div>
                     </div>
 
@@ -284,8 +159,8 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>NeighborsCalculator</h4>
-                            <p>Calculate connectivity and K-nearest neighbors</p>
+                            <h4>{{ _('NeighborsCalculator') }}</h4>
+                            <p>{{ _('Calculate connectivity and K-nearest neighbors') }}</p>
                         </div>
                     </div>
 
@@ -294,8 +169,8 @@
                             <i class="fas fa-chart-line"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>Advanced Analytics</h4>
-                            <p>Comprehensive visualization and analysis tools</p>
+                            <h4>{{ _('Advanced Analytics') }}</h4>
+                            <p>{{ _('Comprehensive visualization and analysis tools') }}</p>
                         </div>
                     </div>
 
@@ -304,8 +179,8 @@
                             <i class="fas fa-download"></i>
                         </div>
                         <div class="highlight-content">
-                            <h4>Multiple Formats</h4>
-                            <p>Export in CSV, PNG, SVG and other standard formats</p>
+                            <h4>{{ _('Multiple Formats') }}</h4>
+                            <p>{{ _('Export in CSV, PNG, SVG and other standard formats') }}</p>
                         </div>
                     </div>
                 </div>
@@ -317,12 +192,12 @@
     <section class="section-light">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Research Team</h2>
+                <h2 class="section-title">{{ _('Research Team') }}</h2>
             </div>
 
             <!-- Researchers Category -->
             <div class="team-category">
-                <h3 class="category-title">Researchers</h3>
+                <h3 class="category-title">{{ _('Researchers') }}</h3>
                 <div class="team-grid">
                     <!-- Researcher 1 -->
                     <div class="team-member researcher">
@@ -330,17 +205,17 @@
                             <img src="{{ url_for('static', filename='images/team/gtinoco.webp') }}"
                                 alt="Gerardo Tinoco-Guerrero" width="100" height="100">
                         </div>
-                        <div class="member-name">Gerardo Tinoco-Guerrero</div>
-                        <div class="member-role">Ph.D. in Physical Engineering Sciences</div>
+                        <div class="member-name">{{ _('Gerardo Tinoco-Guerrero') }}</div>
+                        <div class="member-role">{{ _('Ph.D. in Physical Engineering Sciences') }}</div>
                         <div class="member-contact">
                             <i class="fas fa-envelope"></i>
-                            <a href="mailto:gerardo.tinoco@umich.mx">gerardo.tinoco@umich.mx</a>
+                            <a href="mailto:gerardo.tinoco@umich.mx">{{ _('gerardo.tinoco@umich.mx') }}</a>
                         </div>
                         <div class="member-social">
-                            <a href="https://orcid.org/0000-0003-3119-770X" target="_blank" title="ORCID"><i
+                            <a href="https://orcid.org/0000-0003-3119-770X" target="_blank" title="{{ _('ORCID') }}"><i
                                     class="fab fa-orcid"></i></a>
                             <a href="https://www.researchgate.net/profile/Gerardo-Tinoco-Guerrero" target="_blank"
-                                title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                                title="{{ _('ResearchGate') }}"><i class="fab fa-researchgate"></i></a>
                         </div>
                     </div>
 
@@ -350,17 +225,17 @@
                             <img src="{{ url_for('static', filename='images/team/jagt.webp') }}"
                                 alt="J. Alberto Guzmán-Torres" width="100" height="100">
                         </div>
-                        <div class="member-name">J. Alberto Guzmán-Torres</div>
-                        <div class="member-role">Ph.D. in Physical Engineering Sciences</div>
+                        <div class="member-name">{{ _('J. Alberto Guzmán-Torres') }}</div>
+                        <div class="member-role">{{ _('Ph.D. in Physical Engineering Sciences') }}</div>
                         <div class="member-contact">
                             <i class="fas fa-envelope"></i>
-                            <a href="mailto:jose.alberto.guzman@umich.mx">jose.alberto.guzman@umich.mx</a>
+                            <a href="mailto:jose.alberto.guzman@umich.mx">{{ _('jose.alberto.guzman@umich.mx') }}</a>
                         </div>
                         <div class="member-social">
-                            <a href="https://orcid.org/0000-0002-9309-9390" target="_blank" title="ORCID"><i
+                            <a href="https://orcid.org/0000-0002-9309-9390" target="_blank" title="{{ _('ORCID') }}"><i
                                     class="fab fa-orcid"></i></a>
                             <a href="https://www.researchgate.net/profile/Jose-Guzman-Torres" target="_blank"
-                                title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                                title="{{ _('ResearchGate') }}"><i class="fab fa-researchgate"></i></a>
                         </div>
                     </div>
 
@@ -370,17 +245,17 @@
                             <img src="{{ url_for('static', filename='images/team/dmota.webp') }}"
                                 alt="Francisco J. Domínguez-Mota" width="100" height="100">
                         </div>
-                        <div class="member-name">Francisco J. Domínguez-Mota</div>
-                        <div class="member-role">Ph.D. in Mathematical Sciences</div>
+                        <div class="member-name">{{ _('Francisco J. Domínguez-Mota') }}</div>
+                        <div class="member-role">{{ _('Ph.D. in Mathematical Sciences') }}</div>
                         <div class="member-contact">
                             <i class="fas fa-envelope"></i>
-                            <a href="mailto:francisco.mota@umich.mx">francisco.mota@umich.mx</a>
+                            <a href="mailto:francisco.mota@umich.mx">{{ _('francisco.mota@umich.mx') }}</a>
                         </div>
                         <div class="member-social">
-                            <a href="https://orcid.org/0000-0001-6837-172X" target="_blank" title="ORCID"><i
+                            <a href="https://orcid.org/0000-0001-6837-172X" target="_blank" title="{{ _('ORCID') }}"><i
                                     class="fab fa-orcid"></i></a>
                             <a href="https://www.researchgate.net/profile/Francisco-Dominguez-Mota" target="_blank"
-                                title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                                title="{{ _('ResearchGate') }}"><i class="fab fa-researchgate"></i></a>
                         </div>
                     </div>
 
@@ -390,17 +265,17 @@
                             <img src="{{ url_for('static', filename='images/team/harias.webp') }}"
                                 alt="Heriberto Arias-Rojas" width="100" height="100">
                         </div>
-                        <div class="member-name">Heriberto Arias-Rojas</div>
-                        <div class="member-role">Ph.D. in Physical Engineering Sciences</div>
+                        <div class="member-name">{{ _('Heriberto Arias-Rojas') }}</div>
+                        <div class="member-role">{{ _('Ph.D. in Physical Engineering Sciences') }}</div>
                         <div class="member-contact">
                             <i class="fas fa-envelope"></i>
-                            <a href="mailto:heriberto.arias@umich.mx">heriberto.arias@umich.mx</a>
+                            <a href="mailto:heriberto.arias@umich.mx">{{ _('heriberto.arias@umich.mx') }}</a>
                         </div>
                         <div class="member-social">
-                            <a href="https://orcid.org/0000-0002-7641-8310" target="_blank" title="ORCID"><i
+                            <a href="https://orcid.org/0000-0002-7641-8310" target="_blank" title="{{ _('ORCID') }}"><i
                                     class="fab fa-orcid"></i></a>
                             <a href="https://www.researchgate.net/profile/Heriberto-Arias-Rojas" target="_blank"
-                                title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                                title="{{ _('ResearchGate') }}"><i class="fab fa-researchgate"></i></a>
                         </div>
                     </div>
                 </div>
@@ -408,7 +283,7 @@
 
             <!-- Students Category -->
             <div class="team-category">
-                <h3 class="category-title">Students</h3>
+                <h3 class="category-title">{{ _('Students') }}</h3>
                 <div class="team-grid">
                     <!-- Student 1 -->
                     <div class="team-member student">
@@ -416,8 +291,8 @@
                             <img src="{{ url_for('static', filename='images/team/gpj.webp') }}"
                                 alt="Gabriela Pedraza-Jimenez" width="100" height="100">
                         </div>
-                        <div class="member-name">Gabriela Pedraza-Jimenez</div>
-                        <div class="member-role">Ph.D. candidate</div>
+                        <div class="member-name">{{ _('Gabriela Pedraza-Jimenez') }}</div>
+                        <div class="member-role">{{ _('Ph.D. candidate') }}</div>
                     </div>
 
                     <!-- Student 2 -->
@@ -426,8 +301,8 @@
                             <img src="{{ url_for('static', filename='images/team/eci.webp') }}"
                                 alt="Eli Chagolla-Inzunza" width="100" height="100">
                         </div>
-                        <div class="member-name">Eli Chagolla-Inzunza</div>
-                        <div class="member-role">Ph.D. candidate</div>
+                        <div class="member-name">{{ _('Eli Chagolla-Inzunza') }}</div>
+                        <div class="member-role">{{ _('Ph.D. candidate') }}</div>
                     </div>
 
                     <!-- Student 3 -->
@@ -436,8 +311,8 @@
                             <img src="{{ url_for('static', filename='images/team/jlgf.webp') }}"
                                 alt="Jorge L. González-Figueroa" width="100" height="100">
                         </div>
-                        <div class="member-name">Jorge L. González-Figueroa</div>
-                        <div class="member-role">M.Sc. student</div>
+                        <div class="member-name">{{ _('Jorge L. González-Figueroa') }}</div>
+                        <div class="member-role">{{ _('M.Sc. student') }}</div>
                     </div>
 
                     <!-- Student 4 -->
@@ -446,8 +321,8 @@
                             <img src="{{ url_for('static', filename='images/team/cnmb.webp') }}"
                                 alt="C. Nolan Magaña-Barocio" width="100" height="100">
                         </div>
-                        <div class="member-name">C. Nolan Magaña-Barocio</div>
-                        <div class="member-role">M.Sc. student</div>
+                        <div class="member-name">{{ _('C. Nolan Magaña-Barocio') }}</div>
+                        <div class="member-role">{{ _('M.Sc. student') }}</div>
                     </div>
 
                     <!-- Student 5 -->
@@ -456,8 +331,8 @@
                             <img src="{{ url_for('static', filename='images/team/mgfl.webp') }}"
                                 alt="Maria Goretti Fraga-Lopez" width="100" height="100">
                         </div>
-                        <div class="member-name">Maria Goretti Fraga-Lopez</div>
-                        <div class="member-role">Undergraduate student</div>
+                        <div class="member-name">{{ _('Maria Goretti Fraga-Lopez') }}</div>
+                        <div class="member-role">{{ _('Undergraduate student') }}</div>
                     </div>
                 </div>
             </div>
@@ -468,7 +343,7 @@
     <section class="section-dark tech-stack">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Technology Stack</h2>
+                <h2 class="section-title">{{ _('Technology Stack') }}</h2>
             </div>
 
             <div class="tech-grid">
@@ -477,28 +352,28 @@
                         <div class="category-icon">
                             <i class="fas fa-server"></i>
                         </div>
-                        <h4>Backend</h4>
+                        <h4>{{ _('Backend') }}</h4>
                     </div>
                     <div class="tech-badges">
                         <div class="tech-badge primary">
                             <i class="fab fa-python"></i>
-                            <span>Python 3.8+</span>
+                            <span>{{ _('Python 3.8+') }}</span>
                         </div>
                         <div class="tech-badge primary">
                             <i class="fas fa-flask"></i>
-                            <span>Flask</span>
+                            <span>{{ _('Flask') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-calculator"></i>
-                            <span>NumPy</span>
+                            <span>{{ _('NumPy') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-table"></i>
-                            <span>Pandas</span>
+                            <span>{{ _('Pandas') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-eye"></i>
-                            <span>OpenCV</span>
+                            <span>{{ _('OpenCV') }}</span>
                         </div>
                     </div>
                 </div>
@@ -508,28 +383,28 @@
                         <div class="category-icon">
                             <i class="fas fa-palette"></i>
                         </div>
-                        <h4>Frontend</h4>
+                        <h4>{{ _('Frontend') }}</h4>
                     </div>
                     <div class="tech-badges">
                         <div class="tech-badge primary">
                             <i class="fab fa-html5"></i>
-                            <span>HTML5 & CSS3</span>
+                            <span>{{ _('HTML5 & CSS3') }}</span>
                         </div>
                         <div class="tech-badge primary">
                             <i class="fab fa-js-square"></i>
-                            <span>JavaScript ES6+</span>
+                            <span>{{ _('JavaScript ES6+') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-draw-polygon"></i>
-                            <span>Canvas API</span>
+                            <span>{{ _('Canvas API') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-mobile-alt"></i>
-                            <span>Responsive Design</span>
+                            <span>{{ _('Responsive Design') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-magic"></i>
-                            <span>Modern UI/UX</span>
+                            <span>{{ _('Modern UI/UX') }}</span>
                         </div>
                     </div>
                 </div>
@@ -539,24 +414,24 @@
                         <div class="category-icon">
                             <i class="fas fa-atom"></i>
                         </div>
-                        <h4>Scientific</h4>
+                        <h4>{{ _('Scientific') }}</h4>
                     </div>
                     <div class="tech-badges">
                         <div class="tech-badge primary">
                             <i class="fas fa-chart-line"></i>
-                            <span>Matplotlib</span>
+                            <span>{{ _('Matplotlib') }}</span>
                         </div>
                         <div class="tech-badge primary">
                             <i class="fas fa-square-root-alt"></i>
-                            <span>SciPy</span>
+                            <span>{{ _('SciPy') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-brain"></i>
-                            <span>Adaptive Algorithms</span>
+                            <span>{{ _('Adaptive Algorithms') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-shapes"></i>
-                            <span>Computational Geometry</span>
+                            <span>{{ _('Computational Geometry') }}</span>
                         </div>
                     </div>
                 </div>
@@ -566,24 +441,24 @@
                         <div class="category-icon">
                             <i class="fas fa-tools"></i>
                         </div>
-                        <h4>Tools</h4>
+                        <h4>{{ _('Tools') }}</h4>
                     </div>
                     <div class="tech-badges">
                         <div class="tech-badge primary">
                             <i class="fab fa-git-alt"></i>
-                            <span>Git</span>
+                            <span>{{ _('Git') }}</span>
                         </div>
                         <div class="tech-badge primary">
                             <i class="fas fa-laptop"></i>
-                            <span>Cross-platform</span>
+                            <span>{{ _('Cross-platform') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-file-csv"></i>
-                            <span>CSV</span>
+                            <span>{{ _('CSV') }}</span>
                         </div>
                         <div class="tech-badge">
                             <i class="fas fa-image"></i>
-                            <span>PNG/SVG</span>
+                            <span>{{ _('PNG/SVG') }}</span>
                         </div>
                     </div>
                 </div>
@@ -595,8 +470,8 @@
     <section class="section-light participating-institutions">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Participating Institutions</h2>
-                <p class="section-subtitle">Collaborating organizations driving scientific innovation</p>
+                <h2 class="section-title">{{ _('Participating Institutions') }}</h2>
+                <p class="section-subtitle">{{ _('Collaborating organizations driving scientific innovation') }}</p>
             </div>
 
             <div class="institutions-grid">
@@ -637,9 +512,9 @@
     <section class="section-dark citation-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Citation & References</h2>
-                <p class="section-subtitle">If you use mGFD CloudGenerator in your research, please cite the software
-                    and related publications.</p>
+                <h2 class="section-title">{{ _('Citation & References') }}</h2>
+                <p class="section-subtitle">{{ _('If you use mGFD CloudGenerator in your research, please cite the software
+                    and related publications.') }}</p>
             </div>
             <div class="citation-grid-single">
                 <div class="citation-card">
@@ -647,17 +522,17 @@
                         <div class="citation-icon">
                             <i class="fas fa-code"></i>
                         </div>
-                        <h4>Software Citation</h4>
+                        <h4>{{ _('Software Citation') }}</h4>
                     </div>
                     <div class="citation-content">
-                        <p class="citation-text">Tinoco-Guerrero, G., Domínguez-Mota, F. J., Guzmán-Torres, J. A., &
-                            Arias-Rojas, H. (2025). mGFD CloudGenerator 2.0: Web platform for generating 2D unstructured
-                            point clouds.</p>
+                        <p class="citation-text">{{ _('Tinoco-Guerrero, G., Domínguez-Mota, F. J., Guzmán-Torres, J. A., &
+                            Arias-Rojas, H. (2025). mGFD CloudGenerator 2.1: Web platform for generating 2D unstructured
+                            point clouds.') }}</p>
                         <div class="code-block-container">
-                            <button class="copy-btn" onclick="copyBibtex('software-bib')" title="Copy BibTeX"><i
+                            <button class="copy-btn" onclick="copyBibtex('software-bib')" title="{{ _('Copy BibTeX') }}"><i
                                     class="fas fa-copy"></i></button>
                             <pre><code id="software-bib" class="language-bibtex">@software{tinoco2025mGFD_cloudgenerator,
-  title={mGFD CloudGenerator 2.0: Web platform for generating 2D unstructured point clouds},
+  title={mGFD CloudGenerator 2.1: Web platform for generating 2D unstructured point clouds},
   author={Tinoco-Guerrero, Gerardo and 
           Domínguez-Mota, Francisco Javier and 
           Guzmán-Torres, José Alberto and
@@ -666,7 +541,7 @@
   institution={Universidad Michoacana de San Nicolás de Hidalgo},
   organization={SIIIA MATH: Soluciones en ingeniería},
   url={https://github.com/gstinoco/mGFD_CloudGenerator},
-  version={2.0}
+  version={2.1}
 }</code></pre>
                         </div>
                     </div>
@@ -679,9 +554,9 @@
     <section class="section-light contact-collaboration">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Contact and Collaboration</h2>
-                <p class="section-subtitle">Connect with our research team and contribute to the advancement of meshless
-                    computational methods</p>
+                <h2 class="section-title">{{ _('Contact and Collaboration') }}</h2>
+                <p class="section-subtitle">{{ _('Connect with our research team and contribute to the advancement of meshless
+                    computational methods') }}</p>
             </div>
 
             <div class="contact-grid">
@@ -689,23 +564,23 @@
                     <div class="contact-icon">
                         <i class="fas fa-microscope"></i>
                     </div>
-                    <h4>Research Collaboration</h4>
-                    <p class="contact-description">Partner with us on academic research, algorithm development, and
-                        scientific applications.</p>
+                    <h4>{{ _('Research Collaboration') }}</h4>
+                    <p class="contact-description">{{ _('Partner with us on academic research, algorithm development, and
+                        scientific applications.') }}</p>
                     <div class="contact-details">
                         <div class="contact-method">
                             <i class="fas fa-envelope"></i>
-                            <span>gerardo.tinoco@umich.mx</span>
+                            <span>{{ _('gerardo.tinoco@umich.mx') }}</span>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-university"></i>
-                            <span>Academic Partnerships</span>
+                            <span>{{ _('Academic Partnerships') }}</span>
                         </div>
                     </div>
                     <div class="contact-tags">
-                        <span class="contact-tag">CFD Research</span>
-                        <span class="contact-tag">Algorithm Development</span>
-                        <span class="contact-tag">Publications</span>
+                        <span class="contact-tag">{{ _('CFD Research') }}</span>
+                        <span class="contact-tag">{{ _('Algorithm Development') }}</span>
+                        <span class="contact-tag">{{ _('Publications') }}</span>
                     </div>
                 </div>
 
@@ -713,23 +588,23 @@
                     <div class="contact-icon">
                         <i class="fas fa-code"></i>
                     </div>
-                    <h4>Development & Contributions</h4>
-                    <p class="contact-description">Join our open-source community. Contribute code, report bugs, suggest
-                        features, or help improve the platform.</p>
+                    <h4>{{ _('Development & Contributions') }}</h4>
+                    <p class="contact-description">{{ _('Join our open-source community. Contribute code, report bugs, suggest
+                        features, or help improve the platform.') }}</p>
                     <div class="contact-details">
                         <div class="contact-method">
                             <i class="fab fa-github"></i>
-                            <span>GitHub Repository</span>
+                            <span>{{ _('GitHub Repository') }}</span>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-bug"></i>
-                            <span>Issue Tracking</span>
+                            <span>{{ _('Issue Tracking') }}</span>
                         </div>
                     </div>
                     <div class="contact-tags">
-                        <span class="contact-tag">Open Source</span>
-                        <span class="contact-tag">Bug Reports</span>
-                        <span class="contact-tag">Feature Requests</span>
+                        <span class="contact-tag">{{ _('Open Source') }}</span>
+                        <span class="contact-tag">{{ _('Bug Reports') }}</span>
+                        <span class="contact-tag">{{ _('Feature Requests') }}</span>
                     </div>
                 </div>
 
@@ -737,23 +612,23 @@
                     <div class="contact-icon">
                         <i class="fas fa-book-open"></i>
                     </div>
-                    <h4>Documentation & Support</h4>
-                    <p class="contact-description">Help us improve documentation, create tutorials, share use cases, or
-                        get technical support for your projects.</p>
+                    <h4>{{ _('Documentation & Support') }}</h4>
+                    <p class="contact-description">{{ _('Help us improve documentation, create tutorials, share use cases, or
+                        get technical support for your projects.') }}</p>
                     <div class="contact-details">
                         <div class="contact-method">
                             <i class="fas fa-question-circle"></i>
-                            <span>Technical Support</span>
+                            <span>{{ _('Technical Support') }}</span>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-edit"></i>
-                            <span>Documentation</span>
+                            <span>{{ _('Documentation') }}</span>
                         </div>
                     </div>
                     <div class="contact-tags">
-                        <span class="contact-tag">Tutorials</span>
-                        <span class="contact-tag">Use Cases</span>
-                        <span class="contact-tag">Support</span>
+                        <span class="contact-tag">{{ _('Tutorials') }}</span>
+                        <span class="contact-tag">{{ _('Use Cases') }}</span>
+                        <span class="contact-tag">{{ _('Support') }}</span>
                     </div>
                 </div>
             </div>
@@ -761,22 +636,22 @@
             <div class="collaboration-cta">
                 <div class="cta-content">
                     <div class="cta-text">
-                        <h3>Ready to Collaborate?</h3>
-                        <p>Join our growing community of researchers, developers, and computational scientists working
-                            together to advance meshless methods.</p>
+                        <h3>{{ _('Ready to Collaborate?') }}</h3>
+                        <p>{{ _('Join our growing community of researchers, developers, and computational scientists working
+                            together to advance meshless methods.') }}</p>
                     </div>
                     <div class="cta-actions">
                         <a href="mailto:gerardo.tinoco@umich.mx" class="btn btn-primary">
                             <i class="fas fa-envelope"></i>
-                            Get in Touch
+                            {{ _('Get in Touch') }}
                         </a>
                         <a href="https://github.com/gstinoco/CloudGen" class="btn btn-secondary" target="_blank">
                             <i class="fab fa-github"></i>
-                            View on GitHub
+                            {{ _('View on GitHub') }}
                         </a>
                         <a href="https://malla.umich.mx/CloudGenerator/" class="btn btn-accent" target="_blank">
                             <i class="fas fa-external-link-alt"></i>
-                            Live Demo
+                            {{ _('Live Demo') }}
                         </a>
                     </div>
                 </div>
@@ -788,98 +663,28 @@
                         <i class="fab fa-osi"></i>
                     </div>
                     <div class="license-text">
-                        <h4>Open Source License</h4>
-                        <p>This project is released under the <strong>MIT License</strong>, ensuring freedom to use,
-                            modify, and distribute. We welcome contributions from the global research community.</p>
+                        <h4>{{ _('Open Source License') }}</h4>
+                        <p>{{ _('This project is released under the') }} <strong>{{ _('MIT License') }}</strong>{{ _(', ensuring freedom to use,
+                            modify, and distribute. We welcome contributions from the global research community.') }}</p>
                     </div>
                     <div class="license-badge">
-                        <a href="https://github.com/gstinoco/CloudGen/blob/v2.0/LICENSE" target="_blank"
+                        <a href="https://github.com/gstinoco/CloudGen/blob/v2.1/LICENSE" target="_blank"
                             style="color: inherit; text-decoration: none;">
-                            <span class="badge">MIT Licensed</span>
+                            <span class="badge">{{ _('MIT Licensed') }}</span>
                         </a>
                         <a href="https://github.com/gstinoco/CloudGen" target="_blank"
                             style="color: inherit; text-decoration: none;">
-                            <span class="badge">Open Source</span>
+                            <span class="badge">{{ _('Open Source') }}</span>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
-                        Differences (mGFD) method.
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i
-                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
-                        </li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
-                        </li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>How it Works</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
-                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
-                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
-                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; <span id="current-year">2025</span> mGFD CloudGenerator. Built for computational modeling
-                        research with Meshless methods.</p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript Files -->
-    <script>
+{% block scripts %}
+<script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
         function copyBibtex(id) {
@@ -896,7 +701,4 @@
             });
         }
     </script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-</body>
-
-</html>
+{% endblock %}

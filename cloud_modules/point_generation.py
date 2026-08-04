@@ -216,14 +216,57 @@ def poisson_disk_sampling(polygon: Polygon, radius: float, k: int = 30, boundary
     samples[:, 0] = samples[:, 0] * scale_factor + minx
     samples[:, 1] = samples[:, 1] * scale_factor + miny
     
-    # Filter points inside polygon
-    fast_contains = create_fast_polygon_checker(polygon)
-    
-    # We use list comprehension with fast_contains
-    interior_points = [
-        (x, y) for x, y in samples 
-        if fast_contains(x, y)
-    ]
+    # Filter points inside polygon using vectorized OpenCV mask for extreme speed
+    try:
+        # Create a mask with a resolution high enough to capture the polygon accurately
+        resolution = max(radius * 0.1, (maxx - minx) / 2000.0) # at most 2000px wide
+        if resolution <= 0: resolution = 1.0
+        
+        width_px = int(np.ceil((maxx - minx) / resolution)) + 1
+        height_px = int(np.ceil((maxy - miny) / resolution)) + 1
+        
+        mask = np.zeros((height_px, width_px), dtype=np.uint8)
+        
+        def to_pixel_coords(coords):
+            pixel_coords = []
+            for x, y in coords:
+                px = int(round((x - minx) / resolution))
+                py = int(round((y - miny) / resolution))
+                pixel_coords.append([px, py])
+            return np.array(pixel_coords, dtype=np.int32)
+            
+        # Draw exterior
+        ext_pixels = to_pixel_coords(list(polygon.exterior.coords))
+        cv2.fillPoly(mask, [ext_pixels], 1)
+        # Exclude exterior boundary to avoid overlapping
+        cv2.polylines(mask, [ext_pixels], isClosed=True, color=0, thickness=1)
+        
+        # Draw holes
+        for interior in polygon.interiors:
+            int_pixels = to_pixel_coords(list(interior.coords))
+            cv2.fillPoly(mask, [int_pixels], 0)
+            
+        # Map samples to pixel coordinates and check mask
+        sample_px = np.round((samples[:, 0] - minx) / resolution).astype(int)
+        sample_py = np.round((samples[:, 1] - miny) / resolution).astype(int)
+        
+        # Filter bounds to avoid IndexError
+        valid_idx = (sample_px >= 0) & (sample_px < width_px) & (sample_py >= 0) & (sample_py < height_px)
+        
+        # Of the valid indices, check the mask
+        in_polygon = np.zeros(len(samples), dtype=bool)
+        in_polygon[valid_idx] = mask[sample_py[valid_idx], sample_px[valid_idx]] > 0
+        
+        interior_points = samples[in_polygon].tolist()
+        interior_points = [(p[0], p[1]) for p in interior_points]
+        
+    except Exception as e:
+        logging.error(f"Vectorized masking failed in Poisson: {e}. Falling back to Path checker.")
+        fast_contains = create_fast_polygon_checker(polygon)
+        interior_points = [
+            (x, y) for x, y in samples 
+            if fast_contains(x, y)
+        ]
     
     if not interior_points:
         return []

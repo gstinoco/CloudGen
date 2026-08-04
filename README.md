@@ -1,4 +1,4 @@
-# mGFD CloudGenerator 2.0 :cloud:
+# mGFD CloudGenerator 2.1 :cloud:
 
 <div align="center">
 
@@ -43,7 +43,7 @@
 
 ## :star2: Overview
 
-**mGFD CloudGenerator 2.0** is a Flask-based web platform that converts **images → contours → classified point clouds** designed for **meshless Generalized Finite Differences (mGFD)** workflows. It provides interactive contour extraction, multi-region management (including interior holes), cloud generation with two distribution strategies, high-quality visualizations (PNG/SVG), and region-aware neighbor computation.
+**mGFD CloudGenerator 2.1** is a Flask-based web platform that converts **images → contours → classified point clouds** designed for **meshless Generalized Finite Differences (mGFD)** workflows. It provides interactive contour extraction, multi-region management (including interior holes), cloud generation with two distribution strategies, high-quality visualizations (PNG/SVG), and region-aware neighbor computation.
 
 > :globe_with_meridians: **Try it now!** Live demo: **https://malla.umich.mx/CloudGenerator/**
 
@@ -53,6 +53,7 @@
 - **:eye: CloudViewer**: Upload a CSV (contours or clouds) and instantly generate PNG/SVG visualizations.
 - **:users: NeighborsCalculator**: Compute k-nearest neighbors constrained by region boundaries (cKDTree-based).
 - **:floppy_disk: Export & Reproducibility**: Standardized CSV formats + verification on export for integrity.
+- **:globe_with_meridians: Internationalization (i18n)**: Full English and Spanish localization seamlessly integrated into a premium user interface.
 
 ### :microscope: Typical Applications
 
@@ -853,7 +854,7 @@ If you use this software in your research, please cite:
 
 ```bibtex
 @software{tinoco2025mGFD_cloudgenerator,
-  title={mGFD CloudGenerator 2.0: Web platform for generating 2D unstructured point clouds},
+  title={mGFD CloudGenerator 2.1: Web platform for generating 2D unstructured point clouds},
   author={Tinoco-Guerrero, Gerardo and 
           Domínguez-Mota, Francisco Javier and 
           Guzmán-Torres, José Alberto and
@@ -862,7 +863,7 @@ If you use this software in your research, please cite:
   institution={Universidad Michoacana de San Nicolás de Hidalgo},
   organization={SIIIA MATH: Soluciones en ingeniería},
   url={https://github.com/gstinoco/mGFD_CloudGenerator},
-  version={2.0},
+  version={2.1},
   note={Web-based preprocessing tool for meshless mGFD workflows: image-to-contour extraction, multi-region handling, point-cloud generation (regular/Poisson), node classification, and region-constrained neighbor analysis}
 }
 ```

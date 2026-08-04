@@ -1,137 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contour_creator.css') }}">
+{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-
-    <!-- SEO Meta Tags -->
-    <title>ContourCreator | mGFD CloudGenerator 2.0</title>
-    <meta name="description"
-        content="Create precise contours from images for point cloud generation. Advanced image processing tools for boundary detection.">
-    <meta name="keywords"
-        content="contour creator, image processing, boundary detection, point cloud, mGFD, scientific tools">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="og:description"
-        content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="ContourCreator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description"
-        content="Create precise contours and extract boundaries from images using advanced image processing algorithms. Perfect for scientific analysis and point cloud generation workflows.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/contour_creator.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                                <i class="fas fa-draw-polygon"></i>
-                                ContourCreator
-                            </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                                <i class="fas fa-cloud"></i>
-                                CloudGenerator
-                            </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                                <i class="fas fa-eye"></i>
-                                CloudViewer
-                            </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link">
-                                <i class="fas fa-users"></i>
-                                NeighborsCalculator
-                            </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -140,22 +15,22 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
                             class="logo-image">
                     </div>
-                    <h1 class="hero-title">ContourCreator</h1>
-                    <p class="hero-subtitle">Transform images into precise geometric contours using advanced automatic
+                    <h1 class="hero-title">{{ _('ContourCreator') }}</h1>
+                    <p class="hero-subtitle">{{ _('Transform images into precise geometric contours using advanced automatic
                         segmentation algorithms. Perfect for computational modeling and point cloud generation
-                        workflows.</p>
+                        workflows.') }}</p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-magic"></i>
-                            <span>Automatic Segmentation</span>
+                            <span>{{ _('Automatic Segmentation') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-vector-square"></i>
-                            <span>Precise Contours</span>
+                            <span>{{ _('Precise Contours') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-download"></i>
-                            <span>Export Ready</span>
+                            <span>{{ _('Export Ready') }}</span>
                         </div>
                     </div>
                 </div>
@@ -173,8 +48,8 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Upload Image</h3>
-                        <p>Drag and drop your image or click to browse</p>
+                        <h3>{{ _('Upload Image') }}</h3>
+                        <p>{{ _('Drag and drop your image or click to browse') }}</p>
                     </div>
                 </div>
                 <div class="upload-zone-container">
@@ -188,19 +63,19 @@
                                     <div class="upload-pulse"></div>
                                 </div>
                             </div>
-                            <h4 class="upload-title" id="uploadTitle">Drop your image here</h4>
-                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <h4 class="upload-title" id="uploadTitle">{{ _('Drop your image here') }}</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">{{ _('or click to browse files') }}</p>
                             <div class="upload-formats">
-                                <span class="format-badge">JPG</span>
-                                <span class="format-badge">PNG</span>
+                                <span class="format-badge">{{ _('JPG') }}</span>
+                                <span class="format-badge">{{ _('PNG') }}</span>
                             </div>
                             <div class="upload-size-limit">
                                 <i class="fas fa-info-circle"></i>
-                                <span>Maximum file size: 10MB</span>
+                                <span>{{ _('Maximum file size: 10MB') }}</span>
                             </div>
                             <div class="upload-button">
                                 <i class="fas fa-folder-open"></i>
-                                <span>Browse Files</span>
+                                <span>{{ _('Browse Files') }}</span>
                             </div>
                         </div>
                         <div class="upload-progress" id="uploadProgress" style="display: none;">
@@ -211,24 +86,24 @@
                                 </svg>
                                 <span class="progress-text" id="progressText">0%</span>
                             </div>
-                            <p class="progress-message" id="progressMessage">Uploading image...</p>
+                            <p class="progress-message" id="progressMessage">{{ _('Uploading image...') }}</p>
                         </div>
                         <div class="upload-success" id="uploadSuccess" style="display: none;">
                             <div class="success-icon">
                                 <i class="fas fa-check-circle"></i>
                             </div>
-                            <h4>Upload Successful!</h4>
-                            <p id="uploadedFileName">Image uploaded successfully</p>
+                            <h4>{{ _('Upload Successful!') }}</h4>
+                            <p id="uploadedFileName">{{ _('Image uploaded successfully') }}</p>
                         </div>
                         <div class="upload-error" id="uploadError" style="display: none;">
                             <div class="error-icon">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
-                            <h4>Upload Error</h4>
-                            <p id="errorMessage">Please try again</p>
+                            <h4>{{ _('Upload Error') }}</h4>
+                            <p id="errorMessage">{{ _('Please try again') }}</p>
                             <button class="btn btn-secondary btn-small" onclick="resetUpload()">
                                 <i class="fas fa-redo"></i>
-                                Try Again
+                                {{ _('Try Again') }}
                             </button>
                         </div>
                     </div>
@@ -238,7 +113,7 @@
                 <div class="upload-actions">
                     <button class="btn btn-secondary" id="clearButton" onclick="clearUpload()" style="display: none;">
                         <i class="fas fa-times"></i>
-                        <span>Clear</span>
+                        <span>{{ _('Clear') }}</span>
                     </button>
                 </div>
             </div>
@@ -254,29 +129,29 @@
                             <div class="controls-group">
                                 <button class="control-btn primary" onclick="addRegion()" id="addRegionBtn" disabled>
                                     <i class="fas fa-plus-circle"></i>
-                                    <span>Add Region</span>
+                                    <span>{{ _('Add Region') }}</span>
                                 </button>
                                 <button class="control-btn refine" onclick="toggleRefineMode()" id="refineModeToggle"
                                     disabled>
                                     <i class="fas fa-edit"></i>
-                                    <span>Refine Selection</span>
+                                    <span>{{ _('Refine Selection') }}</span>
                                 </button>
                                 <button class="control-btn warning" onclick="clearAllRegions()" id="clearBtn" disabled>
                                     <i class="fas fa-trash-alt"></i>
-                                    <span>Clear All</span>
+                                    <span>{{ _('Clear All') }}</span>
                                 </button>
 
                             </div>
 
                             <div class="zoom-controls">
-                                <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">
+                                <button class="zoom-btn" onclick="zoomOut()" title="{{ _('Zoom Out') }}">
                                     <i class="fas fa-search-minus"></i>
                                 </button>
                                 <span id="zoomLevel" class="zoom-level">100%</span>
-                                <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">
+                                <button class="zoom-btn" onclick="zoomIn()" title="{{ _('Zoom In') }}">
                                     <i class="fas fa-search-plus"></i>
                                 </button>
-                                <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">
+                                <button class="zoom-btn" onclick="resetZoom()" title="{{ _('Reset Zoom') }}">
                                     <i class="fas fa-expand-arrows-alt"></i>
                                 </button>
                             </div>
@@ -287,7 +162,7 @@
                             <div class="refine-instructions">
                                 <span class="refine-text">
                                     <i class="fas fa-info-circle"></i>
-                                    Click to add areas (+) or hold Shift to remove (-)
+                                    {{ _('Click to add areas (+) or hold Shift to remove (-)') }}
                                 </span>
                             </div>
 
@@ -297,29 +172,29 @@
                                         <i class="fas fa-paint-brush"></i>
                                         <input type="range" id="refineBrushSize" min="5" max="50" value="20"
                                             onchange="updateBrushSize(this.value)">
-                                        <span id="brushSizeValue">20px</span>
+                                        <span id="brushSizeValue">{{ _('20px') }}</span>
                                     </label>
                                 </div>
 
                                 <button class="refine-btn undo" onclick="undoLastStroke()" id="undoLastBtn" disabled>
                                     <i class="fas fa-undo-alt"></i>
-                                    <span>Undo Last</span>
+                                    <span>{{ _('Undo Last') }}</span>
                                 </button>
 
                                 <button class="refine-btn clear" onclick="clearAllRefinements()">
                                     <i class="fas fa-undo"></i>
-                                    <span>Clear All</span>
+                                    <span>{{ _('Clear All') }}</span>
                                 </button>
 
                                 <button class="refine-btn apply" onclick="applyRefinements()" id="applyRefineBtn"
                                     disabled>
                                     <i class="fas fa-check"></i>
-                                    <span>Apply</span>
+                                    <span>{{ _('Apply') }}</span>
                                 </button>
 
                                 <button class="refine-btn cancel" onclick="exitRefineMode()">
                                     <i class="fas fa-times"></i>
-                                    <span>Exit</span>
+                                    <span>{{ _('Exit') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -340,13 +215,13 @@
                                 <i class="fas fa-bullseye"></i>
                             </div>
                             <div class="card-title">
-                                <h3 style="margin: 0; padding: 0;">Detected Regions</h3>
-                                <p style="margin: 0; padding: 0;">Review and manage your contours</p>
+                                <h3 style="margin: 0; padding: 0;">{{ _('Detected Regions') }}</h3>
+                                <p style="margin: 0; padding: 0;">{{ _('Review and manage your contours') }}</p>
                             </div>
                         </div>
                         <div style="display: flex; gap: 1rem; align-items: center;">
-                            <div class="toggle-container" title="Scale coordinates to [0, 1] range">
-                                <span class="toggle-label">Normalize Results</span>
+                            <div class="toggle-container" title="{{ _('Scale coordinates to [0, 1] range') }}">
+                                <span class="toggle-label">{{ _('Normalize Results') }}</span>
                                 <label class="switch">
                                     <input type="checkbox" id="normalizeCoords" checked>
                                     <span class="slider round"></span>
@@ -356,7 +231,7 @@
                             <button class="control-btn success" onclick="saveAllCoordinates()" id="saveBtn" disabled
                                 style="height: 42px;">
                                 <i class="fas fa-download"></i>
-                                <span>Export All</span>
+                                <span>{{ _('Export All') }}</span>
                             </button>
                         </div>
                     </div>
@@ -371,85 +246,12 @@
             <div id="alertContainer" class="alert-container"></div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
-                        Differences (mGFD) method.
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i
-                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
-                        </li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
-                        </li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                        <li><a href="{{ url_for('examples') }}"><i class="fas fa-th-large"></i>Examples</a></li>
-                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i>About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
-                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
-                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
-                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless methods.
-                    </p>
-                    <div class="footer-links">
-                        <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript Files -->
-    <script>
-        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
+{% block scripts %}
+<script>
+        const BASE_URL = "{{ url_for('main.home', _external=True).rstrip('/') }}";
     </script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/contour_creator.js') }}"></script>
-</body>
-
-</html>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contour_creator.js') }}"></script>
+{% endblock %}

@@ -1,140 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/neighbors.css') }}">
+{% endblock %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.webp') }}">
-
-    <!-- SEO Meta Tags -->
-    <title>NeighborsCalculator | mGFD CloudGenerator 2.0</title>
-    <meta name="description"
-        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists and visualize data.">
-    <meta name="keywords" content="neighbors calculation, point cloud, mGFD, region isolation, csv processing">
-    <meta name="author" content="Gerardo Tinoco-Guerrero, PhD.">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
-    <meta property="og:description"
-        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
-    <meta property="og:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-    <meta property="og:site_name" content="mGFD CloudGenerator">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ request.url }}">
-    <meta property="twitter:title" content="NeighborsCalculator | mGFD CloudGenerator 2.0">
-    <meta property="twitter:description"
-        content="Calculate neighbors for point clouds with region isolation. Upload CSV files to generate neighbor lists.">
-    <meta property="twitter:image" content="{{ url_for('static', filename='images/logo.webp', _external=True) }}">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ request.url }}">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/neighbors.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- MathJax -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="CloudGenerator Logo">
-                <div class="logo-text">
-                    <span class="logo-title">&nbsp;</span>
-                    <span class="logo-subtitle">v2.0</span>
-                </div>
-            </a>
-
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#features" class="nav-link">
-                        <i class="fas fa-star"></i>
-                        <span>Features</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}#workflow" class="nav-link">
-                        <i class="fas fa-cogs"></i>
-                        <span>Workflow</span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle active">
-                        <i class="fas fa-tools"></i>
-                        <span>Tools</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('contour_creator') }}" class="dropdown-link">
-                                <i class="fas fa-draw-polygon"></i>
-                                ContourCreator
-                            </a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}" class="dropdown-link">
-                                <i class="fas fa-cloud"></i>
-                                CloudGenerator
-                            </a></li>
-                        <li><a href="{{ url_for('viewer') }}" class="dropdown-link">
-                                <i class="fas fa-eye"></i>
-                                CloudViewer
-                            </a></li>
-                        <li><a href="{{ url_for('neighbors') }}" class="dropdown-link active">
-                                <i class="fas fa-users"></i>
-                                NeighborsCalculator
-                            </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('examples') }}" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        <span>Examples</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('about') }}" class="nav-link">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="nav-actions">
-                <a href="{{ url_for('contour_creator') }}" class="nav-cta">
-                    <i class="fas fa-rocket"></i>
-                    <span>Get Started</span>
-                </a>
-            </div>
-
-            <div class="nav-toggle">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+{% block content %}
+<!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -143,23 +15,23 @@
                         <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo"
                             class="logo-image">
                     </div>
-                    <h1 class="hero-title">NeighborsCalculator</h1>
+                    <h1 class="hero-title">{{ _('NeighborsCalculator') }}</h1>
                     <p class="hero-subtitle">
-                        Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to
-                        generate neighbor lists and visualize the results.
+                        {{ _('Calculate neighbors for your point clouds with strict region isolation. Upload CSV files to
+                        generate neighbor lists and visualize the results.') }}
                     </p>
                     <div class="hero-features">
                         <div class="feature-highlight">
                             <i class="fas fa-project-diagram"></i>
-                            <span>Region Aware</span>
+                            <span>{{ _('Region Aware') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-list-ol"></i>
-                            <span>Global Indexing</span>
+                            <span>{{ _('Global Indexing') }}</span>
                         </div>
                         <div class="feature-highlight">
                             <i class="fas fa-file-csv"></i>
-                            <span>CSV Export</span>
+                            <span>{{ _('CSV Export') }}</span>
                         </div>
                     </div>
                 </div>
@@ -177,25 +49,25 @@
                         <i class="fas fa-square-root-alt"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Mathematical Foundations</h3>
-                        <p>Understanding the topological requirements for the mGFD method</p>
+                        <h3>{{ _('Mathematical Foundations') }}</h3>
+                        <p>{{ _('Understanding the topological requirements for the mGFD method') }}</p>
                     </div>
                 </div>
 
                 <div class="format-content" style="padding: 20px;">
                     <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
-                        The <strong>meshless Generalized Finite Difference (mGFD)</strong> method relies on a Taylor
-                        polynomial expansion to approximate derivatives over a cloud of points.
+                        {{ _('The') }} <strong>{{ _('meshless Generalized Finite Difference (mGFD)') }}</strong> {{ _('method relies on a Taylor
+                        polynomial expansion to approximate derivatives over a cloud of points.') }}
                     </p>
 
                     <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 20px; line-height: 1.6;">
-                        To ensure that the resulting system of equations is algebraically determined and
+                        {{ _('To ensure that the resulting system of equations is algebraically determined and
                         well-conditioned, it is crucial to select a sufficient number of nearest neighbors, denoted as
-                        \( n \), based on the chosen polynomial degree \( m \).
+                        \( n \), based on the chosen polynomial degree \( m \).') }}
                     </p>
 
                     <div style="display: flex; align-items: center; justify-content: center; gap: 20px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(59, 130, 246, 0.4); padding: 12px 25px; border-radius: 8px; margin: 20px auto; max-width: 600px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);">
-                        <p style="color: #ffffff; font-size: 1rem; font-weight: 500; margin: 0;">Minimum recommended neighbors:</p>
+                        <p style="color: #ffffff; font-size: 1rem; font-weight: 500; margin: 0;">{{ _('Minimum recommended neighbors:') }}</p>
                         <div style="font-size: 1.25rem; font-weight: 600; color: #93c5fd; background: rgba(0, 0, 0, 0.4); padding: 5px 15px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.3);">
                             \[ n \ge \frac{(m+1)(m+2)}{2} \]
                         </div>
@@ -206,17 +78,17 @@
                             style="flex: 1; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent-blue);">
                             <h4 style="color: var(--text-primary); margin-bottom: 8px; font-size: 1rem;"><i
                                     class="fas fa-info-circle"
-                                    style="color: var(--accent-blue); margin-right: 8px;"></i>For \( m = 2 \)</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">A second-degree
-                                polynomial requires at least \( n = 6 \) neighbors.</p>
+                                    style="color: var(--accent-blue); margin-right: 8px;"></i>{{ _('For \( m = 2 \)') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">{{ _('A second-degree
+                                polynomial requires at least \( n = 6 \) neighbors.') }}</p>
                         </div>
                         <div
                             style="flex: 1; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--accent-blue);">
                             <h4 style="color: var(--text-primary); margin-bottom: 8px; font-size: 1rem;"><i
                                     class="fas fa-info-circle"
-                                    style="color: var(--accent-blue); margin-right: 8px;"></i>For \( m = 3 \)</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">A third-degree
-                                polynomial requires at least \( n = 10 \) neighbors.</p>
+                                    style="color: var(--accent-blue); margin-right: 8px;"></i>{{ _('For \( m = 3 \)') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">{{ _('A third-degree
+                                polynomial requires at least \( n = 10 \) neighbors.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -229,8 +101,8 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Upload Point Cloud</h3>
-                        <p>Select a CSV file with x, y, classification, region columns</p>
+                        <h3>{{ _('Upload Point Cloud') }}</h3>
+                        <p>{{ _('Select a CSV file with x, y, classification, region columns') }}</p>
                     </div>
                 </div>
 
@@ -238,13 +110,13 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
                         <div style="flex: 2; min-width: 300px;">
                             <h4 style="color: #ffffff; font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-network-wired" style="color: #60a5fa;"></i> Neighborhood Settings
+                                <i class="fas fa-network-wired" style="color: #60a5fa;"></i> {{ _('Neighborhood Settings') }}
                             </h4>
-                            <p style="color: #e2e8f0; font-size: 0.9rem; margin: 0;">Specify the exact number of nearest neighbors to connect for each node.</p>
+                            <p style="color: #e2e8f0; font-size: 0.9rem; margin: 0;">{{ _('Specify the exact number of nearest neighbors to connect for each node.') }}</p>
                         </div>
                         <div style="flex: 1; min-width: 150px; max-width: 200px;">
                             <div style="display: flex; align-items: center; background: rgba(15, 23, 42, 0.95); border: 2px solid rgba(59, 130, 246, 0.5); border-radius: 8px; overflow: hidden; transition: border-color 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);">
-                                <span style="padding: 10px 15px; background: rgba(59, 130, 246, 0.2); color: #ffffff; font-family: monospace; font-weight: 700; border-right: 2px solid rgba(59, 130, 246, 0.3);">\( n = \) </span>
+                                <span style="padding: 10px 15px; background: rgba(59, 130, 246, 0.2); color: #ffffff; font-family: monospace; font-weight: 700; border-right: 2px solid rgba(59, 130, 246, 0.3);">{{ _('\( n = \)') }} </span>
                                 <input type="number" id="numNeighbors" value="9" min="3" max="100" style="width: 100%; background: transparent; border: none; color: #ffffff; padding: 10px 15px; font-family: monospace; font-size: 1.2rem; font-weight: 600; outline: none;">
                             </div>
                         </div>
@@ -262,18 +134,18 @@
                                     <div class="upload-pulse"></div>
                                 </div>
                             </div>
-                            <h4 class="upload-title" id="uploadTitle">Drop your CSV file here</h4>
-                            <p class="upload-subtitle" id="uploadSubtitle">or click to browse files</p>
+                            <h4 class="upload-title" id="uploadTitle">{{ _('Drop your CSV file here') }}</h4>
+                            <p class="upload-subtitle" id="uploadSubtitle">{{ _('or click to browse files') }}</p>
                             <div class="upload-formats">
-                                <span class="format-badge">CSV</span>
+                                <span class="format-badge">{{ _('CSV') }}</span>
                             </div>
                             <div class="upload-size-limit">
                                 <i class="fas fa-info-circle"></i>
-                                <span>Maximum file size: 10MB</span>
+                                <span>{{ _('Maximum file size: 10MB') }}</span>
                             </div>
                             <div class="upload-button">
                                 <i class="fas fa-folder-open"></i>
-                                <span>Browse Files</span>
+                                <span>{{ _('Browse Files') }}</span>
                             </div>
                         </div>
                     </div>
@@ -288,8 +160,8 @@
                         <i class="fas fa-cog fa-spin"></i>
                     </div>
                     <div class="card-title">
-                        <h3>Calculating Neighbors</h3>
-                        <p>Processing regions and computing distances...</p>
+                        <h3>{{ _('Calculating Neighbors') }}</h3>
+                        <p>{{ _('Processing regions and computing distances...') }}</p>
                     </div>
                 </div>
                 <div class="progress-content">
@@ -317,12 +189,12 @@
                                     style="width: 32px; height: 32px; font-size: 0.9rem; padding: 0;">
                                     <i class="fas fa-check-circle" style="margin: 0; padding: 0;"></i>
                                 </div>
-                                <h3 style="font-size: 1.1rem; margin: 0; color: var(--text-primary);">Neighbors
-                                    Visualization</h3>
+                                <h3 style="font-size: 1.1rem; margin: 0; color: var(--text-primary);">{{ _('Neighbors
+                                    Visualization') }}</h3>
                             </div>
                             <div class="zoom-controls">
-                                <button id="btnResetView" class="control-btn success small" title="Reset View">
-                                    <i class="fas fa-expand-arrows-alt"></i> Reset View
+                                <button id="btnResetView" class="control-btn success small" title="{{ _('Reset View') }}">
+                                    <i class="fas fa-expand-arrows-alt"></i> {{ _('Reset View') }}
                                 </button>
                             </div>
                         </div>
@@ -336,22 +208,22 @@
                                 <div class="canvas-metrics-overlay"
                                     style="position: absolute; top: 15px; right: 15px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px; color: #e2e8f0; font-family: monospace; font-size: 0.9rem; z-index: 10; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
                                     <div style="display: flex; justify-content: space-between; gap: 20px;">
-                                        <span style="color: #94a3b8;">Center ID:</span>
-                                        <strong id="centerIdDisplay" style="color: #ef4444;">None</strong>
+                                        <span style="color: #94a3b8;">{{ _('Center ID:') }}</span>
+                                        <strong id="centerIdDisplay" style="color: #ef4444;">{{ _('None') }}</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; gap: 20px;">
-                                        <span style="color: #94a3b8;">Region:</span>
+                                        <span style="color: #94a3b8;">{{ _('Region:') }}</span>
                                         <strong id="regionDisplay" style="color: #60a5fa;">-</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; gap: 20px;">
-                                        <span style="color: #94a3b8;">Neighbors Found:</span>
+                                        <span style="color: #94a3b8;">{{ _('Neighbors Found:') }}</span>
                                         <strong id="neighborsFoundDisplay" style="color: #10b981;">0</strong>
                                     </div>
                                     <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
                                     <div
                                         style="display: flex; justify-content: space-between; gap: 20px; font-size: 0.85rem;">
-                                        <span style="color: #94a3b8;">Cursor:</span>
-                                        <strong id="coordinatesDisplay">X: 0.00, Y: 0.00</strong>
+                                        <span style="color: #94a3b8;">{{ _('Cursor:') }}</span>
+                                        <strong id="coordinatesDisplay">{{ _('X: 0.00, Y: 0.00') }}</strong>
                                     </div>
                                 </div>
 
@@ -365,7 +237,7 @@
                             <a id="downloadNeighbors" href="#" class="control-btn primary" download
                                 style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">
                                 <i class="fas fa-download"></i>
-                                Download Neighbors CSV
+                                {{ _('Download Neighbors CSV') }}
                             </a>
                         </div>
                     </div>
@@ -375,85 +247,14 @@
             <div id="errorSection" class="alert alert-error hidden"></div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ url_for('static', filename='images/logo_w.webp') }}" alt="CloudGenerator Logo">
-                    </div>
-                    <p class="footer-description">
-                        Advanced tool for generating point clouds that can be used with the meshless Generalized Finite
-                        Differences (mGFD) method.
-                    </p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="{{ url_for('contour_creator') }}"><i
-                                    class="fas fa-draw-polygon"></i>ContourCreator</a></li>
-                        <li><a href="{{ url_for('cloud_generator') }}"><i class="fas fa-cloud"></i>CloudGenerator</a>
-                        </li>
-                        <li><a href="{{ url_for('viewer') }}"><i class="fas fa-eye"></i>CloudViewer</a></li>
-                        <li><a href="{{ url_for('neighbors') }}"><i class="fas fa-users"></i>NeighborsCalculator</a>
-                        </li>
-                        <li><a href="{{ url_for('home') }}#features"><i class="fas fa-star"></i>Features</a></li>
-                        <li><a href="{{ url_for('home') }}#workflow"><i class="fas fa-cogs"></i>Workflow</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Research Areas</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-project-diagram"></i>Meshless Methods</a></li>
-                        <li><a href="#"><i class="fas fa-calculator"></i>Generalized Finite Difference Methods</a></li>
-                        <li><a href="#"><i class="fas fa-laptop-code"></i>Scientific Computing</a></li>
-                        <li><a href="#"><i class="fas fa-robot"></i>Artificial Intelligence Applications</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Sponsored by</h3>
-                    <div class="sponsor-logos">
-                        <a href="http://siiia.com.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/siiia.webp') }}"
-                                alt="SIIIA MATH: Soluciones en Ingeniería" class="sponsor-logo">
-                            <span class="sponsor-name">SIIIA MATH</span>
-                        </a>
-                        <a href="https://umich.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/umsnh.webp') }}"
-                                alt="Universidad Michoacana de San Nicolás de Hidalgo" class="sponsor-logo">
-                            <span class="sponsor-name">UMSNH</span>
-                        </a>
-                        <a href="https://secihti.mx/" target="_blank" rel="noopener noreferrer" class="sponsor-item">
-                            <img src="{{ url_for('static', filename='images/secihti.webp') }}"
-                                alt="Secretaría de Ciencia, Tecnología e Innovación" class="sponsor-logo">
-                            <span class="sponsor-name">SECIHTI</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="footer-bottom-content">
-                        <p>&copy; 2025 mGFD CloudGenerator. Built for computational modeling research with Meshless
-                            methods.</p>
-                        <div class="footer-links">
-                            <a href="{{ url_for('privacy_notice') }}">Privacy Notice</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript Files -->
-    <script>
-        const BASE_URL = "{{ url_for('home', _external=True).rstrip('/') }}";
+{% block scripts %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+        const BASE_URL = "{{ url_for('main.home', _external=True).rstrip('/') }}";
     </script>
-    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/neighbors.js') }}"></script>
-</body>
-
-</html>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/neighbors.js') }}"></script>
+{% endblock %}
