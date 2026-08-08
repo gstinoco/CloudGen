@@ -1182,7 +1182,7 @@ msgstr "Agregar región"
 
 #: templates/contour_creator.html:137
 msgid "Refine Selection"
-msgstr "Refinar selección"
+msgstr "Refinar Selección"
 
 #: templates/contour_creator.html:141 templates/contour_creator.html:186
 msgid "Clear All"
@@ -2312,8 +2312,126 @@ msgstr ""
 "download=\"example_1_contour.csv\" class=\"download-link\"><i class=\"fas "
 "fa-file-csv\"></i> example_1.csv</a>"
 
+msgid "Exit Refinement"
+msgstr "Salir del Refinamiento"
+
+msgid ""
+"Click to add areas (+) or hold Shift to remove (-). Use Ctrl+Wheel for zoom "
+"and Ctrl+Drag to move the image."
+msgstr ""
+"Haz clic para añadir áreas (+) o mantén pulsado Shift para eliminar (-). Usa"
+" Ctrl+Rueda para acercar/alejar y Ctrl+Arrastrar para mover la imagen."
+
+msgid ""
+"Refinement mode activated. Click and drag to add/remove areas. Use "
+"Ctrl+Wheel for zoom and Ctrl+Drag to move the image."
+msgstr ""
+"Modo de refinamiento activado. Haz clic y arrastra para añadir/eliminar "
+"áreas. Usa Ctrl+Rueda para acercar/alejar y Ctrl+Arrastrar para mover la "
+"imagen."
+
+msgid "Refinement mode deactivated."
+msgstr "Modo de refinamiento desactivado."
+
+msgid "Detecting regions..."
+msgstr "Detectando regiones..."
+
+msgid "Region detected! Click \"Add Region\" to confirm."
+msgstr "¡Región detectada! Haz clic en \"Agregar Región\" para confirmar."
+
+msgid "Error detecting region:"
+msgstr "Error al detectar la región:"
+
+msgid ""
+"Region \"{name}\" added successfully! Exited refinement mode to detect new "
+"regions."
+msgstr ""
+"¡Región \"{name}\" agregada exitosamente! Se salió del modo de refinamiento "
+"para detectar nuevas regiones."
+
+msgid "Region \"{name}\" added successfully!"
+msgstr "¡Región \"{name}\" agregada exitosamente!"
+
+msgid "Region \"{name}\" deleted."
+msgstr "Región \"{name}\" eliminada."
+
+msgid "All regions have been cleared."
+msgstr "Todas las regiones han sido eliminadas."
+
+msgid "Invalid region index"
+msgstr "Índice de región no válido"
+
+msgid "No contour points to export"
+msgstr "No hay puntos de frontera para exportar"
+
+msgid "Exporting region..."
+msgstr "Exportando región..."
+
+msgid "Region \"{name}\" exported successfully!"
+msgstr "¡Región \"{name}\" exportada exitosamente!"
+
+msgid "Error exporting region:"
+msgstr "Error al exportar la región:"
+
+msgid "No regions to save"
+msgstr "No hay regiones para guardar"
+
+msgid "Saving all regions..."
+msgstr "Guardando todas las regiones..."
+
+msgid "All regions saved successfully! ({count} regions)"
+msgstr "¡Todas las regiones guardadas exitosamente! ({count} regiones)"
+
+msgid "Error saving regions:"
+msgstr "Error al guardar las regiones:"
+
+msgid "Last stroke undone."
+msgstr "Último trazo deshecho."
+
+msgid "All refinements cleared."
+msgstr "Todos los refinamientos limpiados."
+
+msgid "No refinements to apply."
+msgstr "No hay refinamientos para aplicar."
+
+msgid "Refinement applied successfully."
+msgstr "Refinamiento aplicado exitosamente."
+
+msgid "Error applying refinement."
+msgstr "Error al aplicar el refinamiento."
+
+msgid "No regions detected"
+msgstr "No se detectaron regiones"
+
+msgid "Click on the image to detect and add contour regions"
+msgstr "Haz clic en la imagen para detectar y agregar regiones de frontera"
+
+msgid ""
+"Temporary region detected with {count} points. Click \"Add Region\" to "
+"confirm."
+msgstr ""
+"Región temporal detectada con {count} puntos. Haz clic en \"Agregar Región\""
+" para confirmar."
+
+msgid "Area added."
+msgstr "Área agregada."
+
+msgid "Area removed."
+msgstr "Área eliminada."
+
+msgid " Applying..."
+msgstr " Aplicando..."
+
 #~ msgid "EN"
 #~ msgstr "EN"
 
 #~ msgid "ES"
 #~ msgstr "ES"
+
+
+msgid "Node Retention"
+msgstr "Retención de Nodos"
+
+
+msgid "nodes"
+msgstr "nodos"

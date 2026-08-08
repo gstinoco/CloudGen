@@ -1090,7 +1090,7 @@ function detectRegion(x, y) {
     const tolerance = 30; // Balanced tolerance for complete region detection
     
     // Show loading indicator
-    showFloatingNotification('Detecting regions...', 'info', 3000);
+    showFloatingNotification(window.I18N.detectingRegions || 'Detecting regions...', 'info', 3000);
     
     fetch(`${BASE_URL}/detect_region`, {
         method: 'POST',
@@ -1110,19 +1110,22 @@ function detectRegion(x, y) {
             tempRegion = data;
             tempRegion.color = regionColors[currentRegionIndex % regionColors.length];
             tempRegion.id = Date.now(); // Unique ID based on timestamp
-            tempRegion.name = `Region ${currentRegionIndex + 1}`;
+            tempRegion.name = `${window.I18N.regionPrefix || 'Region'} ${currentRegionIndex + 1}`;
+            
+            tempRegion.targetPointsCount = tempRegion.contour_points.length;
+            tempRegion.smoothing = 100;
             
             drawTempRegion(tempRegion);
             displayTempRegion(tempRegion);
             
             document.getElementById('addRegionBtn').disabled = false;
-            showFloatingNotification('Region detected! Click "Add Region" to confirm.', 'success', 4000);
+            showFloatingNotification(window.I18N.regionDetected || 'Region detected! Click \"Add Region\" to confirm.', 'success', 4000);
         } else {
             showFloatingNotification(data.error, 'error');
         }
     })
     .catch(error => {
-        showFloatingNotification('Error detecting region: ' + error.message, 'error');
+        showFloatingNotification(`${window.I18N.errorDetecting || 'Error detecting region:'} ${error.message}`, 'error');
     });
 }
 
@@ -1152,9 +1155,9 @@ function addRegion() {
     // Exit refinement mode automatically to allow detecting new regions
     if (isRefineMode) {
         exitRefineMode();
-        showFloatingNotification(`Region "${detectedRegions[detectedRegions.length - 1].name}" added successfully! Exited refinement mode to detect new regions.`, 'success');
+        showFloatingNotification((window.I18N.regionAddedExited || 'Region \"{name}\" added successfully! Exited refinement mode to detect new regions.').replace('{name}', detectedRegions[detectedRegions.length - 1].name), 'success');
     } else {
-        showFloatingNotification(`Region "${detectedRegions[detectedRegions.length - 1].name}" added successfully!`, 'success');
+        showFloatingNotification((window.I18N.regionAdded || 'Region \"{name}\" added successfully!').replace('{name}', detectedRegions[detectedRegions.length - 1].name), 'success');
     }
 }
 
@@ -1163,7 +1166,7 @@ function displayTempRegion(data) {
     
     // Show temporary region info in floating notification
     showFloatingNotification(
-        `Temporary region detected with ${data.contour_points.length} points. Click "Add Region" to confirm.`,
+        (window.I18N.tempRegionDetected || 'Temporary region detected with {count} points. Click \"Add Region\" to confirm.').replace('{count}', data.contour_points.length),
         'info',
         5000
     );
@@ -1178,8 +1181,8 @@ function updateRegionsList() {
         regionsList.innerHTML = `
             <div class="regions-empty">
                 <i class="fas fa-bullseye"></i>
-                <h4>No regions detected</h4>
-                <p>Click on the image to detect and add contour regions</p>
+                <h4>${window.I18N.noRegionsTitle || 'No regions detected'}</h4>
+                <p>${window.I18N.noRegionsDesc || 'Click on the image to detect and add contour regions'}</p>
             </div>
         `;
         return;
@@ -1200,13 +1203,26 @@ function updateRegionsList() {
                 
                 <div class="rc-body">
                     <div class="rc-retention">
-                        <div class="rc-retention-header">
-                            <span><i class="fas fa-compress-arrows-alt"></i> Node Retention</span>
-                            <span id="smoothing-val-${index}" class="rc-retention-val">${region.smoothing !== undefined ? region.smoothing : 100}%</span>
+                        <div class="rc-retention-header" style="margin-bottom: 8px;">
+                            <span><i class="fas fa-compress-arrows-alt"></i> ${window.I18N.nodeRetention || 'Node Retention'}</span>
+                            <span id="smoothing-val-${index}" class="rc-retention-val">${(region.smoothing !== undefined ? region.smoothing : 100).toFixed(2)}%</span>
                         </div>
-                        <input type="range" class="rc-slider" min="1" max="100" value="${region.smoothing !== undefined ? region.smoothing : 100}" 
-                               oninput="document.getElementById('smoothing-val-${index}').textContent = this.value + '%'"
-                               onchange="applyRegionSmoothing(${index}, this.value)">
+                        
+                        <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+                            <input type="range" id="regionDensity_${index}" class="rc-slider" style="flex: 1;" 
+                                min="1" max="100" step="0.01" value="${region.smoothing || 100}" 
+                                oninput="document.getElementById('smoothing-val-${index}').textContent = parseFloat(this.value).toFixed(2) + '%'"
+                                onchange="applyRegionSmoothingPercentage(${index}, this.value)">
+                            
+                            <div style="display: flex; gap: 4px; align-items: center; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+                                <input type="number" id="regionDensityExact_${index}" class="rc-exact-input" 
+                                    min="3" max="${region.original_contour_points ? region.original_contour_points.length : region.contour_points.length}" 
+                                    value="${region.targetPointsCount || region.contour_points.length}"
+                                    onchange="applyRegionSmoothingExact(${index}, this.value)"
+                                    style="width: 55px; text-align: center; border: none; background: transparent; color: #334155; font-family: inherit; font-size: 0.9em; outline: none; font-weight: 600;">
+                                <span style="font-size: 0.75em; color: #64748b; font-weight: 500;">${window.I18N.nodesText || 'nodes'}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -1226,16 +1242,54 @@ function updateRegionsList() {
     }).join('');
 }
 
-function applyRegionSmoothing(index, value) {
+function applyRegionSmoothingPercentage(index, percentage) {
     if (index < 0 || index >= detectedRegions.length) return;
     
     const region = detectedRegions[index];
-    const targetPercentage = parseFloat(value);
+    const targetPercentage = parseFloat(percentage);
     
-    region.smoothing = targetPercentage;
+    region.smoothing = parseFloat(targetPercentage.toFixed(2));
+    const maxPoints = region.original_contour_points ? region.original_contour_points.length : region.contour_points.length;
+    region.targetPointsCount = Math.max(3, Math.floor(maxPoints * (targetPercentage / 100)));
+    
+    // Sync exact input field and text
+    const exactInput = document.getElementById(`regionDensityExact_${index}`);
+    if (exactInput) exactInput.value = region.targetPointsCount;
+    const smoothingVal = document.getElementById(`smoothing-val-${index}`);
+    if (smoothingVal) smoothingVal.textContent = region.smoothing.toFixed(2) + '%';
     
     if (targetPercentage < 100) {
-        region.contour_points = simplifyRegionContour(region.original_contour_points, targetPercentage);
+        region.contour_points = simplifyRegionContour(region.original_contour_points, region.targetPointsCount);
+    } else {
+        region.contour_points = [...region.original_contour_points];
+    }
+    
+    // Update the UI
+    updateRegionsList();
+    redrawCanvas();
+}
+
+function applyRegionSmoothingExact(index, exactValue) {
+    if (index < 0 || index >= detectedRegions.length) return;
+    
+    const region = detectedRegions[index];
+    const maxPoints = region.original_contour_points ? region.original_contour_points.length : region.contour_points.length;
+    
+    let targetPoints = parseInt(exactValue);
+    if (isNaN(targetPoints) || targetPoints < 3) targetPoints = 3;
+    if (targetPoints > maxPoints) targetPoints = maxPoints;
+    
+    region.targetPointsCount = targetPoints;
+    region.smoothing = parseFloat(((targetPoints / maxPoints) * 100).toFixed(2));
+    
+    // Sync percentage slider and text
+    const sliderInput = document.getElementById(`regionDensity_${index}`);
+    if (sliderInput) sliderInput.value = region.smoothing;
+    const smoothingVal = document.getElementById(`smoothing-val-${index}`);
+    if (smoothingVal) smoothingVal.textContent = region.smoothing.toFixed(2) + '%';
+    
+    if (targetPoints < maxPoints) {
+        region.contour_points = simplifyRegionContour(region.original_contour_points, region.targetPointsCount);
     } else {
         region.contour_points = [...region.original_contour_points];
     }
@@ -1265,7 +1319,7 @@ function deleteRegion(index) {
         const clearBtn = document.getElementById('clearBtn');
         if (clearBtn) clearBtn.disabled = !hasRegions;
         
-        showFloatingNotification(`Region "${regionName}" deleted.`, 'info');
+        showFloatingNotification((window.I18N.regionDeleted || 'Region \"{name}\" deleted.').replace('{name}', regionName), 'info');
     }
 }
 
@@ -1282,7 +1336,7 @@ function clearAllRegions() {
     const clearBtn = document.getElementById('clearBtn');
     if (clearBtn) clearBtn.disabled = true;
     
-    showFloatingNotification('All regions have been cleared.', 'info');
+    showFloatingNotification(window.I18N.allRegionsCleared || 'All regions have been cleared.', 'info');
 }
 
 // ===== EXPORT FUNCTIONALITY =====
@@ -1295,7 +1349,6 @@ function clearAllRegions() {
  * 
  * @function calculateRegionArea
  * @param {Object} region - The region object containing contour points
- * @param {Array<Object>} region.contour_points - Array of points with x,y coordinates
  * @returns {number} The calculated area in square pixels, or 0 if invalid region
  * @since 2025-05-01
  * @lastModified 2026-01-21
@@ -1330,13 +1383,13 @@ function calculateRegionArea(region) {
 // Export single region
 function exportSingleRegion(index) {
     if (index < 0 || index >= detectedRegions.length) {
-        showFloatingNotification('Invalid region index', 'error');
+        showFloatingNotification(window.I18N.invalidRegion || 'Invalid region index', 'error');
         return;
     }
     
     const region = detectedRegions[index];
     if (!region.contour_points || region.contour_points.length === 0) {
-        showFloatingNotification('No contour points to export', 'error');
+        showFloatingNotification(window.I18N.noPointsExport || 'No contour points to export', 'error');
         return;
     }
     
@@ -1344,7 +1397,7 @@ function exportSingleRegion(index) {
     const normalizeSetting = getNormalizeSetting();
     
     // Show loading notification
-    showFloatingNotification('Exporting region...', 'info', 2000);
+    showFloatingNotification(window.I18N.exportingRegion || 'Exporting region...', 'info', 2000);
     
     fetch(`${BASE_URL}/export_single_region`, {
         method: 'POST',
@@ -1369,20 +1422,20 @@ function exportSingleRegion(index) {
             link.click();
             document.body.removeChild(link);
             
-            showFloatingNotification(`Region "${region.name}" exported successfully!`, 'success');
+            showFloatingNotification((window.I18N.regionExported || 'Region \"{name}\" exported successfully!').replace('{name}', region.name), 'success');
         } else {
             showFloatingNotification(data.error, 'error');
         }
     })
     .catch(error => {
-        showFloatingNotification('Error exporting region: ' + error.message, 'error');
+        showFloatingNotification(`${window.I18N.errorExporting || 'Error exporting region:'} ${error.message}`, 'error');
     });
 }
 
 // Save all coordinates
 function saveAllCoordinates() {
     if (detectedRegions.length === 0) {
-        showFloatingNotification('No regions to save', 'error');
+        showFloatingNotification(window.I18N.noRegionsSave || 'No regions to save', 'error');
         return;
     }
     
@@ -1395,7 +1448,7 @@ function saveAllCoordinates() {
     }));
     
     // Show loading notification
-    showFloatingNotification('Saving all regions...', 'info', 2000);
+    showFloatingNotification(window.I18N.savingAll || 'Saving all regions...', 'info', 2000);
     
     fetch(`${BASE_URL}/save_all_coordinates`, {
         method: 'POST',
@@ -1419,13 +1472,13 @@ function saveAllCoordinates() {
             link.click();
             document.body.removeChild(link);
             
-            showFloatingNotification(`All regions saved successfully! (${detectedRegions.length} regions)`, 'success');
+            showFloatingNotification((window.I18N.allRegionsSaved || 'All regions saved successfully! ({count} regions)').replace('{count}', detectedRegions.length), 'success');
         } else {
             showFloatingNotification(data.error, 'error');
         }
     })
     .catch(error => {
-        showFloatingNotification('Error saving regions: ' + error.message, 'error');
+        showFloatingNotification(`${window.I18N.errorSaving || 'Error saving regions:'} ${error.message}`, 'error');
     });
 }
 
@@ -1523,22 +1576,22 @@ function toggleRefineMode() {
     if (isRefineMode) {
         refineControls.style.display = 'flex';
         toggleBtn.classList.add('active');
-        toggleBtn.innerHTML = '<i class="fas fa-edit"></i><span>Exit Refinement</span>';
+        toggleBtn.innerHTML = `<i class=\"fas fa-edit\"></i><span>${window.I18N.exitRefinement || 'Exit Refinement'}</span>`;
         canvas.style.cursor = 'crosshair';
-        showFloatingNotification('Refinement mode activated. Click and drag to add/remove areas. Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.', 'info');
+        showFloatingNotification(window.I18N.refineActivated || 'Refinement mode activated. Click and drag to add/remove areas. Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.', 'info');
         
         // Update instructions to include information about zoom and pan
         const refineInstructions = document.querySelector('.refine-instructions .refine-text');
         if (refineInstructions) {
-            refineInstructions.innerHTML = '<i class="fas fa-info-circle"></i> Click to add areas (+) or hold Shift to remove (-). Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.';
+            refineInstructions.innerHTML = `<i class=\"fas fa-info-circle\"></i> ${window.I18N.refineInstructions || 'Click to add areas (+) or hold Shift to remove (-). Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.'}`;
         }
     } else {
         refineControls.style.display = 'none';
         toggleBtn.classList.remove('active');
-        toggleBtn.innerHTML = '<i class="fas fa-edit"></i><span>Refine Selection</span>';
+        toggleBtn.innerHTML = `<i class=\"fas fa-edit\"></i><span>${window.I18N.refineSelection || 'Refine Selection'}</span>`;
         canvas.style.cursor = 'pointer';
         resetRefineState();
-        showFloatingNotification('Refinement mode deactivated.', 'info');
+        showFloatingNotification(window.I18N.refineDeactivated || 'Refinement mode deactivated.', 'info');
     }
 }
 
@@ -1554,7 +1607,7 @@ function undoLastStroke() {
         brushStrokes.pop(); // Remove the last stroke
         redrawCanvas();
         updateRefineButtons();
-        showFloatingNotification('Last stroke undone.', 'info');
+        showFloatingNotification(window.I18N.lastStrokeUndone || 'Last stroke undone.', 'info');
     }
 }
 
@@ -1563,7 +1616,7 @@ function clearAllRefinements() {
     brushStrokes = [];
     redrawCanvas();
     updateRefineButtons();
-    showFloatingNotification('All refinements cleared.', 'info');
+    showFloatingNotification(window.I18N.allRefinementsCleared || 'All refinements cleared.', 'info');
 }
 
 // Update refine buttons state
@@ -1664,7 +1717,7 @@ function handleBrushEnd(event) {
         brushStrokes.push(currentStroke);
         updateRefineButtons();
         showFloatingNotification(
-            `Área ${currentBrushMode === 'add' ? 'agregada' : 'removida'}.`, 
+            currentBrushMode === 'add' ? (window.I18N.areaAdded || 'Area added.') : (window.I18N.areaRemoved || 'Area removed.'), 
             'success'
         );
     }
@@ -1719,14 +1772,14 @@ function drawBrushStroke(stroke, isTemporary = false) {
 // Apply refinements
 async function applyRefinements() {
     if (!currentFilename || brushStrokes.length === 0) {
-        showFloatingNotification('No refinements to apply.', 'warning');
+        showFloatingNotification(window.I18N.noRefinementsApply || 'No refinements to apply.', 'warning');
         return;
     }
     
     const applyBtn = document.getElementById('applyRefineBtn');
     const originalContent = applyBtn.innerHTML;
     applyBtn.disabled = true;
-    applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Aplicando...';
+    applyBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i>' + (window.I18N.applying || ' Applying...');
     
     try {
         const data = {
@@ -1761,14 +1814,14 @@ async function applyRefinements() {
             brushStrokes = [];
             updateRefineButtons();
             
-            showFloatingNotification('Refinement applied successfully.', 'success');
+            showFloatingNotification(window.I18N.refinementApplied || 'Refinement applied successfully.', 'success');
         } else {
-            showFloatingNotification(`Error: ${result.error}`, 'error');
+            showFloatingNotification(`${window.I18N.errorApplying || 'Error applying refinement:'} ${result.error}`, 'error');
         }
         
     } catch (error) {
         console.error('Error applying refinements:', error);
-        showFloatingNotification('Error applying refinement.', 'error');
+        showFloatingNotification(window.I18N.errorApplying || 'Error applying refinement.', 'error');
     } finally {
         applyBtn.disabled = false;
         applyBtn.innerHTML = originalContent;
@@ -1889,10 +1942,8 @@ function updateBoundaryReduction(value) {
 
 // ===== CONTOUR SIMPLIFICATION (EQUIDISTANT SAMPLING) =====
 
-function simplifyRegionContour(points, targetPercentage) {
-    if (targetPercentage >= 100 || points.length <= 3) return points;
-    
-    const targetPointsCount = Math.max(3, Math.floor(points.length * (targetPercentage / 100)));
+function simplifyRegionContour(points, targetPointsCount) {
+    if (targetPointsCount >= points.length || points.length <= 3) return points;
     
     // Calculate segment lengths and total arc length
     let totalLength = 0;

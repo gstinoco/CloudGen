@@ -170,9 +170,9 @@
                                 <div class="brush-size-control">
                                     <label>
                                         <i class="fas fa-paint-brush"></i>
-                                        <input type="range" id="refineBrushSize" min="5" max="50" value="20"
+                                        <input type="range" id="refineBrushSize" min="1" max="20" value="10"
                                             onchange="updateBrushSize(this.value)">
-                                        <span id="brushSizeValue">{{ _('20px') }}</span>
+                                        <span id="brushSizeValue">{{ _('10') }}px</span>
                                     </label>
                                 </div>
 
@@ -249,8 +249,48 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
+<script type="application/json" id="i18n-data">
+        {
+            "refineSelection": {{ _('Refine Selection') | tojson }},
+            "exitRefinement": {{ _('Exit Refinement') | tojson }},
+            "refineInstructions": {{ _('Click to add areas (+) or hold Shift to remove (-). Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.') | tojson }},
+            "refineActivated": {{ _('Refinement mode activated. Click and drag to add/remove areas. Use Ctrl+Wheel for zoom and Ctrl+Drag to move the image.') | tojson }},
+            "refineDeactivated": {{ _('Refinement mode deactivated.') | tojson }},
+            "detectingRegions": {{ _('Detecting regions...') | tojson }},
+            "regionDetected": {{ _('Region detected! Click "Add Region" to confirm.') | tojson }},
+            "errorDetecting": {{ _('Error detecting region:') | tojson }},
+            "regionAddedExited": {{ _('Region "{name}" added successfully! Exited refinement mode to detect new regions.') | tojson }},
+            "regionAdded": {{ _('Region "{name}" added successfully!') | tojson }},
+            "regionDeleted": {{ _('Region "{name}" deleted.') | tojson }},
+            "allRegionsCleared": {{ _('All regions have been cleared.') | tojson }},
+            "invalidRegion": {{ _('Invalid region index') | tojson }},
+            "noPointsExport": {{ _('No contour points to export') | tojson }},
+            "exportingRegion": {{ _('Exporting region...') | tojson }},
+            "regionExported": {{ _('Region "{name}" exported successfully!') | tojson }},
+            "errorExporting": {{ _('Error exporting region:') | tojson }},
+            "noRegionsSave": {{ _('No regions to save') | tojson }},
+            "savingAll": {{ _('Saving all regions...') | tojson }},
+            "allRegionsSaved": {{ _('All regions saved successfully! ({count} regions)') | tojson }},
+            "errorSaving": {{ _('Error saving regions:') | tojson }},
+            "lastStrokeUndone": {{ _('Last stroke undone.') | tojson }},
+            "allRefinementsCleared": {{ _('All refinements cleared.') | tojson }},
+            "noRefinementsApply": {{ _('No refinements to apply.') | tojson }},
+            "refinementApplied": {{ _('Refinement applied successfully.') | tojson }},
+            "errorApplying": {{ _('Error applying refinement.') | tojson }},
+            "noRegionsTitle": {{ _('No regions detected') | tojson }},
+            "noRegionsDesc": {{ _('Click on the image to detect and add contour regions') | tojson }},
+            "regionPrefix": {{ _('Region') | tojson }},
+            "tempRegionDetected": {{ _('Temporary region detected with {count} points. Click "Add Region" to confirm.') | tojson }},
+            "areaAdded": {{ _('Area added.') | tojson }},
+            "areaRemoved": {{ _('Area removed.') | tojson }},
+            "applying": {{ _(' Applying...') | tojson }},
+            "nodeRetention": {{ _('Node Retention') | tojson }},
+            "nodesText": {{ _('nodes') | tojson }}
+        }
+    </script>
+    <script>
         const BASE_URL = "{{ url_for('main.home', _external=True).rstrip('/') }}";
+        window.I18N = JSON.parse(document.getElementById('i18n-data').textContent);
     </script>
 <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/contour_creator.js') }}"></script>
